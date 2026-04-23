@@ -45,7 +45,7 @@ export function AdminShell() {
               </div>
             </div>
             <div>
-              <div className="font-display font-bold text-xs text-gold-300 tracking-wider uppercase">PatientTrac</div>
+              <div className="font-display font-bold text-xs text-gold-300 tracking-wider uppercase">PatientTracForge</div>
               <div className="font-mono text-[9px] text-red-400/80 tracking-widest uppercase mt-0.5 flex items-center gap-1">
                 <Lock size={8} />
                 Admin Portal

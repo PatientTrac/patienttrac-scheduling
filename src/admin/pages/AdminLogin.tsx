@@ -71,7 +71,7 @@ export function AdminLogin() {
             </div>
             <div className="text-left">
               <div className="font-display font-bold text-lg text-gold-300 tracking-wider uppercase leading-none">
-                PatientTrac
+                PatientTracForge
               </div>
               <div className="font-mono text-[10px] text-slate-500 tracking-widest uppercase">
                 Admin Portal
@@ -159,7 +159,7 @@ export function AdminLogin() {
 
               <div className="px-3 py-3 bg-gold-500/5 border border-gold-500/15 rounded-sm">
                 <div className="text-xs text-slate-400 leading-relaxed">
-                  Open your <span className="text-gold-300">Google Authenticator</span> app and enter the 6-digit code for PatientTrac.
+                  Open your <span className="text-gold-300">Google Authenticator</span> app and enter the 6-digit code for PatientTracForge.
                 </div>
               </div>
 
@@ -224,7 +224,7 @@ export function AdminLogin() {
 
         {/* Footer */}
         <div className="text-center mt-4 font-mono text-[10px] text-slate-700">
-          PatientTrac Corp · HIPAA Compliant · All access logged
+          PatientTracForge · HIPAA Compliant · All access logged
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@ export function ModuleStub({ icon: Icon, title, description, sprint }: ModuleStu
   return (
     <div className="space-y-5 animate-fade-in">
       <div>
-        <div className="section-heading mb-1">PatientTrac</div>
+        <div className="section-heading mb-1">PatientTracForge</div>
         <h1 className="font-display font-bold text-2xl text-slate-100 tracking-wide">{title}</h1>
       </div>
       <div className="hud-panel hud-bracket p-16 flex flex-col items-center justify-center text-center">

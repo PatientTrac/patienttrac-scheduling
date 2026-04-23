@@ -44,7 +44,7 @@ export function Sidebar() {
           </div>
           <div>
             <div className="font-display font-bold text-sm text-gold-300 tracking-wider leading-none uppercase">
-              PatientTrac
+              PatientTracForge
             </div>
             <div className="font-mono text-[9px] text-slate-500 tracking-widest uppercase mt-0.5">
               Scheduling
@@ -98,7 +98,7 @@ export function Sidebar() {
           <span className="font-mono text-[10px] text-slate-500 tracking-wider">SYSTEM ONLINE</span>
         </div>
         <div className="mt-1 font-mono text-[9px] text-slate-600">
-          v0.1.0 · PatientTrac Corp
+          v0.1.0 · PatientTracForge
         </div>
       </div>
     </aside>

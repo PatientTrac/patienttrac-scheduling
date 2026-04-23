@@ -1,5 +1,5 @@
-import { Users, CalendarDays, DollarSign, Activity, TrendingUp, Clock, AlertCircle } from 'lucide-react'
-import { cn, formatCurrency, formatDate } from '@/lib/utils'
+import { Users, CalendarDays, DollarSign, Activity, AlertCircle } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 const kpis = [
   { label: 'Active Patients',     value: '—',    icon: Users,        color: 'text-blue-400',    sub: 'Total registered' },
@@ -121,7 +121,7 @@ export function Dashboard() {
           </div>
         ))}
         <div className="ml-auto font-mono text-[10px] text-slate-600">
-          PatientTrac Scheduling v0.1.0 · EMR Foundation Layer
+          PatientTracForge v0.1.0 · EMR Foundation Layer
         </div>
       </div>
     </div>

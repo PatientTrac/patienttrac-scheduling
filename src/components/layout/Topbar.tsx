@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Search, Bell, Plus, UserPlus } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { Search, Bell, UserPlus } from 'lucide-react'
 
 const breadcrumbs: Record<string, string> = {
   '/dashboard':  'Dashboard',
@@ -16,13 +15,13 @@ const breadcrumbs: Record<string, string> = {
 export function Topbar() {
   const location = useLocation()
   const navigate = useNavigate()
-  const label = breadcrumbs[location.pathname] ?? 'PatientTrac'
+  const label = breadcrumbs[location.pathname] ?? 'PatientTracForge'
 
   return (
     <header className="h-14 flex-shrink-0 flex items-center gap-4 px-6 border-b border-gold-500/10 bg-navy-950/40 backdrop-blur-sm">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 flex-1">
-        <span className="font-mono text-[10px] text-slate-600 tracking-widest uppercase">PT-SCH</span>
+        <span className="font-mono text-[10px] text-slate-600 tracking-widest uppercase">PTF</span>
         <span className="text-slate-700">/</span>
         <span className="font-display font-semibold text-sm text-gold-300 tracking-wide uppercase">
           {label}

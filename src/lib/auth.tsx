@@ -1,5 +1,5 @@
 /**
- * AuthContext — PatientTrac Auth + RBAC + MFA
+ * AuthContext — PatientTracForge Auth + RBAC + MFA
  * 
  * Flow:
  * 1. User signs in with email + password (Supabase Auth)
