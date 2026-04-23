@@ -154,7 +154,7 @@
     @apply py-2 px-3 text-left font-mono text-xs text-slate-500 uppercase tracking-widest font-normal;
   }
   .hud-table tbody tr {
-    @apply border-b border-white/4 hover:bg-gold-500/3 transition-colors duration-100 cursor-pointer;
+    @apply border-b border-white/5 hover:bg-gold-500/5 transition-colors duration-100 cursor-pointer;
   }
   .hud-table tbody td {
     @apply py-3 px-3 text-slate-300;
@@ -167,7 +167,7 @@
            transition-all duration-150 cursor-pointer;
   }
   .nav-item.active {
-    @apply text-gold-300 bg-gold-500/8 border-l-2 border-gold-500;
+    @apply text-gold-300 bg-gold-500/10 border-l-2 border-gold-500;
   }
 }
 
