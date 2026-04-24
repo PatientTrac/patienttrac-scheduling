@@ -93,9 +93,11 @@ export function CheckIn() {
   // Check-in mutation — calls cr.checkin_and_route()
   const checkinMutation = useMutation({
     mutationFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser()
       const { data, error } = await supabase.rpc('checkin_and_route', {
         p_appointment_id: parseInt(appointmentId!),
         p_org_id: ORG_ID,
+        p_user_id: user?.id ?? null,
       }, { schema: 'cr' } as any)
       if (error) throw error
       return data
@@ -463,37 +465,64 @@ export function CheckIn() {
               <div>
                 <div className="section-heading mb-3">Route to Clinical Module</div>
                 <div className="space-y-2">
-                  {(routeResult.routes ?? []).map((route: any) => (
-                    <a
-                      key={route.app_key}
-                      href={route.app_url}
-                      target={route.app_key !== 'scheduling' ? '_blank' : undefined}
-                      rel="noopener noreferrer"
-                      className={cn(
-                        'flex items-center gap-4 px-4 py-3.5 rounded-sm border transition-all duration-150',
-                        route.is_primary ? APP_COLORS[route.app_key] : 'border-slate-700/50 bg-slate-800/20 hover:bg-slate-800/40',
-                        'group cursor-pointer'
-                      )}
-                    >
-                      <span className="text-2xl">{APP_ICONS[route.app_key]}</span>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className={cn('font-display font-semibold text-sm',
-                            route.is_primary ? 'text-slate-100' : 'text-slate-400')}>
-                            {route.app_label}
-                          </span>
-                          {route.is_primary && <span className="badge badge-active text-[9px]">Primary</span>}
-                        </div>
-                        <div className="font-mono text-[10px] text-slate-600 mt-0.5">
-                          {route.specialty} · encounter_id {routeResult.encounter_id}
-                        </div>
+                  {(routeResult.routes ?? []).map((route: any) => {
+                    // Use deep_link (with session token) for specialty apps, fall back to app_url
+                    const href = route.deep_link || route.app_url || '#'
+                    const isSpecialty = route.app_key !== 'scheduling'
+                    return (
+                      <div key={route.app_key} className="space-y-1">
+                        <a
+                          href={href}
+                          target={isSpecialty ? '_blank' : undefined}
+                          rel="noopener noreferrer"
+                          className={cn(
+                            'flex items-center gap-4 px-4 py-3.5 rounded-sm border transition-all duration-150',
+                            route.is_primary ? APP_COLORS[route.app_key] : 'border-slate-700/50 bg-slate-800/20 hover:bg-slate-800/40',
+                            'group cursor-pointer'
+                          )}
+                        >
+                          <span className="text-2xl">{APP_ICONS[route.app_key]}</span>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className={cn('font-display font-semibold text-sm',
+                                route.is_primary ? 'text-slate-100' : 'text-slate-400')}>
+                                {route.app_label}
+                              </span>
+                              {route.is_primary && <span className="badge badge-active text-[9px]">Primary</span>}
+                              {isSpecialty && route.token && (
+                                <span className="font-mono text-[9px] text-cyan-500/60 border border-cyan-500/20 px-1.5 py-0.5">
+                                  SESSION ACTIVE
+                                </span>
+                              )}
+                            </div>
+                            <div className="font-mono text-[10px] text-slate-600 mt-0.5">
+                              {route.specialty} · encounter_id {routeResult.encounter_id}
+                              {isSpecialty && route.expires_at && (
+                                <span className="ml-2 text-cyan-500/40">
+                                  · expires {new Date(route.expires_at).toLocaleTimeString()}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <ExternalLink size={14} className={cn(
+                            'transition-colors',
+                            route.is_primary ? 'text-gold-500/60 group-hover:text-gold-400' : 'text-slate-600'
+                          )} />
+                        </a>
+                        {/* Token detail for specialty apps */}
+                        {isSpecialty && route.token && (
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-cyan-500/5 border border-cyan-500/10 rounded-sm">
+                            <span className="font-mono text-[9px] text-cyan-500/60">SESSION TOKEN</span>
+                            <span className="font-mono text-[9px] text-slate-600 truncate flex-1">{route.token.slice(0,16)}...</span>
+                            <button
+                              onClick={() => navigator.clipboard?.writeText(route.deep_link)}
+                              className="font-mono text-[9px] text-cyan-500/60 hover:text-cyan-400"
+                            >Copy link</button>
+                          </div>
+                        )}
                       </div>
-                      <ExternalLink size={14} className={cn(
-                        'transition-colors',
-                        route.is_primary ? 'text-gold-500/60 group-hover:text-gold-400' : 'text-slate-600'
-                      )} />
-                    </a>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
 
