@@ -433,11 +433,54 @@ section { padding: 100px 0; position: relative; z-index: 1; }
   content: '▸'; color: var(--gold); flex-shrink: 0; margin-top: 2px;
 }
 
+/* ── PRICING TOGGLE ── */
+.billing-toggle {
+  display: flex; align-items: center; justify-content: center; gap: 12px; margin: 32px 0 0;
+}
+.toggle-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.toggle-track { width: 44px; height: 24px; border-radius: 12px; background: rgba(201,169,110,0.2); border: 1px solid rgba(201,169,110,0.3); position: relative; cursor: pointer; transition: background 0.25s; }
+.toggle-track.on { background: rgba(201,169,110,0.5); }
+.toggle-thumb { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--gold); transition: transform 0.25s; }
+.toggle-track.on .toggle-thumb { transform: translateX(20px); }
+.save-badge { font-family: 'DM Mono', monospace; font-size: 9px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.25); color: var(--cyan); padding: 3px 8px; letter-spacing: 0.1em; }
+
+/* Compare table */
+.compare-wrap { margin-top: 72px; }
+.compare-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 12px; display: block; }
+.compare-h { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+.compare-sub { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--subtle); margin-bottom: 28px; }
+.compare-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.compare-table th { text-align: center; padding: 10px 12px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid rgba(201,169,110,0.12); color: var(--subtle); }
+.compare-table th.ptf-col { color: var(--gold); background: rgba(201,169,110,0.05); border-bottom-color: rgba(201,169,110,0.3); }
+.compare-table th:first-child { text-align: left; }
+.compare-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); text-align: center; color: var(--muted); vertical-align: middle; }
+.compare-table td:first-child { text-align: left; color: var(--text); font-family: 'DM Mono', monospace; font-size: 11px; }
+.compare-table td.ptf-col { background: rgba(201,169,110,0.04); color: var(--gold); font-weight: 500; }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+.compare-table tr:hover td.ptf-col { background: rgba(201,169,110,0.08); }
+.c-yes { color: #4ade80; font-size: 14px; }
+.c-no  { color: rgba(255,255,255,0.15); font-size: 14px; }
+.c-partial { color: #fbbf24; font-size: 11px; }
+.c-ptf-yes { color: var(--cyan); font-size: 14px; }
+.comp-badge { display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px; padding: 2px 6px; border-radius: 2px; letter-spacing: 0.06em; }
+.comp-badge.hi { background: rgba(74,222,128,0.12); color: #4ade80; }
+.comp-badge.lo { background: rgba(255,107,107,0.1); color: #ff6b6b; }
+.comp-badge.md { background: rgba(251,191,36,0.12); color: #fbbf24; }
+.comp-badge.ptf { background: rgba(0,212,255,0.12); color: var(--cyan); }
+
+/* ROI callout */
+.roi-strip { margin-top: 48px; background: rgba(0,212,255,0.04); border: 1px solid rgba(0,212,255,0.12); padding: 28px 36px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
+.roi-stat { }
+.roi-val { font-family: 'Rajdhani', sans-serif; font-size: 40px; font-weight: 700; color: var(--cyan); line-height: 1; }
+.roi-lbl { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--subtle); letter-spacing: 0.1em; margin-top: 4px; }
+.roi-detail { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
 /* ── PRICING ── */
 #pricing { }
 .pricing-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 2px; margin-top: 60px;
+  gap: 2px; margin-top: 40px;
 }
 .pricing-card {
   background: rgba(10,22,40,0.6);
@@ -504,7 +547,7 @@ section { padding: 100px 0; position: relative; z-index: 1; }
 }
 
 /* Enterprise add-ons */
-.addons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 48px; background: rgba(201,169,110,0.06); }
+.addons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 24px; background: rgba(201,169,110,0.06); }
 .addon-item { background: var(--navy-950); padding: 24px; }
 .addon-name { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 6px; }
 .addon-price { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gold); margin-bottom: 8px; }
@@ -978,108 +1021,326 @@ footer {
   <div class="container">
     <span class="section-label reveal">✦ Transparent Pricing</span>
     <h2 class="section-h2 reveal">Built for practices<br/>of every size</h2>
-    <p class="section-sub reveal">No per-click AI fees. All five Claude models included at every tier. Cancel anytime.</p>
+    <p class="section-sub reveal">No per-click AI fees. All five Claude models at every tier. Cancel anytime.</p>
+
+    <!-- Billing toggle -->
+    <div class="billing-toggle reveal">
+      <span class="toggle-label">Monthly</span>
+      <div class="toggle-track" id="bill-toggle" onclick="toggleBilling()">
+        <div class="toggle-thumb"></div>
+      </div>
+      <span class="toggle-label">Annual</span>
+      <span class="save-badge">SAVE 20%</span>
+    </div>
 
     <div class="pricing-grid">
 
       <!-- Starter -->
       <div class="pricing-card reveal">
         <div class="pricing-tier">Starter</div>
-        <div class="pricing-price"><span>$</span>299</div>
+        <div class="pricing-price"><span>$</span><span class="price-val" data-monthly="299" data-annual="239">299</span></div>
         <div class="pricing-period">/ month · 1 provider · 1 facility</div>
-        <div class="pricing-desc">Solo practitioners and small clinics getting started with AI-powered scheduling.</div>
+        <div class="pricing-desc">Solo practitioners and small clinics. Everything you need to cut no-shows and automate communications.</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li class="pricing-feature"><span class="check">▸</span> Up to 1 provider · 1 facility</li>
-          <li class="pricing-feature"><span class="check">▸</span> 500 appointments/month</li>
-          <li class="pricing-feature"><span class="check">▸</span> No-show prediction AI</li>
+          <li class="pricing-feature"><span class="check">▸</span> 1 provider · 1 facility</li>
+          <li class="pricing-feature"><span class="check">▸</span> 500 appointments / month</li>
+          <li class="pricing-feature"><span class="check">▸</span> No-show prediction AI <span style="font-size:10px;color:var(--subtle)">(scores every booking)</span></li>
           <li class="pricing-feature"><span class="check">▸</span> Smart scheduling assistant</li>
+          <li class="pricing-feature"><span class="check">▸</span> AI pre-visit intake</li>
           <li class="pricing-feature"><span class="check">▸</span> Email + SMS confirmations</li>
-          <li class="pricing-feature"><span class="check">▸</span> AI intake assistant</li>
           <li class="pricing-feature"><span class="check">▸</span> Patient registration + insurance</li>
-          <li class="pricing-feature"><span class="check">▸</span> Basic billing + superbills</li>
-          <li class="pricing-feature"><span class="cross">—</span> <span style="opacity:0.4">Billing AI + EDI/ERA</span></li>
-          <li class="pricing-feature"><span class="cross">—</span> <span style="opacity:0.4">Multi-specialty routing</span></li>
-          <li class="pricing-feature"><span class="cross">—</span> <span style="opacity:0.4">Data migration service</span></li>
+          <li class="pricing-feature"><span class="check">▸</span> Superbills + basic billing</li>
+          <li class="pricing-feature"><span class="check">▸</span> MFA + RBAC security</li>
+          <li class="pricing-feature"><span class="cross">—</span> <span style="opacity:0.35">Billing AI + denial prediction</span></li>
+          <li class="pricing-feature"><span class="cross">—</span> <span style="opacity:0.35">EDI 837P / ERA 835</span></li>
+          <li class="pricing-feature"><span class="cross">—</span> <span style="opacity:0.35">Multi-specialty routing</span></li>
         </ul>
-        <a href="#login" class="btn-pricing">Get Started</a>
+        <a href="#login" class="btn-pricing">Start Free Trial</a>
+        <div style="text-align:center;margin-top:10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--subtle)">14-day trial · No credit card</div>
       </div>
 
       <!-- Professional — featured -->
       <div class="pricing-card featured reveal">
         <div class="pricing-popular">Most Popular</div>
         <div class="pricing-tier">Professional</div>
-        <div class="pricing-price"><span>$</span>699</div>
+        <div class="pricing-price"><span>$</span><span class="price-val" data-monthly="699" data-annual="559">699</span></div>
         <div class="pricing-period">/ month · up to 5 providers · 2 facilities</div>
-        <div class="pricing-desc">Growing practices that need the full AI revenue cycle and multi-provider scheduling.</div>
+        <div class="pricing-desc">The complete AI revenue cycle. All 5 models, full billing EDI/ERA, and multi-specialty routing.</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li class="pricing-feature"><span class="check-cyan">✦</span> Up to 5 providers · 2 facilities</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> 5 providers · 2 facilities</li>
           <li class="pricing-feature"><span class="check-cyan">✦</span> Unlimited appointments</li>
-          <li class="pricing-feature"><span class="check-cyan">✦</span> All 5 AI models included</li>
-          <li class="pricing-feature"><span class="check-cyan">✦</span> Billing AI + denial prediction</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> All 5 AI models — every step</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> Billing AI + denial risk scoring</li>
           <li class="pricing-feature"><span class="check-cyan">✦</span> EDI 837P + ERA 835 posting</li>
           <li class="pricing-feature"><span class="check-cyan">✦</span> A/R aging dashboard</li>
-          <li class="pricing-feature"><span class="check-cyan">✦</span> Rejection management workflow</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> Rejection management + appeals</li>
           <li class="pricing-feature"><span class="check-cyan">✦</span> Multi-specialty routing</li>
-          <li class="pricing-feature"><span class="check-cyan">✦</span> Wait time analytics</li>
-          <li class="pricing-feature"><span class="check-cyan">✦</span> TOTP MFA + full RBAC</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> Wait time analytics + alerts</li>
           <li class="pricing-feature"><span class="check-cyan">✦</span> Data migration included</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> 114 CPT · 95 ICD-10 · 46 DSM-5</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> International patient support</li>
         </ul>
         <a href="#login" class="btn-pricing btn-pricing-primary">Start Free Trial</a>
+        <div style="text-align:center;margin-top:10px;font-family:'DM Mono',monospace;font-size:9px;color:rgba(0,212,255,0.5)">14-day trial · No credit card</div>
       </div>
 
       <!-- Enterprise -->
       <div class="pricing-card reveal">
         <div class="pricing-tier">Enterprise</div>
-        <div class="pricing-price"><span>$</span>1,499</div>
+        <div class="pricing-price"><span>$</span><span class="price-val" data-monthly="1499" data-annual="1199">1,499</span></div>
         <div class="pricing-period">/ month · unlimited providers + facilities</div>
-        <div class="pricing-desc">Multi-site practices, hospital groups, and specialty networks requiring full platform control.</div>
+        <div class="pricing-desc">Hospital groups, networks, and specialty systems needing custom modules, white-label, and SLA guarantees.</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
           <li class="pricing-feature"><span class="check">▸</span> Unlimited providers + facilities</li>
-          <li class="pricing-feature"><span class="check">▸</span> Everything in Professional</li>
-          <li class="pricing-feature"><span class="check">▸</span> Custom specialty modules</li>
-          <li class="pricing-feature"><span class="check">▸</span> Revela + Mental Health included</li>
-          <li class="pricing-feature"><span class="check">▸</span> White-label option</li>
-          <li class="pricing-feature"><span class="check">▸</span> Dedicated Supabase project</li>
+          <li class="pricing-feature"><span class="check">▸</span> All Professional features</li>
+          <li class="pricing-feature"><span class="check">▸</span> Revela + Mental Health modules</li>
+          <li class="pricing-feature"><span class="check">▸</span> White-label branding option</li>
           <li class="pricing-feature"><span class="check">▸</span> Custom AI model training</li>
-          <li class="pricing-feature"><span class="check">▸</span> SLA 99.9% uptime guarantee</li>
+          <li class="pricing-feature"><span class="check">▸</span> Dedicated Supabase project</li>
+          <li class="pricing-feature"><span class="check">▸</span> 99.9% uptime SLA</li>
           <li class="pricing-feature"><span class="check">▸</span> Priority support + onboarding</li>
           <li class="pricing-feature"><span class="check">▸</span> BAA + HIPAA documentation</li>
-          <li class="pricing-feature"><span class="check">▸</span> Custom integrations</li>
+          <li class="pricing-feature"><span class="check">▸</span> Custom clearinghouse integration</li>
+          <li class="pricing-feature"><span class="check">▸</span> API access for custom builds</li>
+          <li class="pricing-feature"><span class="check">▸</span> Quarterly business reviews</li>
         </ul>
-        <a href="mailto:sales@patienttracforge.com" class="btn-pricing">Contact Sales</a>
+        <a href="mailto:sales@patienttracforge.com" class="btn-pricing">Contact Sales →</a>
+        <div style="text-align:center;margin-top:10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--subtle)">Custom terms available</div>
       </div>
     </div>
 
-    <p class="pricing-note">All plans include a 14-day free trial · No credit card required · Cancel anytime · Annual billing saves 20%</p>
+    <p class="pricing-note">All plans: 14-day free trial · No credit card required · Cancel anytime · Annual billing saves 20%</p>
+
+    <!-- ROI Strip -->
+    <div class="roi-strip reveal">
+      <div class="roi-stat">
+        <div class="roi-val">2.7×</div>
+        <div class="roi-lbl">Professional ROI · typical practice</div>
+        <div class="roi-detail">A practice losing $75K/year to claim denials recovers $22K+ with Billing AI — the $699/mo plan pays for itself 2.7× over.</div>
+      </div>
+      <div class="roi-stat">
+        <div class="roi-val">$0</div>
+        <div class="roi-lbl">Implementation fee</div>
+        <div class="roi-detail">eClinicalWorks and Athena charge $5K–$25K to go live. PatientTracForge is same-day. Data migration is $1,500 flat.</div>
+      </div>
+      <div class="roi-stat">
+        <div class="roi-val">5</div>
+        <div class="roi-lbl">AI models — competitors have 0</div>
+        <div class="roi-detail">Every comparable platform has zero native AI or charges $200–$800/month extra. Ours fire automatically at every workflow step.</div>
+      </div>
+    </div>
+
+    <!-- Competitive comparison -->
+    <div class="compare-wrap reveal">
+      <span class="compare-label">✦ Competitive Comparison</span>
+      <h3 class="compare-h">How we stack up against the market</h3>
+      <p class="compare-sub">5-provider practice · equivalent tier · all-in monthly cost</p>
+
+      <div style="overflow-x:auto">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th style="width:200px">Feature / Platform</th>
+            <th>Athenahealth</th>
+            <th>Kareo / Tebra</th>
+            <th>DrChrono</th>
+            <th>eClinicalWorks</th>
+            <th>SimplePractice</th>
+            <th class="ptf-col">PatientTracForge</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monthly price (5 providers)</td>
+            <td>$700–$1,000</td>
+            <td>$300–$600</td>
+            <td>$500–$1,200</td>
+            <td>$2,000–$5,000</td>
+            <td>$99–$400</td>
+            <td class="ptf-col">$699</td>
+          </tr>
+          <tr>
+            <td>Implementation fee</td>
+            <td><span class="comp-badge lo">$5K–$25K</span></td>
+            <td><span class="comp-badge md">$0–$500</span></td>
+            <td><span class="comp-badge md">$0–$1K</span></td>
+            <td><span class="comp-badge lo">$15K+</span></td>
+            <td><span class="comp-badge hi">$0</span></td>
+            <td class="ptf-col"><span class="comp-badge ptf">$0 base</span></td>
+          </tr>
+          <tr>
+            <td>No-show prediction AI</td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td class="ptf-col"><span class="c-ptf-yes">✦</span></td>
+          </tr>
+          <tr>
+            <td>Smart scheduling AI</td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-partial">Pilot</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td class="ptf-col"><span class="c-ptf-yes">✦</span></td>
+          </tr>
+          <tr>
+            <td>AI pre-visit intake</td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td class="ptf-col"><span class="c-ptf-yes">✦</span></td>
+          </tr>
+          <tr>
+            <td>Billing AI + CPT coding</td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-partial">Add-on $200+</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-partial">Pilot</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td class="ptf-col"><span class="c-ptf-yes">✦</span></td>
+          </tr>
+          <tr>
+            <td>Wait time tracking</td>
+            <td><span class="c-partial">Basic</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-yes">✓</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td class="ptf-col"><span class="c-ptf-yes">✦</span></td>
+          </tr>
+          <tr>
+            <td>EDI 837P / ERA 835</td>
+            <td><span class="c-yes">✓</span></td>
+            <td><span class="c-yes">✓</span></td>
+            <td><span class="c-partial">Add-on</span></td>
+            <td><span class="c-yes">✓</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td class="ptf-col"><span class="c-ptf-yes">✦</span></td>
+          </tr>
+          <tr>
+            <td>Denial risk scoring</td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td class="ptf-col"><span class="c-ptf-yes">✦</span></td>
+          </tr>
+          <tr>
+            <td>A/R aging dashboard</td>
+            <td><span class="c-yes">✓</span></td>
+            <td><span class="c-yes">✓</span></td>
+            <td><span class="c-partial">Basic</span></td>
+            <td><span class="c-yes">✓</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td class="ptf-col"><span class="c-ptf-yes">✦</span></td>
+          </tr>
+          <tr>
+            <td>Multi-specialty routing</td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-partial">Limited</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td class="ptf-col"><span class="c-ptf-yes">✦</span></td>
+          </tr>
+          <tr>
+            <td>International patients</td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-partial">Limited</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td class="ptf-col"><span class="c-ptf-yes">16 countries</span></td>
+          </tr>
+          <tr>
+            <td>Auto apology SMS on wait</td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td><span class="c-no">✕</span></td>
+            <td class="ptf-col"><span class="c-ptf-yes">✦</span></td>
+          </tr>
+          <tr>
+            <td>DSM-5 + ICD-10 + CPT codes</td>
+            <td><span class="c-yes">✓</span></td>
+            <td><span class="c-partial">Basic</span></td>
+            <td><span class="c-yes">✓</span></td>
+            <td><span class="c-yes">✓</span></td>
+            <td><span class="c-partial">DSM-5 only</span></td>
+            <td class="ptf-col"><span class="c-ptf-yes">114+95+46</span></td>
+          </tr>
+          <tr style="font-weight:500">
+            <td>Total AI models included</td>
+            <td style="color:rgba(255,107,107,0.8)">0</td>
+            <td style="color:rgba(255,107,107,0.8)">0</td>
+            <td style="color:rgba(255,107,107,0.8)">0</td>
+            <td style="color:rgba(251,191,36,0.8)">~1 (pilot)</td>
+            <td style="color:rgba(255,107,107,0.8)">0</td>
+            <td class="ptf-col" style="font-size:18px">5 ✦</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--subtle);margin-top:12px;text-align:right">
+        ✦ Included in plan &nbsp;·&nbsp; ✓ Available &nbsp;·&nbsp; Partial = limited/add-on &nbsp;·&nbsp; ✕ Not available &nbsp;·&nbsp; Pricing as of 2026
+      </div>
+    </div>
 
     <!-- Add-ons -->
-    <div style="margin-top:60px">
-      <h3 class="reveal" style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:600;margin-bottom:8px">Add-ons available on any plan</h3>
-      <p class="reveal" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--subtle);margin-bottom:0">Extend your platform without upgrading tiers</p>
+    <div style="margin-top:64px">
+      <h3 class="reveal" style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:600;margin-bottom:8px">Add-ons — extend any plan</h3>
+      <p class="reveal" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--subtle);margin-bottom:0">No tier upgrade required</p>
     </div>
     <div class="addons-grid">
       <div class="addon-item reveal">
         <div class="addon-name">Data Migration</div>
         <div class="addon-price">$1,500 one-time</div>
-        <div class="addon-desc">We map and import your existing patients, appointments, billing history, and insurance records. Includes validation and go-live support.</div>
+        <div class="addon-desc">Full import of patients, appointments, billing history, and insurance from any format — CSV, HL7, FHIR. Includes go-live support.</div>
       </div>
       <div class="addon-item reveal">
         <div class="addon-name">Revela Module</div>
         <div class="addon-price">$299 / month</div>
-        <div class="addon-desc">Full plastic surgery clinical module. Surgical notes, operative records, postop plans, and breast exam routing via shared encounter_id.</div>
+        <div class="addon-desc">Plastic surgery clinical module — surgical notes, operative records, postop plans, breast exam. Routed via shared encounter_id.</div>
       </div>
       <div class="addon-item reveal">
         <div class="addon-name">Mental Health Module</div>
         <div class="addon-price">$299 / month</div>
-        <div class="addon-desc">Behavioral health module with evaluation management, MSE, care plans, DSM-5 coding, and therapy session tracking.</div>
+        <div class="addon-desc">Behavioral health — evaluation management, MSE, care plans, DSM-5 coding, therapy session tracking, crisis workflow.</div>
       </div>
       <div class="addon-item reveal">
         <div class="addon-name">Custom AI Model</div>
         <div class="addon-price">$2,500 setup + $199/mo</div>
-        <div class="addon-desc">Custom Claude prompts trained on your specialty's coding patterns, denial history, and patient population for higher accuracy predictions.</div>
+        <div class="addon-desc">Claude prompts trained on your specialty's coding patterns, denial history, and patient population for maximum accuracy.</div>
+      </div>
+      <div class="addon-item reveal">
+        <div class="addon-name">Clearinghouse Connect</div>
+        <div class="addon-price">$99 / month</div>
+        <div class="addon-desc">Live Change Healthcare / Availity integration for real 837P electronic submissions and 835 ERA automated posting.</div>
+      </div>
+      <div class="addon-item reveal">
+        <div class="addon-name">Additional Provider</div>
+        <div class="addon-price">$99 / provider / month</div>
+        <div class="addon-desc">Add providers beyond your tier limit without upgrading. Each gets full scheduling, AI scoring, and encounter routing.</div>
+      </div>
+      <div class="addon-item reveal">
+        <div class="addon-name">Additional Facility</div>
+        <div class="addon-price">$99 / site / month</div>
+        <div class="addon-desc">Add satellite offices or ASC locations. Same database, separate RLS isolation, independent scheduling calendars.</div>
+      </div>
+      <div class="addon-item reveal">
+        <div class="addon-name">White-Label</div>
+        <div class="addon-price">$499 / month</div>
+        <div class="addon-desc">Your brand, your domain, your login screen. Full PatientTracForge platform under your practice identity. Enterprise tier required.</div>
       </div>
     </div>
   </div>
@@ -1147,6 +1408,25 @@ footer {
 </footer>
 
 <script>
+// ── Annual billing toggle ──
+let isAnnual = false;
+function toggleBilling() {
+  isAnnual = !isAnnual;
+  const track = document.getElementById('bill-toggle');
+  track.classList.toggle('on', isAnnual);
+  document.querySelectorAll('.price-val').forEach(el => {
+    const val = isAnnual
+      ? parseInt(el.dataset.annual).toLocaleString()
+      : parseInt(el.dataset.monthly).toLocaleString();
+    el.textContent = val;
+  });
+  const period = isAnnual ? '/ month · billed annually' : '/ month';
+  document.querySelectorAll('.pricing-period').forEach(el => {
+    el.textContent = el.textContent.replace(/\/ month.*?·/, '/ month ·');
+    if (isAnnual) el.textContent = period + ' · ' + el.textContent.split('·').slice(1).join('·').trim();
+  });
+}
+
 // ── Scroll reveal ──
 const observer = new IntersectionObserver(
   entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }),
