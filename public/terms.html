@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Terms of Service — PatientTracForge by PatientTrac Corp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy-950:#020a14;--navy-900:#060e1c;--navy-800:#0a1628;--gold:#c9a96e;--gold-lt:#e8cc9a;--cyan:#00d4ff;--text:#e8eaf0;--muted:#8a9bc0;--subtle:#3a4a6a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--navy-950);color:var(--text);line-height:1.7}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+nav{position:sticky;top:0;background:rgba(2,10,20,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,169,110,0.1);z-index:100}
+.nav-inner{max-width:900px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav-logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:20px;color:var(--gold);text-decoration:none}
+.nav-back{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:0.08em}
+.nav-back:hover{color:var(--gold)}
+.page{max-width:900px;margin:0 auto;padding:60px 24px 100px;position:relative;z-index:1}
+.legal-header{margin-bottom:48px;padding-bottom:32px;border-bottom:1px solid rgba(201,169,110,0.1)}
+.legal-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;display:block;margin-bottom:12px}
+.legal-h1{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.05}
+.legal-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--subtle)}
+.toc{background:rgba(10,22,40,0.8);border:1px solid rgba(201,169,110,0.1);padding:24px 28px;margin-bottom:48px}
+.toc-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:14px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:6px;columns:2;column-gap:24px}
+.toc-list a{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:0.04em;display:block;margin-bottom:6px}
+.toc-list a:hover{color:var(--gold)}
+.toc-list a::before{content:'▸ ';color:var(--subtle)}
+section.legal-section{margin-bottom:48px;scroll-margin-top:80px}
+h2.legal-h2{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:600;color:var(--gold);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(201,169,110,0.1)}
+h3.legal-h3{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:600;color:var(--text);margin:20px 0 10px}
+p{color:var(--muted);margin-bottom:14px;font-size:15px}
+ul.legal-list,ol.legal-list{padding-left:20px;margin-bottom:14px;display:flex;flex-direction:column;gap:8px}
+ul.legal-list li,ol.legal-list li{color:var(--muted);font-size:15px}
+strong{color:var(--text)}
+.callout{background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.15);padding:16px 20px;margin:20px 0}
+.callout-warn{background:rgba(255,107,107,0.05);border:1px solid rgba(255,107,107,0.2);padding:16px 20px;margin:20px 0}
+.callout p,.callout-warn p{margin-bottom:0;color:var(--text)}
+.callout-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--cyan);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px}
+.callout-warn .callout-label{color:#ff6b6b}
+.plan-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+.plan-table th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--subtle);padding:8px 12px;border-bottom:1px solid rgba(201,169,110,0.1);text-align:left}
+.plan-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--muted);vertical-align:top}
+.plan-table td:first-child{color:var(--gold);font-family:'DM Mono',monospace;font-size:12px}
+.contact-box{background:rgba(10,22,40,0.8);border:1px solid rgba(201,169,110,0.15);padding:24px 28px;margin-top:32px}
+.contact-box h3{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:600;color:var(--text);margin-bottom:12px}
+.contact-line{display:flex;gap:12px;margin-bottom:8px;font-size:14px}
+.contact-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--subtle);width:80px;flex-shrink:0;margin-top:2px}
+.contact-val a{color:var(--gold);text-decoration:none}
+.contact-val a:hover{text-decoration:underline}
+footer.legal-footer{border-top:1px solid rgba(201,169,110,0.08);padding:32px 0;margin-top:64px;position:relative;z-index:1}
+.footer-inner{max-width:900px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-brand{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold)}
+.footer-copy{font-family:'DM Mono',monospace;font-size:10px;color:var(--subtle);margin-top:2px}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-family:'DM Mono',monospace;font-size:10px;color:var(--subtle);text-decoration:none}
+.footer-links a:hover{color:var(--gold)}
+.footer-links a.active{color:var(--gold)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">PatientTracForge</a>
+    <a href="/" class="nav-back">← Back to home</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="legal-header">
+    <span class="legal-tag">✦ Legal · Terms</span>
+    <h1 class="legal-h1">Terms of Service</h1>
+    <div class="legal-meta">PatientTrac Corp · Effective: January 1, 2026 · Last updated: April 24, 2026</div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <li><a href="#acceptance">Acceptance of Terms</a></li>
+      <li><a href="#services">Description of Services</a></li>
+      <li><a href="#accounts">Accounts &amp; Access</a></li>
+      <li><a href="#subscriptions">Subscriptions &amp; Billing</a></li>
+      <li><a href="#hipaa-terms">HIPAA &amp; BAA</a></li>
+      <li><a href="#acceptable">Acceptable Use</a></li>
+      <li><a href="#ai">AI Features</a></li>
+      <li><a href="#data-ownership">Data Ownership</a></li>
+      <li><a href="#ip">Intellectual Property</a></li>
+      <li><a href="#warranties">Warranties &amp; Disclaimer</a></li>
+      <li><a href="#liability">Limitation of Liability</a></li>
+      <li><a href="#indemnification">Indemnification</a></li>
+      <li><a href="#termination">Termination</a></li>
+      <li><a href="#disputes">Disputes &amp; Governing Law</a></li>
+      <li><a href="#changes-terms">Changes to Terms</a></li>
+      <li><a href="#contact-terms">Contact</a></li>
+    </ul>
+  </div>
+
+  <section class="legal-section" id="acceptance">
+    <h2 class="legal-h2">1. Acceptance of Terms</h2>
+    <p>By accessing or using PatientTracForge (the "Platform"), operated by PatientTrac Corp ("PatientTrac," "we," "us," or "our"), you agree to be bound by these Terms of Service ("Terms"). If you are using the Platform on behalf of an organization, you represent that you have authority to bind that organization to these Terms.</p>
+    <p>If you do not agree to these Terms, you may not use the Platform. Use of the Platform is also governed by our <a href="/privacy.html" style="color:var(--gold)">Privacy Policy</a> and, for HIPAA-covered customers, a Business Associate Agreement (BAA).</p>
+  </section>
+
+  <section class="legal-section" id="services">
+    <h2 class="legal-h2">2. Description of Services</h2>
+    <p>PatientTracForge is a cloud-based EMR scheduling and revenue cycle management platform that includes:</p>
+    <ul class="legal-list">
+      <li>Patient registration, demographics, and insurance management</li>
+      <li>Multi-provider appointment scheduling with AI-powered optimization</li>
+      <li>Encounter creation, clinical routing, and cross-app integration (Revela, Mental Health)</li>
+      <li>Billing module including superbills, EDI 837P submission, ERA 835 posting, and A/R aging</li>
+      <li>Five AI models powered by Anthropic's Claude: no-show prediction, smart scheduling, intake assistant, wait time tracking, and billing AI</li>
+      <li>Email (Resend) and SMS (Twilio) communications infrastructure</li>
+      <li>Admin portal with role-based access control and TOTP MFA</li>
+      <li>Specialty clinical modules: Revela (plastic surgery) and Mental Health (behavioral health)</li>
+    </ul>
+  </section>
+
+  <section class="legal-section" id="accounts">
+    <h2 class="legal-h2">3. Accounts &amp; Access</h2>
+    <h3 class="legal-h3">3.1 Account Registration</h3>
+    <p>You must provide accurate, current, and complete information when creating an account. You are responsible for maintaining the security of your account credentials and for all activity that occurs under your account.</p>
+    <h3 class="legal-h3">3.2 MFA Requirement</h3>
+    <p>Multi-factor authentication (TOTP via Google Authenticator) is required for all admin and provider roles. Failure to complete MFA enrollment within 48 hours of account creation may result in account suspension.</p>
+    <h3 class="legal-h3">3.3 Authorized Users</h3>
+    <p>You may grant access to authorized employees and contractors ("Users"). You are responsible for ensuring all Users comply with these Terms and applicable law, including HIPAA. You must promptly revoke access when a User's authorization ends.</p>
+  </section>
+
+  <section class="legal-section" id="subscriptions">
+    <h2 class="legal-h2">4. Subscriptions &amp; Billing</h2>
+    <h3 class="legal-h3">4.1 Subscription Plans</h3>
+    <table class="plan-table">
+      <thead><tr><th>Plan</th><th>Price</th><th>Providers</th><th>Key inclusions</th></tr></thead>
+      <tbody>
+        <tr><td>Starter</td><td>$299/month</td><td>1 provider</td><td>Core scheduling + AI (no Billing AI/EDI)</td></tr>
+        <tr><td>Professional</td><td>$699/month</td><td>Up to 5</td><td>All 5 AI models + full billing EDI/ERA</td></tr>
+        <tr><td>Enterprise</td><td>$1,499/month</td><td>Unlimited</td><td>All features + SLA + custom modules</td></tr>
+      </tbody>
+    </table>
+    <p>Annual billing is available at a 20% discount. Prices are subject to change with 60 days' notice to existing subscribers.</p>
+    <h3 class="legal-h3">4.2 Free Trial</h3>
+    <p>New accounts receive a 14-day free trial of the Professional plan. No credit card is required during the trial. At trial end, you must subscribe or your account will be suspended (data retained for 30 days).</p>
+    <h3 class="legal-h3">4.3 Payment &amp; Invoicing</h3>
+    <p>Subscriptions are billed in advance, monthly or annually, via Stripe. Invoices are emailed to the organization administrator. Payments 7 days past due may result in service suspension.</p>
+    <h3 class="legal-h3">4.4 Refunds</h3>
+    <p>Monthly subscriptions are non-refundable. Annual subscriptions cancelled within the first 30 days receive a pro-rata refund. After 30 days, annual subscriptions are non-refundable but remain active through the end of the billing period.</p>
+    <h3 class="legal-h3">4.5 Cancellation</h3>
+    <p>You may cancel at any time through the billing portal or by emailing <a href="mailto:support@patienttrac.com" style="color:var(--gold)">support@patienttrac.com</a>. Cancellation takes effect at the end of the current billing period. PHI is retained per HIPAA requirements; non-PHI data deleted after 90 days.</p>
+  </section>
+
+  <section class="legal-section" id="hipaa-terms">
+    <h2 class="legal-h2">5. HIPAA &amp; Business Associate Agreement</h2>
+    <div class="callout">
+      <div class="callout-label">Required for Covered Entities</div>
+      <p>If you are a HIPAA Covered Entity or Business Associate, you must execute a Business Associate Agreement (BAA) with PatientTrac Corp before storing any Protected Health Information (PHI) in the Platform. Contact <a href="mailto:legal@patienttrac.com" style="color:var(--gold)">legal@patienttrac.com</a> to request a BAA.</p>
+    </div>
+    <p>By using the Platform to store or process PHI, you represent that:</p>
+    <ul class="legal-list">
+      <li>You are a Covered Entity or Business Associate as defined by HIPAA</li>
+      <li>You have executed a BAA with PatientTrac Corp</li>
+      <li>You have provided required notices to patients about PHI uses and disclosures</li>
+      <li>You will use the Platform only in ways that comply with HIPAA and your BAA obligations</li>
+    </ul>
+  </section>
+
+  <section class="legal-section" id="acceptable">
+    <h2 class="legal-h2">6. Acceptable Use</h2>
+    <p>You agree not to use the Platform to:</p>
+    <ul class="legal-list">
+      <li>Violate any applicable law or regulation, including HIPAA, state privacy laws, or medical practice laws</li>
+      <li>Store PHI without an executed BAA</li>
+      <li>Access another organization's data (our RLS prevents this, but attempting to circumvent it is prohibited)</li>
+      <li>Reverse engineer, decompile, or attempt to extract the Platform's source code</li>
+      <li>Introduce malware, viruses, or conduct denial-of-service attacks</li>
+      <li>Use AI features for clinical decisions without appropriate clinical oversight — AI outputs are suggestions only</li>
+      <li>Share your account credentials with unauthorized parties</li>
+      <li>Exceed the provider or appointment limits of your subscription plan</li>
+    </ul>
+    <p>Violation of this section may result in immediate account termination without refund.</p>
+  </section>
+
+  <section class="legal-section" id="ai">
+    <h2 class="legal-h2">7. AI Features — Important Limitations</h2>
+    <div class="callout-warn">
+      <div class="callout-label">Clinical Disclaimer</div>
+      <p>AI outputs — including no-show predictions, intake triage, ICD-10 code suggestions, CPT code suggestions, and denial risk scores — are <strong>suggestions only</strong> and do not constitute clinical advice, diagnosis, or billing determinations. All AI outputs must be reviewed and approved by qualified clinical and billing professionals before acting on them.</p>
+    </div>
+    <ul class="legal-list">
+      <li>No-show risk scores are statistical estimates — they do not guarantee patient behavior</li>
+      <li>Billing AI CPT/ICD suggestions require review by a qualified medical coder or biller</li>
+      <li>Intake triage (emergent/urgent/routine) is a screening tool — clinical judgment governs all patient care decisions</li>
+      <li>Smart scheduling suggestions are optimizations — final scheduling decisions rest with your staff</li>
+    </ul>
+    <p>PatientTrac Corp is not liable for clinical or billing decisions made in reliance on AI outputs without appropriate professional review.</p>
+  </section>
+
+  <section class="legal-section" id="data-ownership">
+    <h2 class="legal-h2">8. Data Ownership</h2>
+    <p><strong>You own your data.</strong> All patient records, clinical data, billing information, and other content you input into the Platform remains your property. PatientTrac Corp claims no ownership over your data.</p>
+    <p>You grant PatientTrac Corp a limited, non-exclusive license to process your data solely to provide the Platform services as described in these Terms and our Privacy Policy.</p>
+    <p>We will not use your PHI to train AI models, develop competing products, or for any purpose beyond providing the Platform services, without your explicit written consent.</p>
+    <p>Upon termination, we will provide an export of your data in standard formats (CSV, JSON) within 30 days of request. PHI will be retained per HIPAA requirements and then destroyed.</p>
+  </section>
+
+  <section class="legal-section" id="ip">
+    <h2 class="legal-h2">9. Intellectual Property</h2>
+    <p>The Platform, including its software, design, AI models, algorithms, and documentation, is owned by PatientTrac Corp and protected by copyright, trade secret, and other intellectual property laws. These Terms do not grant you any ownership rights in the Platform.</p>
+    <p>You may not copy, modify, distribute, sell, or create derivative works from any part of the Platform without our written consent.</p>
+  </section>
+
+  <section class="legal-section" id="warranties">
+    <h2 class="legal-h2">10. Warranties &amp; Disclaimer</h2>
+    <p>We warrant that the Platform will perform materially as described in our documentation during your subscription term. For Enterprise subscribers, we provide a 99.9% monthly uptime SLA (excluding scheduled maintenance and force majeure).</p>
+    <div class="callout-warn">
+      <div class="callout-label">Disclaimer</div>
+      <p>EXCEPT AS EXPRESSLY STATED, THE PLATFORM IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE PLATFORM WILL BE UNINTERRUPTED, ERROR-FREE, OR THAT AI OUTPUTS WILL BE ACCURATE OR COMPLETE.</p>
+    </div>
+  </section>
+
+  <section class="legal-section" id="liability">
+    <h2 class="legal-h2">11. Limitation of Liability</h2>
+    <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, PATIENTTRAC CORP'S TOTAL LIABILITY TO YOU FOR ANY CLAIMS ARISING UNDER THESE TERMS SHALL NOT EXCEED THE GREATER OF (A) FEES PAID BY YOU IN THE 12 MONTHS PRECEDING THE CLAIM, OR (B) $10,000.</p>
+    <p>IN NO EVENT SHALL PATIENTTRAC CORP BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING LOST PROFITS, LOST DATA, OR BUSINESS INTERRUPTION, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.</p>
+    <p>These limitations do not apply to: (a) death or personal injury caused by our negligence; (b) fraud or willful misconduct; (c) any liability that cannot be excluded by law.</p>
+  </section>
+
+  <section class="legal-section" id="indemnification">
+    <h2 class="legal-h2">12. Indemnification</h2>
+    <p>You agree to indemnify, defend, and hold harmless PatientTrac Corp and its officers, directors, employees, and agents from claims, damages, losses, and costs (including attorneys' fees) arising from:</p>
+    <ul class="legal-list">
+      <li>Your use of the Platform in violation of these Terms</li>
+      <li>Your violation of applicable law, including HIPAA</li>
+      <li>Your failure to execute a BAA before storing PHI</li>
+      <li>Clinical or billing decisions made in reliance on AI outputs without appropriate review</li>
+      <li>Any third-party claims arising from data you input into the Platform</li>
+    </ul>
+  </section>
+
+  <section class="legal-section" id="termination">
+    <h2 class="legal-h2">13. Termination</h2>
+    <p>Either party may terminate these Terms at any time. You may cancel via the billing portal or email. We may suspend or terminate your account immediately if you:</p>
+    <ul class="legal-list">
+      <li>Breach these Terms or our BAA</li>
+      <li>Fail to pay amounts due after 14 days' notice</li>
+      <li>Use the Platform in a way that threatens security, other customers, or our infrastructure</li>
+      <li>Are subject to bankruptcy or insolvency proceedings</li>
+    </ul>
+    <p>Upon termination, your right to access the Platform ceases immediately. Data export and retention obligations survive termination per Section 8 and our BAA.</p>
+  </section>
+
+  <section class="legal-section" id="disputes">
+    <h2 class="legal-h2">14. Disputes &amp; Governing Law</h2>
+    <p>These Terms are governed by the laws of the State of Florida, without regard to conflict of law principles. Disputes shall be resolved by binding arbitration administered by the American Arbitration Association (AAA) under its Commercial Arbitration Rules, in Miami, Florida, except that either party may seek injunctive relief in court.</p>
+    <p>YOU WAIVE ANY RIGHT TO A JURY TRIAL AND ANY RIGHT TO PARTICIPATE IN CLASS ACTIONS.</p>
+    <p>Before initiating arbitration, the parties agree to attempt good-faith negotiation for 30 days. Contact: <a href="mailto:legal@patienttrac.com" style="color:var(--gold)">legal@patienttrac.com</a>.</p>
+  </section>
+
+  <section class="legal-section" id="changes-terms">
+    <h2 class="legal-h2">15. Changes to Terms</h2>
+    <p>We may update these Terms with 30 days' notice for material changes. Notice will be provided by email to organization administrators and by posting to patienttrac.com/terms. Continued use after the notice period constitutes acceptance. If you do not agree to changes, you may cancel before the effective date for a pro-rata refund of annual subscriptions.</p>
+  </section>
+
+  <section class="legal-section" id="contact-terms">
+    <h2 class="legal-h2">16. Contact</h2>
+    <div class="contact-box">
+      <h3>PatientTrac Corp</h3>
+      <div class="contact-line"><span class="contact-lbl">Legal</span><span class="contact-val"><a href="mailto:legal@patienttrac.com">legal@patienttrac.com</a></span></div>
+      <div class="contact-line"><span class="contact-lbl">Sales</span><span class="contact-val"><a href="mailto:sales@patienttrac.com">sales@patienttrac.com</a> · <a href="mailto:sales@patienttracforge.com">sales@patienttracforge.com</a></span></div>
+      <div class="contact-line"><span class="contact-lbl">Support</span><span class="contact-val"><a href="mailto:support@patienttrac.com">support@patienttrac.com</a></span></div>
+      <div class="contact-line"><span class="contact-lbl">Website</span><span class="contact-val"><a href="https://patienttrac.com">patienttrac.com</a> · <a href="https://patienttracforge.com">patienttracforge.com</a></span></div>
+    </div>
+  </section>
+</div>
+
+<footer class="legal-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">PatientTrac Corp</div>
+      <div class="footer-copy">© 2026 PatientTrac Corp · HIPAA Compliant</div>
+    </div>
+    <div class="footer-links">
+      <a href="/privacy.html">Privacy Policy</a>
+      <a href="/terms.html" class="active">Terms of Service</a>
+      <a href="/hipaa.html">HIPAA Compliance</a>
+      <a href="/">Home</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

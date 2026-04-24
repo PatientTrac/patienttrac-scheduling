@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Privacy Policy — PatientTracForge by PatientTrac Corp</title>
+<meta name="description" content="PatientTracForge Privacy Policy — how we collect, use, and protect your information."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy-950:#020a14;--navy-900:#060e1c;--navy-800:#0a1628;--gold:#c9a96e;--gold-lt:#e8cc9a;--cyan:#00d4ff;--text:#e8eaf0;--muted:#8a9bc0;--subtle:#3a4a6a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--navy-950);color:var(--text);line-height:1.7}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+nav{position:sticky;top:0;background:rgba(2,10,20,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,169,110,0.1);z-index:100}
+.nav-inner{max-width:900px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav-logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:20px;color:var(--gold);text-decoration:none}
+.nav-back{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:0.08em}
+.nav-back:hover{color:var(--gold)}
+.page{max-width:900px;margin:0 auto;padding:60px 24px 100px;position:relative;z-index:1}
+.legal-header{margin-bottom:48px;padding-bottom:32px;border-bottom:1px solid rgba(201,169,110,0.1)}
+.legal-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;display:block;margin-bottom:12px}
+.legal-h1{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.05}
+.legal-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--subtle)}
+.toc{background:rgba(10,22,40,0.8);border:1px solid rgba(201,169,110,0.1);padding:24px 28px;margin-bottom:48px}
+.toc-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:14px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.toc-list a{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:0.04em}
+.toc-list a:hover{color:var(--gold)}
+.toc-list a::before{content:'▸ ';color:var(--subtle)}
+section.legal-section{margin-bottom:48px;scroll-margin-top:80px}
+h2.legal-h2{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:600;color:var(--gold);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(201,169,110,0.1)}
+h3.legal-h3{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:600;color:var(--text);margin:20px 0 10px}
+p{color:var(--muted);margin-bottom:14px;font-size:15px}
+ul.legal-list,ol.legal-list{padding-left:20px;margin-bottom:14px;display:flex;flex-direction:column;gap:8px}
+ul.legal-list li,ol.legal-list li{color:var(--muted);font-size:15px}
+.callout{background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.15);padding:16px 20px;margin:20px 0}
+.callout-hipaa{background:rgba(201,169,110,0.05);border:1px solid rgba(201,169,110,0.2);padding:16px 20px;margin:20px 0}
+.callout p,.callout-hipaa p{margin-bottom:0;color:var(--text)}
+.callout-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--cyan);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px}
+.callout-hipaa .callout-label{color:var(--gold)}
+.contact-box{background:rgba(10,22,40,0.8);border:1px solid rgba(201,169,110,0.15);padding:24px 28px;margin-top:32px}
+.contact-box h3{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:600;color:var(--text);margin-bottom:12px}
+.contact-line{display:flex;gap:12px;margin-bottom:8px;font-size:14px}
+.contact-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--subtle);width:80px;flex-shrink:0;margin-top:2px}
+.contact-val a{color:var(--gold);text-decoration:none}
+.contact-val a:hover{text-decoration:underline}
+footer.legal-footer{border-top:1px solid rgba(201,169,110,0.08);padding:32px 0;margin-top:64px;position:relative;z-index:1}
+.footer-inner{max-width:900px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-brand{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold)}
+.footer-copy{font-family:'DM Mono',monospace;font-size:10px;color:var(--subtle);margin-top:2px}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-family:'DM Mono',monospace;font-size:10px;color:var(--subtle);text-decoration:none}
+.footer-links a:hover{color:var(--gold)}
+.footer-links a.active{color:var(--gold)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">PatientTracForge</a>
+    <a href="/" class="nav-back">← Back to home</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="legal-header">
+    <span class="legal-tag">✦ Legal · Privacy</span>
+    <h1 class="legal-h1">Privacy Policy</h1>
+    <div class="legal-meta">PatientTrac Corp · Effective: January 1, 2026 · Last updated: April 24, 2026</div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ol class="toc-list">
+      <li><a href="#overview">Overview & Scope</a></li>
+      <li><a href="#information">Information We Collect</a></li>
+      <li><a href="#use">How We Use Information</a></li>
+      <li><a href="#hipaa">HIPAA & Protected Health Information</a></li>
+      <li><a href="#sharing">Information Sharing</a></li>
+      <li><a href="#retention">Data Retention</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="#rights">Your Rights</a></li>
+      <li><a href="#international">International Data</a></li>
+      <li><a href="#children">Children's Privacy</a></li>
+      <li><a href="#changes">Changes to This Policy</a></li>
+      <li><a href="#contact-privacy">Contact Us</a></li>
+    </ol>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Summary</div>
+    <p>PatientTracForge is a HIPAA-compliant EMR scheduling platform. We collect information to provide our service, never sell personal data, maintain Business Associate Agreements (BAAs) with all covered entity customers, and protect Protected Health Information (PHI) with enterprise-grade encryption and access controls.</p>
+  </div>
+
+  <section class="legal-section" id="overview">
+    <h2 class="legal-h2">1. Overview &amp; Scope</h2>
+    <p>PatientTrac Corp ("PatientTrac," "we," "us," or "our") operates PatientTracForge, an AI-powered EMR scheduling platform available at <strong>patienttracforge.com</strong> and <strong>patienttrac.com</strong> (collectively, the "Platform"). This Privacy Policy explains how we collect, use, disclose, and safeguard information when you use our Platform.</p>
+    <p>This policy applies to:</p>
+    <ul class="legal-list">
+      <li>Healthcare providers, practices, and organizations ("Covered Entities") who subscribe to PatientTracForge</li>
+      <li>Administrative users, providers, and staff who access the Platform on behalf of a Covered Entity</li>
+      <li>Patients whose information is entered into the Platform by their healthcare provider</li>
+      <li>Visitors to our marketing website at patienttrac.com and patienttracforge.com</li>
+    </ul>
+    <p>By using the Platform, you agree to the terms of this Privacy Policy. If you are a Covered Entity, your use of the Platform is also governed by our <a href="/terms.html" style="color:var(--gold)">Terms of Service</a> and Business Associate Agreement (BAA).</p>
+  </section>
+
+  <section class="legal-section" id="information">
+    <h2 class="legal-h2">2. Information We Collect</h2>
+    <h3 class="legal-h3">2.1 Account &amp; Organization Information</h3>
+    <ul class="legal-list">
+      <li>Organization name, address, NPI number, Tax ID (EIN)</li>
+      <li>Administrator name, email address, phone number, job title</li>
+      <li>Billing information (processed via Stripe — we do not store card numbers)</li>
+      <li>Subscription plan, usage data, and feature access logs</li>
+    </ul>
+    <h3 class="legal-h3">2.2 User Account Information</h3>
+    <ul class="legal-list">
+      <li>Name, email address, role, and credentials</li>
+      <li>Authentication tokens, MFA (TOTP) enrollment data</li>
+      <li>Login timestamps, IP addresses, and device information for security audit logs</li>
+    </ul>
+    <h3 class="legal-h3">2.3 Patient Information (PHI)</h3>
+    <p>When entered by a Covered Entity, the Platform stores Protected Health Information (PHI) including:</p>
+    <ul class="legal-list">
+      <li>Demographics: name, date of birth, gender, address, phone, email</li>
+      <li>Insurance information: policy numbers, payer IDs, coverage details</li>
+      <li>Clinical data: appointments, encounter notes, diagnoses (ICD-10/DSM-5), CPT codes</li>
+      <li>Billing records: superbills, EDI submissions, ERA payments, A/R data</li>
+      <li>AI-generated data: no-show risk scores, intake summaries, billing AI suggestions</li>
+    </ul>
+    <div class="callout-hipaa">
+      <div class="callout-label">HIPAA Notice</div>
+      <p>All patient data is treated as Protected Health Information under HIPAA. We act as a Business Associate to Covered Entities and process PHI only as directed in our BAA.</p>
+    </div>
+    <h3 class="legal-h3">2.4 Usage &amp; Technical Data</h3>
+    <ul class="legal-list">
+      <li>Log data: pages visited, features used, timestamps, error logs</li>
+      <li>Device data: browser type, operating system, screen resolution</li>
+      <li>Performance data: API response times, function execution logs</li>
+      <li>Communication logs: email and SMS delivery status (not content)</li>
+    </ul>
+    <h3 class="legal-h3">2.5 Information You Provide Voluntarily</h3>
+    <ul class="legal-list">
+      <li>Contact form submissions (name, email, specialty, practice size, message)</li>
+      <li>Support tickets and correspondence</li>
+      <li>Survey responses and feedback</li>
+    </ul>
+  </section>
+
+  <section class="legal-section" id="use">
+    <h2 class="legal-h2">3. How We Use Information</h2>
+    <p>We use collected information to:</p>
+    <ul class="legal-list">
+      <li><strong>Provide the Platform:</strong> scheduling, encounter management, billing, and AI features</li>
+      <li><strong>Process payments:</strong> via Stripe for subscription billing and payment tracking</li>
+      <li><strong>Send communications:</strong> appointment confirmations, reminders, and intake links via Resend (email) and Twilio (SMS) on behalf of Covered Entities</li>
+      <li><strong>Power AI features:</strong> no-show prediction, smart scheduling, intake analysis, and billing AI via Anthropic's Claude API — all PHI is transmitted under our BAA with Anthropic</li>
+      <li><strong>Maintain security:</strong> audit logging, MFA enforcement, anomaly detection</li>
+      <li><strong>Improve the Platform:</strong> aggregate usage analytics (never PHI) to identify performance issues and improve features</li>
+      <li><strong>Comply with law:</strong> respond to legal process, enforce our Terms of Service</li>
+      <li><strong>Marketing (non-PHI only):</strong> respond to demo requests, send product updates to subscribers who opt in</li>
+    </ul>
+    <p>We do <strong>not</strong> use patient PHI for marketing, do not sell any personal information, and do not use PHI to train AI models without explicit written authorization.</p>
+  </section>
+
+  <section class="legal-section" id="hipaa">
+    <h2 class="legal-h2">4. HIPAA &amp; Protected Health Information</h2>
+    <div class="callout-hipaa">
+      <div class="callout-label">HIPAA Compliance</div>
+      <p>PatientTrac Corp is a HIPAA Business Associate. We sign a Business Associate Agreement (BAA) with every Covered Entity customer before any PHI is processed through the Platform.</p>
+    </div>
+    <h3 class="legal-h3">4.1 Our HIPAA Obligations</h3>
+    <ul class="legal-list">
+      <li>Use PHI only as permitted by the BAA and HIPAA Privacy Rule</li>
+      <li>Implement HIPAA Security Rule safeguards (administrative, physical, technical)</li>
+      <li>Report breaches to Covered Entities within 60 days of discovery</li>
+      <li>Make PHI available for patient rights requests as directed by Covered Entities</li>
+      <li>Return or destroy PHI upon termination of the BAA</li>
+    </ul>
+    <h3 class="legal-h3">4.2 Technical Safeguards</h3>
+    <ul class="legal-list">
+      <li>All PHI encrypted in transit (TLS 1.3) and at rest (AES-256 via Supabase)</li>
+      <li>Row Level Security (RLS) on all PHI tables — multi-tenant isolation by org_id</li>
+      <li>MFA required for all admin and provider roles</li>
+      <li>Complete audit log of all PHI access in saas.auth_audit_log</li>
+      <li>Automated session timeout and re-authentication</li>
+    </ul>
+    <h3 class="legal-h3">4.3 Sub-processors Handling PHI</h3>
+    <p>The following sub-processors may process PHI on our behalf, each under a BAA:</p>
+    <ul class="legal-list">
+      <li><strong>Supabase Inc.</strong> — PostgreSQL database hosting (us-east-1)</li>
+      <li><strong>Anthropic PBC</strong> — Claude AI API for clinical AI features</li>
+      <li><strong>Resend, Inc.</strong> — Email delivery (appointment communications)</li>
+      <li><strong>Twilio Inc.</strong> — SMS delivery (appointment reminders, wait apologies)</li>
+      <li><strong>Netlify, Inc.</strong> — Application hosting (no PHI stored at CDN layer)</li>
+    </ul>
+    <p>To request a copy of our BAA or sub-processor list, email <a href="mailto:legal@patienttrac.com" style="color:var(--gold)">legal@patienttrac.com</a>.</p>
+  </section>
+
+  <section class="legal-section" id="sharing">
+    <h2 class="legal-h2">5. Information Sharing</h2>
+    <p>We do not sell, trade, or rent personal information. We share information only in the following circumstances:</p>
+    <ul class="legal-list">
+      <li><strong>Service providers:</strong> Sub-processors listed above, each under data processing agreements</li>
+      <li><strong>Stripe:</strong> Payment processing — Stripe's privacy policy governs card data</li>
+      <li><strong>HubSpot:</strong> CRM for sales leads only — never patient PHI</li>
+      <li><strong>Legal compliance:</strong> When required by law, court order, or government request</li>
+      <li><strong>Business transfer:</strong> In connection with a merger, acquisition, or sale of assets — PHI subject to BAA obligations in any transfer</li>
+      <li><strong>With your consent:</strong> Any other sharing requires explicit written authorization</li>
+    </ul>
+  </section>
+
+  <section class="legal-section" id="retention">
+    <h2 class="legal-h2">6. Data Retention</h2>
+    <ul class="legal-list">
+      <li><strong>PHI:</strong> Retained for the term of the BAA plus 6 years (HIPAA minimum). Covered Entities may request earlier deletion subject to applicable law.</li>
+      <li><strong>Account data:</strong> Retained for the duration of the subscription plus 90 days after cancellation</li>
+      <li><strong>Audit logs:</strong> Retained for 6 years per HIPAA requirements</li>
+      <li><strong>Payment records:</strong> Retained for 7 years per financial regulations</li>
+      <li><strong>Marketing data (non-PHI):</strong> Retained until you unsubscribe or request deletion</li>
+      <li><strong>AI outputs (no-show scores, billing suggestions):</strong> Retained with the encounter record for the same period as PHI</li>
+    </ul>
+  </section>
+
+  <section class="legal-section" id="security">
+    <h2 class="legal-h2">7. Security</h2>
+    <p>We implement industry-standard and HIPAA-required security measures:</p>
+    <ul class="legal-list">
+      <li>TLS 1.3 encryption for all data in transit</li>
+      <li>AES-256 encryption for all data at rest</li>
+      <li>Multi-factor authentication (Google Authenticator TOTP) required for admin and provider roles</li>
+      <li>Role-based access control (RBAC) with 6 permission levels</li>
+      <li>Row Level Security isolating each organization's data</li>
+      <li>Automated vulnerability scanning and dependency updates</li>
+      <li>Annual HIPAA security risk assessments</li>
+      <li>Employee HIPAA training and background checks</li>
+    </ul>
+    <p>Despite these measures, no system is completely secure. If you believe there has been a security incident, contact us immediately at <a href="mailto:legal@patienttrac.com" style="color:var(--gold)">legal@patienttrac.com</a>.</p>
+  </section>
+
+  <section class="legal-section" id="rights">
+    <h2 class="legal-h2">8. Your Rights</h2>
+    <h3 class="legal-h3">8.1 Patient Rights (through your healthcare provider)</h3>
+    <p>Patients have HIPAA rights including access to their records, correction of inaccuracies, an accounting of disclosures, and restriction of certain uses. These rights are exercised through your healthcare provider (the Covered Entity), not directly through PatientTrac.</p>
+    <h3 class="legal-h3">8.2 Platform User &amp; Subscriber Rights</h3>
+    <ul class="legal-list">
+      <li><strong>Access:</strong> Request a copy of your account data</li>
+      <li><strong>Correction:</strong> Update inaccurate account information</li>
+      <li><strong>Deletion:</strong> Request deletion of your account (subject to HIPAA retention requirements for PHI)</li>
+      <li><strong>Portability:</strong> Export your non-PHI account data in CSV format</li>
+      <li><strong>Opt-out:</strong> Unsubscribe from marketing emails at any time</li>
+    </ul>
+    <p>To exercise these rights, email <a href="mailto:legal@patienttrac.com" style="color:var(--gold)">legal@patienttrac.com</a>. We respond within 30 days.</p>
+    <h3 class="legal-h3">8.3 California Residents (CCPA)</h3>
+    <p>California residents have additional rights under the California Consumer Privacy Act. We do not sell personal information. For CCPA requests, email <a href="mailto:legal@patienttrac.com" style="color:var(--gold)">legal@patienttrac.com</a> with subject "CCPA Request."</p>
+  </section>
+
+  <section class="legal-section" id="international">
+    <h2 class="legal-h2">9. International Data</h2>
+    <p>PatientTracForge supports international patients from 16 countries. All data is hosted in Supabase us-east-1 (AWS us-east-1, Virginia, USA). If you are located outside the United States, you acknowledge that your information will be transferred to and processed in the United States.</p>
+    <p>International patients' data is subject to the same HIPAA and security protections as domestic patients. For cross-border data transfer requirements under GDPR or other frameworks, contact <a href="mailto:legal@patienttrac.com" style="color:var(--gold)">legal@patienttrac.com</a>.</p>
+  </section>
+
+  <section class="legal-section" id="children">
+    <h2 class="legal-h2">10. Children's Privacy</h2>
+    <p>PatientTracForge is a B2B healthcare platform used by medical professionals. We do not knowingly collect personal information from children under 13 through direct interaction with our marketing site. Patient records for minor patients (under 18) are entered by and managed by their healthcare provider under applicable HIPAA and state law requirements for minor patient confidentiality.</p>
+  </section>
+
+  <section class="legal-section" id="changes">
+    <h2 class="legal-h2">11. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. We will notify you of material changes by:</p>
+    <ul class="legal-list">
+      <li>Posting the updated policy at patienttrac.com/privacy with a new effective date</li>
+      <li>Sending an email notification to organization administrators</li>
+      <li>Displaying a banner in the Platform for 30 days after material changes</li>
+    </ul>
+    <p>Your continued use of the Platform after notification constitutes acceptance of the updated policy.</p>
+  </section>
+
+  <section class="legal-section" id="contact-privacy">
+    <h2 class="legal-h2">12. Contact Us</h2>
+    <div class="contact-box">
+      <h3>PatientTrac Corp — Privacy &amp; Legal</h3>
+      <div class="contact-line"><span class="contact-lbl">Legal</span><span class="contact-val"><a href="mailto:legal@patienttrac.com">legal@patienttrac.com</a></span></div>
+      <div class="contact-line"><span class="contact-lbl">Privacy</span><span class="contact-val"><a href="mailto:legal@patienttrac.com">legal@patienttrac.com</a></span></div>
+      <div class="contact-line"><span class="contact-lbl">Support</span><span class="contact-val"><a href="mailto:support@patienttrac.com">support@patienttrac.com</a></span></div>
+      <div class="contact-line"><span class="contact-lbl">Sales</span><span class="contact-val"><a href="mailto:sales@patienttrac.com">sales@patienttrac.com</a></span></div>
+      <div class="contact-line"><span class="contact-lbl">Website</span><span class="contact-val"><a href="https://patienttrac.com">patienttrac.com</a> · <a href="https://patienttracforge.com">patienttracforge.com</a></span></div>
+    </div>
+  </section>
+</div>
+
+<footer class="legal-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">PatientTrac Corp</div>
+      <div class="footer-copy">© 2026 PatientTrac Corp · HIPAA Compliant</div>
+    </div>
+    <div class="footer-links">
+      <a href="/privacy.html" class="active">Privacy Policy</a>
+      <a href="/terms.html">Terms of Service</a>
+      <a href="/hipaa.html">HIPAA Compliance</a>
+      <a href="/">Home</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

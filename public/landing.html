@@ -633,7 +633,19 @@ footer {
 }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
-/* ── Responsive ── */
+/* ── CONTACT FORM ── */
+.form-tab {
+  flex: 1; font-family: 'DM Mono', monospace; font-size: 10px;
+  padding: 10px; text-align: center; cursor: pointer;
+  background: transparent; border: none; border-right: 1px solid rgba(201,169,110,0.15);
+  color: var(--subtle); letter-spacing: 0.1em; text-transform: uppercase;
+  transition: all 0.2s;
+}
+.form-tab:last-child { border-right: none; }
+.form-tab:hover { color: var(--gold); background: rgba(201,169,110,0.05); }
+.form-tab.active { background: rgba(201,169,110,0.1); color: var(--gold); }
+
+/* ── RESPONSIVE ── */
 @media (max-width: 900px) {
   .hero-visual { display: none; }
   .feat-grid { grid-template-columns: 1fr 1fr; }
@@ -1056,7 +1068,7 @@ footer {
           <li class="pricing-feature"><span class="cross">—</span> <span style="opacity:0.35">EDI 837P / ERA 835</span></li>
           <li class="pricing-feature"><span class="cross">—</span> <span style="opacity:0.35">Multi-specialty routing</span></li>
         </ul>
-        <a href="#login" class="btn-pricing">Start Free Trial</a>
+        <a href="#contact" onclick="selectPlan('starter',document.getElementById('plan-opt-professional').previousElementSibling)" class="btn-pricing">Start Free Trial</a>
         <div style="text-align:center;margin-top:10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--subtle)">14-day trial · No credit card</div>
       </div>
 
@@ -1082,7 +1094,7 @@ footer {
           <li class="pricing-feature"><span class="check-cyan">✦</span> 114 CPT · 95 ICD-10 · 46 DSM-5</li>
           <li class="pricing-feature"><span class="check-cyan">✦</span> International patient support</li>
         </ul>
-        <a href="#login" class="btn-pricing btn-pricing-primary">Start Free Trial</a>
+        <a href="#contact" class="btn-pricing btn-pricing-primary" onclick="event.preventDefault();startCheckout('professional',null)">Start Free Trial</a>
         <div style="text-align:center;margin-top:10px;font-family:'DM Mono',monospace;font-size:9px;color:rgba(0,212,255,0.5)">14-day trial · No credit card</div>
       </div>
 
@@ -1107,7 +1119,7 @@ footer {
           <li class="pricing-feature"><span class="check">▸</span> API access for custom builds</li>
           <li class="pricing-feature"><span class="check">▸</span> Quarterly business reviews</li>
         </ul>
-        <a href="mailto:sales@patienttracforge.com" class="btn-pricing">Contact Sales →</a>
+        <a href="mailto:sales@patienttrac.com" class="btn-pricing">Contact Sales →</a>
         <div style="text-align:center;margin-top:10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--subtle)">Custom terms available</div>
       </div>
     </div>
@@ -1348,6 +1360,174 @@ footer {
 
 <div class="divider"></div>
 
+<!-- CONTACT / START TRIAL -->
+<section id="contact" style="padding:100px 0;">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start">
+
+      <!-- Left: Demo request -->
+      <div>
+        <span class="section-label">✦ Get Started</span>
+        <h2 class="section-h2" style="font-size:clamp(32px,4vw,52px);margin-bottom:16px">Request a demo<br/>or start your trial</h2>
+        <p style="font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:32px">
+          See PatientTracForge live with your specialty's workflow. We'll walk through no-show prediction, smart scheduling, and billing AI on your sample data.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:flex-start;gap:14px">
+            <div style="width:36px;height:36px;border:1px solid rgba(0,212,255,0.2);background:rgba(0,212,255,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px">📅</div>
+            <div>
+              <div style="font-family:'Rajdhani',sans-serif;font-weight:600;font-size:16px;color:var(--text)">30-minute live demo</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:2px">Screen share with your specialty's data — scheduling, AI scoring, billing workflow</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:14px">
+            <div style="width:36px;height:36px;border:1px solid rgba(0,212,255,0.2);background:rgba(0,212,255,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px">🔑</div>
+            <div>
+              <div style="font-family:'Rajdhani',sans-serif;font-weight:600;font-size:16px;color:var(--text)">14-day free trial</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:2px">Full Professional access, no credit card, cancel anytime</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:14px">
+            <div style="width:36px;height:36px;border:1px solid rgba(0,212,255,0.2);background:rgba(0,212,255,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px">📦</div>
+            <div>
+              <div style="font-family:'Rajdhani',sans-serif;font-weight:600;font-size:16px;color:var(--text)">Data migration included</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:2px">We import your existing patients and history — same-day go-live</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:14px">
+            <div style="width:36px;height:36px;border:1px solid rgba(201,169,110,0.2);background:rgba(201,169,110,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px">📞</div>
+            <div>
+              <div style="font-family:'Rajdhani',sans-serif;font-weight:600;font-size:16px;color:var(--text)">Enterprise? Call us</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:2px"><a href="mailto:sales@patienttrac.com" style="color:var(--gold);text-decoration:none">sales@patienttrac.com</a> · custom terms available</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Contact form -->
+      <div style="background:rgba(10,22,40,0.9);border:1px solid rgba(201,169,110,0.15);padding:40px;position:relative">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>
+
+        <!-- Form type tabs -->
+        <div style="display:flex;gap:0;margin-bottom:28px;border:1px solid rgba(201,169,110,0.15);overflow:hidden">
+          <button class="form-tab active" data-tab="demo" onclick="switchFormTab('demo',this)">Book Demo</button>
+          <button class="form-tab" data-tab="trial" onclick="switchFormTab('trial',this)">Free Trial</button>
+          <button class="form-tab" data-tab="sales" onclick="switchFormTab('sales',this)">Enterprise</button>
+          <button class="form-tab" data-tab="support" onclick="switchFormTab('support',this)">Support</button>
+        </div>
+
+        <!-- Success state -->
+        <div id="form-success" style="display:none;text-align:center;padding:32px 0">
+          <div style="width:56px;height:56px;border-radius:50%;background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px">✓</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:600;color:var(--text);margin-bottom:8px">You're on the list</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.6">We'll be in touch within one business day. Check your email for confirmation.</div>
+          <button onclick="resetContactForm()" style="margin-top:20px;font-family:'DM Mono',monospace;font-size:11px;background:transparent;border:1px solid rgba(201,169,110,0.3);color:var(--gold);padding:8px 20px;cursor:pointer;letter-spacing:0.1em">Submit another →</button>
+        </div>
+
+        <form id="contact-form" onsubmit="submitContactForm(event)">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group">
+              <label class="form-label">First name *</label>
+              <input type="text" name="first_name" class="form-input" placeholder="Wayne" required autocomplete="given-name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last name *</label>
+              <input type="text" name="last_name" class="form-input" placeholder="Hayes" required autocomplete="family-name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Work email *</label>
+            <input type="email" name="email" class="form-input" placeholder="you@yourpractice.com" required autocomplete="email"/>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input type="tel" name="phone" class="form-input" placeholder="(305) 555-0100" autocomplete="tel"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Practice / Company</label>
+              <input type="text" name="company" class="form-input" placeholder="Your Practice" autocomplete="organization"/>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group">
+              <label class="form-label">Specialty</label>
+              <select name="specialty" class="form-input">
+                <option value="">Select...</option>
+                <option>Family Medicine</option>
+                <option>Internal Medicine</option>
+                <option>Psychiatry</option>
+                <option>Psychology / Therapy</option>
+                <option>Plastic Surgery</option>
+                <option>Cardiology</option>
+                <option>Orthopedics</option>
+                <option>Addiction Medicine</option>
+                <option>Pediatrics</option>
+                <option>Multi-Specialty</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Practice size</label>
+              <select name="practice_size" class="form-input">
+                <option value="">Providers...</option>
+                <option value="1">Solo (1 provider)</option>
+                <option value="2-5">Small (2–5)</option>
+                <option value="6-15">Medium (6–15)</option>
+                <option value="16-50">Large (16–50)</option>
+                <option value="50+">Enterprise (50+)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Plan of interest</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="plan-selector">
+              <label class="plan-option" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid rgba(201,169,110,0.15);cursor:pointer;transition:all 0.2s" onclick="selectPlan('starter',this)">
+                <div style="width:14px;height:14px;border-radius:50%;border:2px solid rgba(201,169,110,0.4);flex-shrink:0" id="plan-dot-starter"></div>
+                <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase">Starter</div><div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;color:var(--text)">$299</div></div>
+              </label>
+              <label class="plan-option" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid rgba(0,212,255,0.3);background:rgba(0,212,255,0.05);cursor:pointer" id="plan-opt-professional" onclick="selectPlan('professional',this)">
+                <div style="width:14px;height:14px;border-radius:50%;border:2px solid var(--cyan);background:var(--cyan);flex-shrink:0" id="plan-dot-professional"></div>
+                <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--cyan);text-transform:uppercase">Popular</div><div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;color:var(--text)">$699</div></div>
+              </label>
+              <label class="plan-option" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid rgba(201,169,110,0.15);cursor:pointer;transition:all 0.2s" onclick="selectPlan('enterprise',this)">
+                <div style="width:14px;height:14px;border-radius:50%;border:2px solid rgba(201,169,110,0.4);flex-shrink:0" id="plan-dot-enterprise"></div>
+                <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase">Enterprise</div><div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;color:var(--text)">$1,499</div></div>
+              </label>
+            </div>
+            <input type="hidden" name="plan_interest" id="plan_interest" value="professional"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea name="message" class="form-input" rows="3" style="resize:vertical" placeholder="Tell us about your practice or what you'd like to see in the demo..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">How did you hear about us?</label>
+            <select name="how_heard" class="form-input">
+              <option value="">Select...</option>
+              <option>Google search</option>
+              <option>LinkedIn</option>
+              <option>Colleague referral</option>
+              <option>Medical conference</option>
+              <option>EMR comparison site</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div id="contact-error" style="display:none;font-family:'DM Mono',monospace;font-size:11px;color:#ff6b6b;margin-bottom:12px;padding:8px 12px;background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.2)"></div>
+
+          <button type="submit" class="btn-primary" id="contact-btn" style="width:100%;justify-content:center;padding:14px">
+            <span id="contact-btn-text">Request Demo →</span>
+          </button>
+          <div style="text-align:center;margin-top:10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--subtle)">No commitment · Response within 1 business day · HIPAA compliant</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <!-- LOGIN -->
 <section id="login">
   <div class="container">
@@ -1375,7 +1555,7 @@ footer {
       </form>
 
       <div class="login-links">
-        <span>Need access? <a href="mailto:admin@patienttracforge.com">Contact admin</a></span>
+        <span>Need access? <a href="mailto:support@patienttrac.com">Contact admin</a></span>
         <a href="#">Forgot password?</a>
       </div>
 
@@ -1395,19 +1575,153 @@ footer {
       <div>
         <div class="footer-brand">PatientTracForge</div>
         <div class="footer-copy">© 2026 PatientTrac Corp · HIPAA Compliant · v0.3.0</div>
+        <div class="footer-copy" style="margin-top:4px">patienttrac.com · patienttracforge.com</div>
       </div>
-      <div class="footer-links">
-        <a href="#ai">AI Features</a>
-        <a href="#pricing">Pricing</a>
-        <a href="mailto:sales@patienttracforge.com">Sales</a>
-        <a href="mailto:support@patienttracforge.com">Support</a>
-        <a href="/admin">Admin Portal</a>
+      <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-end">
+        <div class="footer-links">
+          <a href="#ai">AI Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#contact">Contact</a>
+          <a href="#login">Sign In</a>
+        </div>
+        <div class="footer-links">
+          <a href="/privacy.html">Privacy</a>
+          <a href="/terms.html">Terms</a>
+          <a href="/hipaa.html">HIPAA</a>
+          <a href="mailto:legal@patienttrac.com">Legal</a>
+        </div>
+        <div class="footer-links">
+          <a href="mailto:sales@patienttrac.com">sales@patienttrac.com</a>
+          <a href="mailto:support@patienttrac.com">support@patienttrac.com</a>
+        </div>
       </div>
     </div>
   </div>
 </footer>
 
 <script>
+const SUPABASE_URL   = 'https://mskormozwekezjmtcylv.supabase.co'
+const SUPABASE_ANON  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1za29ybW96d2VrZXpqbXRjeWx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NzMzMzAsImV4cCI6MjA5MjU0OTMzMH0.nO9Q31CZJWRSIieLdLYVMkdu5NDDWjf1z0TgwCjBpp0'
+
+// ── Plan selector ──────────────────────────────────────────────────
+let selectedPlan = 'professional'
+function selectPlan(plan, el) {
+  selectedPlan = plan
+  document.getElementById('plan_interest').value = plan
+  document.querySelectorAll('.plan-option').forEach(o => {
+    o.style.border = '1px solid rgba(201,169,110,0.15)'
+    o.style.background = 'transparent'
+  })
+  el.style.border = '1px solid rgba(0,212,255,0.4)'
+  el.style.background = 'rgba(0,212,255,0.06)'
+  document.querySelectorAll('[id^="plan-dot-"]').forEach(d => {
+    d.style.background = 'transparent'
+    d.style.borderColor = 'rgba(201,169,110,0.4)'
+  })
+  const dot = document.getElementById('plan-dot-' + plan)
+  if (dot) { dot.style.background = 'var(--cyan)'; dot.style.borderColor = 'var(--cyan)' }
+}
+
+// ── Form tab switching ─────────────────────────────────────────────
+const tabLabels = { demo: 'Request Demo →', trial: 'Start Free Trial →', sales: 'Contact Sales →', support: 'Submit Request →' }
+function switchFormTab(tab, el) {
+  document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'))
+  el.classList.add('active')
+  const btn = document.getElementById('contact-btn-text')
+  if (btn) btn.textContent = tabLabels[tab] ?? 'Submit →'
+  document.getElementById('form-success').style.display = 'none'
+  document.getElementById('contact-form').style.display = ''
+}
+
+// ── Contact form submit → hubspot-crm edge function ─────────────────
+async function submitContactForm(e) {
+  e.preventDefault()
+  const btn = document.getElementById('contact-btn')
+  const err = document.getElementById('contact-error')
+  const form = e.target
+  const formData = new FormData(form)
+  const activeTab = document.querySelector('.form-tab.active')?.dataset?.tab ?? 'demo'
+
+  btn.disabled = true
+  document.getElementById('contact-btn-text').textContent = 'Sending...'
+  err.style.display = 'none'
+
+  try {
+    const payload = {
+      action: 'submit_contact',
+      form_type: activeTab,
+      first_name:    formData.get('first_name'),
+      last_name:     formData.get('last_name'),
+      email:         formData.get('email'),
+      phone:         formData.get('phone') || null,
+      company:       formData.get('company') || null,
+      specialty:     formData.get('specialty') || null,
+      practice_size: formData.get('practice_size') || null,
+      plan_interest: selectedPlan,
+      message:       formData.get('message') || null,
+      how_heard:     formData.get('how_heard') || null,
+      referrer:      document.referrer || null,
+    }
+
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/hubspot-crm`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON },
+      body: JSON.stringify(payload),
+    })
+    const data = await res.json()
+
+    if (data.success) {
+      document.getElementById('contact-form').style.display = 'none'
+      document.getElementById('form-success').style.display = 'block'
+    } else {
+      throw new Error(data.error ?? 'Submission failed')
+    }
+  } catch (error) {
+    err.textContent = '✕ ' + (error.message ?? 'Something went wrong. Please email sales@patienttrac.com')
+    err.style.display = 'block'
+    btn.disabled = false
+    document.getElementById('contact-btn-text').textContent = tabLabels[document.querySelector('.form-tab.active')?.dataset?.tab ?? 'demo'] ?? 'Submit →'
+  }
+}
+
+function resetContactForm() {
+  document.getElementById('contact-form').reset()
+  document.getElementById('contact-form').style.display = ''
+  document.getElementById('form-success').style.display = 'none'
+  document.getElementById('contact-btn').disabled = false
+  document.getElementById('contact-btn-text').textContent = 'Request Demo →'
+  selectPlan('professional', document.getElementById('plan-opt-professional'))
+}
+
+// ── Stripe checkout ────────────────────────────────────────────────
+async function startCheckout(plan, billing) {
+  const email = prompt('Enter your email to start your 14-day free trial:')
+  if (!email) return
+  const orgName = prompt('Practice or organization name:') || email
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/stripe-checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON },
+      body: JSON.stringify({
+        action: 'create_checkout', plan, billing: billing ?? (isAnnual ? 'annual' : 'monthly'),
+        email, org_name: orgName,
+        success_url: window.location.origin + '/dashboard?checkout=success',
+        cancel_url: window.location.origin + '/#pricing',
+      }),
+    })
+    const data = await res.json()
+    if (data.demo) {
+      alert('Stripe not yet configured. Redirecting to system login.\n\nTo activate payments, add your Stripe keys to saas.config in Supabase.')
+      window.location.href = '/admin/login'
+    } else if (data.checkout_url) {
+      window.location.href = data.checkout_url
+    }
+  } catch (err) {
+    alert('Unable to start checkout. Please email sales@patienttrac.com')
+  }
+}
+
 // ── Annual billing toggle ──
 let isAnnual = false;
 function toggleBilling() {
