@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { format, addDays, addWeeks, subWeeks, startOfWeek, isSameDay, parseISO } from 'date-fns'
-import { ChevronLeft, ChevronRight, Plus, Calendar, Users, Filter } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Plus, Loader } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 
@@ -67,6 +67,27 @@ export function Schedule() {
   const startDate = format(weekDays[0], 'yyyy-MM-dd')
   const endDate   = format(weekDays[weekDays.length - 1], 'yyyy-MM-dd')
 
+  const { data: appointments = [], isLoading } = useQuery({
+    queryKey: ['appointments-cal', startDate, endDate, filterProvider],
+    queryFn: async () => {
+      let q = supabase.schema('cr').from('appointments')
+        .select(`
+          appointment_id, patient_id, provider_id, facility_id,
+          appointment_date, appointment_time, appointment_type,
+          appt_type_id, status, duration_mins, reason,
+          patient:patient_id(first_name, last_name, cell_phone),
+          provider:provider_id(first_name, last_name, credential, specialty)
+        `)
+        .eq('org_id', ORG_ID)
+        .gte('appointment_date', startDate)
+        .lte('appointment_date', endDate)
+        .not('status', 'in', '("cancelled")')
+      if (filterProvider) q = q.eq('provider_id', filterProvider)
+      const { data } = await q.order('appointment_time')
+      return data ?? []
+    },
+  })
+
   // Fetch no-show risk scores for visible appointments
   const { data: noshowScores = [] } = useQuery({
     queryKey: ['noshow-scores', startDate, endDate],
@@ -88,27 +109,6 @@ export function Schedule() {
   })
 
   const riskByAppt = Object.fromEntries(noshowScores.map((s: any) => [s.appointment_id, s]))
-
-  const { data: appointments = [], isLoading } = useQuery({
-    queryKey: ['appointments-cal', startDate, endDate, filterProvider],
-    queryFn: async () => {
-      let q = supabase.schema('cr').from('appointments')
-        .select(`
-          appointment_id, patient_id, provider_id, facility_id,
-          appointment_date, appointment_time, appointment_type,
-          appt_type_id, status, duration_mins, reason,
-          patient:patient_id(first_name, last_name, cell_phone),
-          provider:provider_id(first_name, last_name, credential, specialty)
-        `)
-        .eq('org_id', ORG_ID)
-        .gte('appointment_date', startDate)
-        .lte('appointment_date', endDate)
-        .not('status', 'in', '("cancelled")')
-      if (filterProvider) q = q.eq('provider_id', filterProvider)
-      const { data } = await q.order('appointment_time')
-      return data ?? []
-    },
-  })
 
   // Move appointment (drag & drop)
   const moveMutation = useMutation({
@@ -413,19 +413,28 @@ export function Schedule() {
   )
 }
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+
 function NewAppointmentModal({ slot, providers, apptTypes, onSave, onClose, saving }: any) {
   const [form, setForm] = useState({
-    patient_id: '',
-    provider_id: slot?.providerId ?? providers[0]?.provider_id ?? '',
-    facility_id: '',
+    patient_id:       '',
+    provider_id:      slot?.providerId ?? providers[0]?.provider_id ?? '',
+    facility_id:      providers[0]?.facility_id ?? '',
     appointment_date: slot?.date ?? format(new Date(), 'yyyy-MM-dd'),
     appointment_time: slot?.time ?? '09:00',
-    appt_type_id: '',
+    appt_type_id:     '',
     appointment_type: '',
-    duration_mins: 30,
-    status: 'scheduled',
-    reason: '',
+    duration_mins:    30,
+    status:           'scheduled',
+    reason:           '',
   })
+
+  // Smart schedule state
+  const [aiSuggestions, setAiSuggestions]   = useState<any>(null)
+  const [aiLoading, setAiLoading]           = useState(false)
+  const [aiError, setAiError]               = useState<string | null>(null)
+  const [showSuggestions, setShowSuggestions] = useState(false)
 
   const { data: patients = [] } = useQuery({
     queryKey: ['patients-search'],
@@ -442,17 +451,71 @@ function NewAppointmentModal({ slot, providers, apptTypes, onSave, onClose, savi
     if (t) setForm(f => ({ ...f, appt_type_id: id, appointment_type: t.name, duration_mins: t.duration_mins }))
   }
 
+  function selectProvider(id: string) {
+    const p = providers.find((p: any) => p.provider_id === parseInt(id))
+    setForm(f => ({ ...f, provider_id: parseInt(id), facility_id: p?.facility_id ?? '' }))
+    // Reset AI suggestions when provider changes
+    setAiSuggestions(null)
+    setShowSuggestions(false)
+  }
+
+  // Call smart-schedule edge function
+  async function fetchAiSuggestions() {
+    if (!form.patient_id || !form.provider_id || !form.appt_type_id) {
+      setAiError('Select patient, provider, and appointment type first')
+      return
+    }
+    setAiLoading(true)
+    setAiError(null)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/smart-schedule`, {
+        method: 'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': `Bearer ${session?.access_token ?? SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          patient_id:     parseInt(form.patient_id),
+          provider_id:    form.provider_id,
+          appt_type_id:   form.appt_type_id,
+          preferred_date: form.appointment_date,
+          org_id:         ORG_ID,
+        }),
+      })
+      const data = await res.json()
+      setAiSuggestions(data)
+      setShowSuggestions(true)
+    } catch (e) {
+      setAiError('Unable to load suggestions')
+    } finally {
+      setAiLoading(false)
+    }
+  }
+
+  // Apply a suggested slot
+  function applySlot(slot: any) {
+    setForm(f => ({ ...f, appointment_date: slot.date, appointment_time: slot.time }))
+    setShowSuggestions(false)
+  }
+
+  const canSuggest = !!form.patient_id && !!form.provider_id && !!form.appt_type_id
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80">
-      <div className="hud-panel w-full max-w-md">
+      <div className="hud-panel w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="px-5 py-4 border-b border-gold-500/10 flex items-center justify-between">
           <div className="section-heading">New Appointment</div>
           <button onClick={onClose} className="btn-ghost text-xs">✕</button>
         </div>
+
         <div className="p-5 space-y-3">
+          {/* Patient */}
           <div>
             <label className="data-label block mb-1.5">Patient *</label>
-            <select value={form.patient_id} onChange={e => setForm(f => ({...f, patient_id: e.target.value}))} className="hud-input">
+            <select value={form.patient_id}
+              onChange={e => { setForm(f => ({...f, patient_id: e.target.value})); setAiSuggestions(null) }}
+              className="hud-input">
               <option value="">Select patient...</option>
               {patients.map((p: any) => (
                 <option key={p.patient_id} value={p.patient_id}>
@@ -461,19 +524,11 @@ function NewAppointmentModal({ slot, providers, apptTypes, onSave, onClose, savi
               ))}
             </select>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="data-label block mb-1.5">Date *</label>
-              <input type="date" value={form.appointment_date} onChange={e => setForm(f => ({...f, appointment_date: e.target.value}))} className="hud-input" />
-            </div>
-            <div>
-              <label className="data-label block mb-1.5">Time *</label>
-              <input type="time" value={form.appointment_time} onChange={e => setForm(f => ({...f, appointment_time: e.target.value}))} className="hud-input" />
-            </div>
-          </div>
+
+          {/* Provider */}
           <div>
             <label className="data-label block mb-1.5">Provider *</label>
-            <select value={form.provider_id} onChange={e => setForm(f => ({...f, provider_id: parseInt(e.target.value)}))} className="hud-input">
+            <select value={form.provider_id} onChange={e => selectProvider(e.target.value)} className="hud-input">
               {providers.map((p: any) => (
                 <option key={p.provider_id} value={p.provider_id}>
                   {p.first_name} {p.last_name}, {p.credential} — {p.specialty}
@@ -481,9 +536,13 @@ function NewAppointmentModal({ slot, providers, apptTypes, onSave, onClose, savi
               ))}
             </select>
           </div>
+
+          {/* Appointment type */}
           <div>
             <label className="data-label block mb-1.5">Appointment Type *</label>
-            <select value={form.appt_type_id} onChange={e => selectApptType(e.target.value)} className="hud-input">
+            <select value={form.appt_type_id}
+              onChange={e => { selectApptType(e.target.value); setAiSuggestions(null) }}
+              className="hud-input">
               <option value="">Select type...</option>
               {apptTypes.map((t: any) => (
                 <option key={t.appt_type_id} value={t.appt_type_id}>
@@ -492,18 +551,148 @@ function NewAppointmentModal({ slot, providers, apptTypes, onSave, onClose, savi
               ))}
             </select>
           </div>
+
+          {/* ── AI Smart Schedule ── */}
+          <div className="hud-panel border-blue-500/20 px-4 py-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-blue-400 text-sm">✦</span>
+                <span className="font-mono text-xs text-blue-300">Smart Schedule</span>
+                <span className="font-mono text-[10px] text-slate-600">AI-powered slot suggestions</span>
+              </div>
+              <button
+                onClick={fetchAiSuggestions}
+                disabled={!canSuggest || aiLoading}
+                className={cn(
+                  'btn-secondary text-xs py-1 px-3 transition-colors',
+                  canSuggest ? 'text-blue-400 border-blue-500/30 hover:border-blue-500/50' : 'opacity-40'
+                )}>
+                {aiLoading
+                  ? <><Loader size={11} className="animate-spin" /> Analyzing...</>
+                  : '✦ Suggest slots'
+                }
+              </button>
+            </div>
+
+            {aiError && (
+              <div className="font-mono text-[10px] text-amber-400">{aiError}</div>
+            )}
+
+            {/* Suggested slots */}
+            {showSuggestions && aiSuggestions?.suggested_slots?.length > 0 && (
+              <div className="space-y-1.5 pt-1">
+                <div className="data-label">Recommended slots (ranked by score)</div>
+                {aiSuggestions.suggested_slots.map((s: any, i: number) => (
+                  <button key={i} onClick={() => applySlot(s)}
+                    className={cn(
+                      'w-full flex items-start gap-3 px-3 py-2 rounded-sm border text-left transition-colors',
+                      i === 0
+                        ? 'border-blue-500/40 bg-blue-500/10 hover:bg-blue-500/15'
+                        : 'border-gold-500/15 hover:border-gold-500/25 hover:bg-gold-500/5'
+                    )}>
+                    <div className="flex-shrink-0 text-center">
+                      <div className={cn('font-display font-bold text-lg leading-none',
+                        i === 0 ? 'text-blue-400' : 'text-gold-400')}>{s.score}</div>
+                      <div className="font-mono text-[8px] text-slate-600">score</div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-mono text-xs text-slate-200 font-medium">
+                          {new Date(s.date).toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' })}
+                        </span>
+                        <span className="font-mono text-xs text-gold-400">{s.time}</span>
+                        {i === 0 && <span className="badge bg-blue-500/20 text-blue-400 border-blue-500/30 text-[9px]">Best</span>}
+                      </div>
+                      <div className="font-mono text-[10px] text-slate-500 mt-0.5 leading-snug">{s.reason}</div>
+                    </div>
+                    <div className="font-mono text-[10px] text-blue-400 flex-shrink-0">← Use</div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Conflicts */}
+            {showSuggestions && aiSuggestions?.conflicts?.length > 0 && (
+              <div className="px-3 py-2 bg-amber-500/5 border border-amber-500/20 rounded-sm">
+                <div className="data-label text-amber-400 mb-1">Conflicts detected</div>
+                {aiSuggestions.conflicts.map((c: string, i: number) => (
+                  <div key={i} className="font-mono text-[10px] text-amber-300">⚠ {c}</div>
+                ))}
+              </div>
+            )}
+
+            {/* Insurance notes */}
+            {showSuggestions && aiSuggestions?.insurance_notes && (
+              <div className="font-mono text-[10px] text-slate-500 flex items-start gap-1.5">
+                <span className="text-gold-500/60 flex-shrink-0">♦</span>
+                {aiSuggestions.insurance_notes}
+              </div>
+            )}
+
+            {/* No-show recommendation */}
+            {showSuggestions && aiSuggestions?.noshow_recommendation && (
+              <div className="font-mono text-[10px] text-orange-400 flex items-start gap-1.5">
+                <span className="flex-shrink-0">⚠</span>
+                {aiSuggestions.noshow_recommendation}
+              </div>
+            )}
+
+            {!canSuggest && (
+              <div className="font-mono text-[10px] text-slate-600">
+                Select patient, provider, and type to enable AI suggestions
+              </div>
+            )}
+          </div>
+
+          {/* Date + Time — manual override */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="data-label block mb-1.5">Date *</label>
+              <input type="date" value={form.appointment_date}
+                onChange={e => setForm(f => ({...f, appointment_date: e.target.value}))}
+                className="hud-input" />
+            </div>
+            <div>
+              <label className="data-label block mb-1.5">Time *</label>
+              <input type="time" value={form.appointment_time}
+                onChange={e => setForm(f => ({...f, appointment_time: e.target.value}))}
+                className="hud-input" />
+            </div>
+          </div>
+
+          {/* Reason */}
           <div>
             <label className="data-label block mb-1.5">Reason / Chief Complaint</label>
-            <input value={form.reason} onChange={e => setForm(f => ({...f, reason: e.target.value}))} className="hud-input" placeholder="Reason for visit" />
+            <input value={form.reason}
+              onChange={e => setForm(f => ({...f, reason: e.target.value}))}
+              className="hud-input" placeholder="Reason for visit" />
+          </div>
+
+          {/* What happens on save */}
+          <div className="px-3 py-2 bg-navy-700/30 rounded-sm space-y-0.5">
+            <div className="data-label mb-1">On save, automatically:</div>
+            {[
+              '✦  Score no-show risk (Claude AI)',
+              '✉  Send confirmation email (Resend)',
+              '💬  Send confirmation SMS (Twilio)',
+              '⏰  Send intake link 48h before visit',
+              '🔔  Send 24h + 2h reminder',
+            ].map(item => (
+              <div key={item} className="font-mono text-[10px] text-slate-500">{item}</div>
+            ))}
           </div>
         </div>
+
         <div className="px-5 py-4 border-t border-gold-500/10 flex justify-end gap-3">
           <button onClick={onClose} className="btn-secondary text-xs">Cancel</button>
           <button
             onClick={() => onSave(form)}
             disabled={saving || !form.patient_id || !form.appt_type_id}
             className="btn-primary text-xs">
-            {saving ? 'Booking...' : 'Book Appointment'}
+            {saving
+              ? <><Loader size={12} className="animate-spin" /> Booking...</>
+              : 'Book Appointment'
+            }
           </button>
         </div>
       </div>
