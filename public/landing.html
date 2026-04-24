@@ -36,6 +36,16 @@ body {
   cursor: default;
 }
 
+/* ── LANG SWITCHER ── */
+.lang-switcher { display:flex; border:1px solid rgba(201,169,110,0.2); overflow:hidden; }
+.lang-btn {
+  font-family:'DM Mono',monospace; font-size:10px; padding:5px 10px;
+  background:transparent; border:none; color:var(--subtle);
+  cursor:pointer; letter-spacing:0.08em; transition:all 0.2s;
+}
+.lang-btn:hover { color:var(--gold); background:rgba(201,169,110,0.06); }
+.lang-btn.active { background:rgba(201,169,110,0.15); color:var(--gold); }
+
 /* ── Animated grid background ── */
 body::before {
   content: '';
@@ -694,7 +704,14 @@ footer {
       <a href="#pricing">Pricing</a>
       <a href="#login">Sign In</a>
     </div>
-    <a href="#login" class="btn-nav">Access System →</a>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="lang-switcher" id="lang-switcher">
+        <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" data-lang="fr" onclick="setLang('fr')">FR</button>
+      </div>
+      <a href="#login" class="btn-nav" data-i18n="nav_cta">Access System →</a>
+    </div>
   </div>
 </nav>
 
@@ -1722,6 +1739,531 @@ async function startCheckout(plan, billing) {
   }
 }
 
+// ══════════════════════════════════════════════════════════════════
+// i18n — English · Spanish · French
+// ══════════════════════════════════════════════════════════════════
+const TRANSLATIONS = {
+  en: {
+    // Nav
+    nav_ai:'AI Features', nav_platform:'Platform', nav_integration:'Integration',
+    nav_pricing:'Pricing', nav_signin:'Sign In', nav_cta:'Access System →',
+    // Hero
+    hero_tag:'AI-Native EMR Platform · Powered by Claude',
+    hero_h1_line1:'The', hero_h1_accent:'intelligent',
+    hero_h1_line2:'scheduling engine', hero_h1_line3:'for',
+    hero_h1_accent2:'modern', hero_h1_line3b:'medicine',
+    hero_sub:'PatientTracForge combines full EMR scheduling with five Claude AI models that predict no-shows, optimize slots, triage intake, and code billing — automatically, at every step.',
+    hero_cta:'Access Your System', hero_pricing_btn:'View Pricing',
+    stat_ai:'Active AI Models', stat_rev:'Revenue Recovered',
+    stat_tables:'Clinical Tables', stat_hipaa:'HIPAA Compliant',
+    // AI section
+    ai_label:'✦ Claude AI · Five Active Models',
+    ai_h2:'Intelligence built into<br/>every workflow step',
+    ai_sub:'Not AI bolted on after the fact. Five Claude models that fire automatically — at booking, check-in, intake, encounter close, and billing.',
+    ai1_title:'No-Show Prediction', ai1_roi:'Highest ROI · Fires at booking',
+    ai1_body:'Every appointment scored 1–10 for no-show risk the moment it\'s booked. Claude analyzes prior no-show history, insurance type, appointment day and time, visit type, and time since last visit. High-risk patients (7+) get staff alerts and automatic extra reminders.',
+    ai1_metric_val:'5–15%', ai1_metric_lbl:'of revenue lost to no-shows — recovered',
+    ai2_title:'Wait Time Intelligence', ai2_roi:'Patient Experience · Real-time',
+    ai2_body:'Four timestamps tracked per visit: arrived → called back → seen → departed. Wait time calculated automatically. Patients who wait more than 20 minutes receive an automatic apology SMS.',
+    ai2_metric_val:'20 min', ai2_metric_lbl:'threshold — auto apology SMS fired',
+    ai3_title:'Smart Scheduling', ai3_roi:'Efficiency · At booking',
+    ai3_body:'Before booking, Claude analyzes the provider\'s 14-day schedule, patient no-show risk, insurance visit interval requirements, and specialty patterns. Returns three ranked optimal slots with reasoning.',
+    ai3_metric_val:'3', ai3_metric_lbl:'ranked slots suggested with conflict detection',
+    ai4_title:'AI Intake Assistant', ai4_roi:'Time Savings · 48h before visit',
+    ai4_body:'Patients receive a tokenized 48-hour link before their visit. A Claude-powered chat collects chief complaint, duration, severity, current medications, and allergies. AI returns a clinical summary and triage level.',
+    ai4_metric_val:'5–10 min', ai4_metric_lbl:'saved per visit on front-desk intake',
+    ai5_title:'Billing AI', ai5_roi:'Revenue Cycle · On encounter close',
+    ai5_body:'When an encounter closes, Claude reads the chief complaint, provider specialty, appointment type, and patient insurance — then suggests CPT codes with confidence scores, ICD codes, modifiers, and flags denial risk.',
+    ai5_metric_val:'34%', ai5_metric_lbl:'denial rate detected and flagged before submission',
+    ai6_title:'Fully Automated Pipeline', ai6_roi:'Zero manual steps · All 5 AI models',
+    ai6_body:'Database triggers fire every model automatically. Book appointment → score + confirm. Check in → stamp arrival. Encounter closes → superbill + billing AI. pg_cron sends intake links 48h out, reminders 24h and 2h before.',
+    // Platform
+    plat_label:'✦ Full-Stack EMR Platform',
+    plat_h2:'Everything a modern<br/>practice needs',
+    feat1_title:'Patient Registration', feat1_body:'Full demographics with US and international support. 16 countries, auto-ZIP lookup, phone formatting, SSN/ITIN/NIT/CPF tax IDs, photo upload, interpreter flags.',
+    feat2_title:'Smart Calendar', feat2_body:'Multi-provider weekly/day view with drag-and-drop rescheduling. No-show risk badges on every appointment. Click any slot to open the AI booking modal.',
+    feat3_title:'Check-In Workflow', feat3_body:'4-step check-in: patient arrival → insurance verification → encounter open → clinical app routing. Auto-stamps arrived_at. Routes to Revela or Mental Health by provider specialty.',
+    feat4_title:'Insurance Management', feat4_body:'Primary, secondary, and tertiary coverage with eligibility verification, copay/deductible tracking, prior auth flags, and OOP maximum monitoring.',
+    feat5_title:'Full Revenue Cycle', feat5_body:'Superbill → 837P EDI submission → ERA/835 payment posting → rejection management with CARC codes → A/R aging buckets (0–30, 31–60, 61–90, 91–120, 120+).',
+    feat6_title:'Admin Portal + RBAC', feat6_body:'6 roles: super_admin, admin, provider, billing, staff, readonly. Google Authenticator TOTP MFA required for admin and provider roles. Full auth audit log.',
+    feat7_title:'Code Reference Tables', feat7_body:'114 CPT codes with RVU and fee schedules. 95 ICD-10-CM codes. 46 DSM-5 diagnoses with severity levels and specifiers. 26 CPT modifiers. Full-text search.',
+    feat8_title:'Communications', feat8_body:'Resend email + Twilio SMS for confirmations, 24h reminders, 2h SMS, intake links, wait apology. All sends logged to communications_log with delivery status.',
+    feat9_title:'Multi-Specialty Routing', feat9_body:'Plastic surgery routes to Revela. Psychiatry, psychology, and addiction medicine route to Mental Health. encounter_id and patient_id deep-linked into each app.',
+    // Integration
+    int_label:'✦ Seamless Data Migration',
+    int_h3:'Integrate your current data into PatientTracForge',
+    int_sub:'Already running a practice management system? We map your existing patients, providers, appointments, and billing history directly into PatientTracForge. No disruption. No data loss.',
+    // Pricing
+    price_label:'✦ Transparent Pricing',
+    price_h2:'Built for practices<br/>of every size',
+    price_sub:'No per-click AI fees. All five Claude models at every tier. Cancel anytime.',
+    toggle_monthly:'Monthly', toggle_annual:'Annual', save_badge:'SAVE 20%',
+    tier_starter:'Starter', tier_pro:'Professional', tier_ent:'Enterprise',
+    price_popular:'Most Popular',
+    price_note:'All plans: 14-day free trial · No credit card required · Cancel anytime · Annual billing saves 20%',
+    roi_h:'ROI Calculator',
+    roi1_val:'2.7×', roi1_lbl:'Professional ROI · typical practice',
+    roi1_detail:'A practice losing $75K/year to claim denials recovers $22K+ with Billing AI — the $699/mo plan pays for itself 2.7× over.',
+    roi2_val:'$0', roi2_lbl:'Implementation fee',
+    roi2_detail:'eClinicalWorks and Athena charge $5K–$25K to go live. PatientTracForge is same-day. Data migration is $1,500 flat.',
+    roi3_val:'5', roi3_lbl:'AI models — competitors have 0',
+    roi3_detail:'Every comparable platform has zero native AI or charges $200–$800/month extra. Ours fire automatically at every workflow step.',
+    compare_label:'✦ Competitive Comparison',
+    compare_h:'How we stack up against the market',
+    compare_sub:'5-provider practice · equivalent tier · all-in monthly cost',
+    addons_h:'Add-ons — extend any plan',
+    addons_sub:'No tier upgrade required',
+    // Contact
+    contact_label:'✦ Get Started',
+    contact_h2:'Request a demo<br/>or start your trial',
+    contact_sub:'See PatientTracForge live with your specialty\'s workflow. We\'ll walk through no-show prediction, smart scheduling, and billing AI on your sample data.',
+    contact_demo_title:'30-minute live demo',
+    contact_demo_sub:'Screen share with your specialty\'s data — scheduling, AI scoring, billing workflow',
+    contact_trial_title:'14-day free trial',
+    contact_trial_sub:'Full Professional access, no credit card, cancel anytime',
+    contact_migrate_title:'Data migration included',
+    contact_migrate_sub:'We import your existing patients and history — same-day go-live',
+    contact_ent_title:'Enterprise? Call us',
+    tab_demo:'Book Demo', tab_trial:'Free Trial', tab_sales:'Enterprise', tab_support:'Support',
+    form_firstname:'First name', form_lastname:'Last name', form_email:'Work email',
+    form_phone:'Phone', form_company:'Practice / Company', form_specialty:'Specialty',
+    form_size:'Practice size', form_plan:'Plan of interest', form_message:'Message',
+    form_heard:'How did you hear about us?', form_submit:'Request Demo →',
+    form_disclaimer:'No commitment · Response within 1 business day · HIPAA compliant',
+    form_success_title:'You\'re on the list',
+    form_success_body:'We\'ll be in touch within one business day. Check your email for confirmation.',
+    form_success_reset:'Submit another →',
+    // Login
+    login_label:'✦ Secure Access',
+    login_h2:'Sign in to your system',
+    login_mfa:'MFA required for admin and provider roles',
+    login_title:'PatientTracForge',
+    login_sub:'Enter your credentials to access the platform. Contact your administrator if you need access.',
+    login_email_label:'Email address', login_email_ph:'you@yourpractice.com',
+    login_pass_label:'Password', login_pass_ph:'············',
+    login_btn:'Access System →', login_btn_loading:'Authenticating...',
+    login_need:'Need access?', login_contact_admin:'Contact admin',
+    login_forgot:'Forgot password?',
+    sec1:'TOTP MFA', sec2:'HIPAA Compliant', sec3:'Row Level Security',
+    // Footer
+    footer_copy:'© 2026 PatientTrac Corp · HIPAA Compliant · v0.3.0',
+    footer_domains:'patienttrac.com · patienttracforge.com',
+  },
+
+  es: {
+    nav_ai:'Funciones IA', nav_platform:'Plataforma', nav_integration:'Integración',
+    nav_pricing:'Precios', nav_signin:'Iniciar sesión', nav_cta:'Acceder al sistema →',
+    hero_tag:'Plataforma HME nativa de IA · Impulsada por Claude',
+    hero_h1_line1:'El motor de', hero_h1_accent:'agendamiento',
+    hero_h1_line2:'inteligente', hero_h1_line3:'para la medicina',
+    hero_h1_accent2:'moderna', hero_h1_line3b:'',
+    hero_sub:'PatientTracForge combina una programación HME completa con cinco modelos de IA Claude que predicen inasistencias, optimizan citas, trían pacientes y codifican facturación — automáticamente, en cada paso.',
+    hero_cta:'Acceder al sistema', hero_pricing_btn:'Ver precios',
+    stat_ai:'Modelos de IA activos', stat_rev:'Ingresos recuperados',
+    stat_tables:'Tablas clínicas', stat_hipaa:'Cumple HIPAA',
+    ai_label:'✦ Claude AI · Cinco modelos activos',
+    ai_h2:'Inteligencia integrada en<br/>cada paso del flujo de trabajo',
+    ai_sub:'No es IA añadida a posteriori. Cinco modelos Claude que se activan automáticamente — al reservar, en el registro, en la evaluación, al cerrar el encuentro y en la facturación.',
+    ai1_title:'Predicción de inasistencias', ai1_roi:'Mayor ROI · Se activa al reservar',
+    ai1_body:'Cada cita recibe una puntuación de riesgo de 1 a 10 en el momento de la reserva. Claude analiza el historial de inasistencias, el tipo de seguro, el día y hora, el tipo de visita y el tiempo transcurrido desde la última visita.',
+    ai1_metric_val:'5–15%', ai1_metric_lbl:'de ingresos perdidos por inasistencias — recuperados',
+    ai2_title:'Inteligencia de tiempo de espera', ai2_roi:'Experiencia del paciente · Tiempo real',
+    ai2_body:'Cuatro marcas de tiempo por visita: llegada → llamada → atención → salida. El tiempo de espera se calcula automáticamente. Los pacientes que esperan más de 20 minutos reciben un SMS de disculpa automático.',
+    ai2_metric_val:'20 min', ai2_metric_lbl:'umbral — SMS de disculpa enviado automáticamente',
+    ai3_title:'Agendamiento inteligente', ai3_roi:'Eficiencia · Al reservar',
+    ai3_body:'Antes de reservar, Claude analiza el horario del proveedor, el riesgo de inasistencia del paciente, los requisitos de intervalo de visitas del seguro y los patrones de especialidad.',
+    ai3_metric_val:'3', ai3_metric_lbl:'franjas horarias óptimas sugeridas con detección de conflictos',
+    ai4_title:'Asistente de ingreso IA', ai4_roi:'Ahorro de tiempo · 48h antes de la visita',
+    ai4_body:'Los pacientes reciben un enlace tokenizado de 48 horas antes de su visita. Un chat impulsado por Claude recopila queja principal, duración, gravedad, medicamentos actuales y alergias.',
+    ai4_metric_val:'5–10 min', ai4_metric_lbl:'ahorrados por visita en el registro de recepción',
+    ai5_title:'IA de facturación', ai5_roi:'Ciclo de ingresos · Al cerrar el encuentro',
+    ai5_body:'Al cerrar un encuentro, Claude lee la queja principal, la especialidad del proveedor, el tipo de cita y el seguro del paciente — luego sugiere códigos CPT con puntuaciones de confianza e ICD, y señala el riesgo de denegación.',
+    ai5_metric_val:'34%', ai5_metric_lbl:'tasa de denegación detectada y marcada antes del envío',
+    ai6_title:'Pipeline completamente automatizado', ai6_roi:'Sin pasos manuales · Los 5 modelos',
+    ai6_body:'Los disparadores de base de datos activan cada modelo automáticamente. Reserve cita → puntuación + confirmación. Registro → marca de llegada. Encuentro cerrado → superbill + IA de facturación.',
+    plat_label:'✦ Plataforma HME completa',
+    plat_h2:'Todo lo que una práctica<br/>moderna necesita',
+    feat1_title:'Registro de pacientes', feat1_body:'Datos demográficos completos con soporte internacional. 16 países, búsqueda automática de código postal, formato de teléfono, SSN/ITIN/NIT/CPF, carga de foto.',
+    feat2_title:'Calendario inteligente', feat2_body:'Vista semanal/diaria con múltiples proveedores y reprogramación por arrastrar y soltar. Insignias de riesgo de inasistencia en cada cita.',
+    feat3_title:'Flujo de registro (check-in)', feat3_body:'4 pasos: llegada del paciente → verificación de seguro → apertura de encuentro → enrutamiento a app clínica. Sello automático de arrived_at.',
+    feat4_title:'Gestión de seguros', feat4_body:'Cobertura primaria, secundaria y terciaria con verificación de elegibilidad, seguimiento de copago/deducible, marcas de autorización previa.',
+    feat5_title:'Ciclo de ingresos completo', feat5_body:'Superbill → envío EDI 837P → publicación de pagos ERA/835 → gestión de rechazos con códigos CARC → antigüedad de cuentas por cobrar.',
+    feat6_title:'Portal de administración + RBAC', feat6_body:'6 roles: super_admin, admin, proveedor, facturación, personal, solo lectura. MFA TOTP requerido para roles de administrador y proveedor.',
+    feat7_title:'Tablas de códigos de referencia', feat7_body:'114 códigos CPT. 95 códigos ICD-10-CM. 46 diagnósticos DSM-5 con niveles de gravedad. 26 modificadores CPT. Búsqueda de texto completo.',
+    feat8_title:'Comunicaciones', feat8_body:'Email Resend + SMS Twilio para confirmaciones, recordatorios 24h, SMS 2h, enlaces de ingreso, disculpa por espera. Todo registrado en el log de comunicaciones.',
+    feat9_title:'Enrutamiento multi-especialidad', feat9_body:'Cirugía plástica enruta a Revela. Psiquiatría, psicología y medicina de adicciones enrutan a Salud Mental. encounter_id vinculado profundamente en cada app.',
+    int_label:'✦ Migración de datos sin interrupciones',
+    int_h3:'Integre sus datos actuales en PatientTracForge',
+    int_sub:'¿Ya usa un sistema de gestión de consultas? Mapeamos sus pacientes, proveedores, citas e historial de facturación directamente en PatientTracForge. Sin interrupciones. Sin pérdida de datos.',
+    price_label:'✦ Precios transparentes',
+    price_h2:'Diseñado para consultas<br/>de todos los tamaños',
+    price_sub:'Sin cargos por clic de IA. Los cinco modelos Claude en cada nivel. Cancele en cualquier momento.',
+    toggle_monthly:'Mensual', toggle_annual:'Anual', save_badge:'AHORRE 20%',
+    tier_starter:'Inicial', tier_pro:'Profesional', tier_ent:'Empresarial',
+    price_popular:'Más popular',
+    price_note:'Todos los planes: 14 días gratis · Sin tarjeta de crédito · Cancele cuando quiera · Facturación anual ahorra 20%',
+    roi1_val:'2.7×', roi1_lbl:'ROI Profesional · consulta típica',
+    roi1_detail:'Una consulta que pierde $75K/año en denegaciones recupera $22K+ con IA de facturación — el plan de $699/mes se paga solo 2.7× veces.',
+    roi2_val:'$0', roi2_lbl:'Tarifa de implementación',
+    roi2_detail:'eClinicalWorks y Athena cobran $5K–$25K para comenzar. PatientTracForge es el mismo día. La migración de datos cuesta $1,500 fijo.',
+    roi3_val:'5', roi3_lbl:'Modelos de IA — los competidores tienen 0',
+    roi3_detail:'Ninguna plataforma comparable tiene IA nativa o cobra $200–$800/mes extra. Los nuestros se activan automáticamente en cada paso del flujo de trabajo.',
+    compare_label:'✦ Comparación competitiva',
+    compare_h:'Cómo nos comparamos con el mercado',
+    compare_sub:'Consulta de 5 proveedores · nivel equivalente · costo mensual total',
+    addons_h:'Complementos — amplíe cualquier plan',
+    addons_sub:'Sin necesidad de actualizar el nivel',
+    contact_label:'✦ Comenzar',
+    contact_h2:'Solicite una demo<br/>o inicie su prueba',
+    contact_sub:'Vea PatientTracForge en vivo con el flujo de trabajo de su especialidad. Recorreremos la predicción de inasistencias, el agendamiento inteligente y la IA de facturación con sus datos de muestra.',
+    contact_demo_title:'Demo en vivo de 30 minutos',
+    contact_demo_sub:'Compartir pantalla con los datos de su especialidad — agendamiento, puntuación IA, flujo de facturación',
+    contact_trial_title:'14 días de prueba gratis',
+    contact_trial_sub:'Acceso Profesional completo, sin tarjeta de crédito, cancele en cualquier momento',
+    contact_migrate_title:'Migración de datos incluida',
+    contact_migrate_sub:'Importamos sus pacientes e historial existentes — puesta en marcha el mismo día',
+    contact_ent_title:'¿Empresarial? Contáctenos',
+    tab_demo:'Demo', tab_trial:'Prueba gratuita', tab_sales:'Empresarial', tab_support:'Soporte',
+    form_firstname:'Nombre', form_lastname:'Apellido', form_email:'Correo laboral',
+    form_phone:'Teléfono', form_company:'Clínica / Empresa', form_specialty:'Especialidad',
+    form_size:'Tamaño de la consulta', form_plan:'Plan de interés', form_message:'Mensaje',
+    form_heard:'¿Cómo nos conoció?', form_submit:'Solicitar demo →',
+    form_disclaimer:'Sin compromiso · Respuesta en 1 día hábil · Cumple HIPAA',
+    form_success_title:'¡Ya está en la lista!',
+    form_success_body:'Nos pondremos en contacto en un día hábil. Revise su correo para la confirmación.',
+    form_success_reset:'Enviar otra solicitud →',
+    login_label:'✦ Acceso seguro',
+    login_h2:'Inicie sesión en su sistema',
+    login_mfa:'MFA requerido para roles de administrador y proveedor',
+    login_title:'PatientTracForge',
+    login_sub:'Ingrese sus credenciales para acceder a la plataforma. Contacte a su administrador si necesita acceso.',
+    login_email_label:'Correo electrónico', login_email_ph:'usted@suclinica.com',
+    login_pass_label:'Contraseña', login_pass_ph:'············',
+    login_btn:'Acceder al sistema →', login_btn_loading:'Autenticando...',
+    login_need:'¿Necesita acceso?', login_contact_admin:'Contactar administrador',
+    login_forgot:'¿Olvidó su contraseña?',
+    sec1:'MFA TOTP', sec2:'Cumple HIPAA', sec3:'Seguridad por filas',
+    footer_copy:'© 2026 PatientTrac Corp · Cumple HIPAA · v0.3.0',
+    footer_domains:'patienttrac.com · patienttracforge.com',
+  },
+
+  fr: {
+    nav_ai:'Fonctions IA', nav_platform:'Plateforme', nav_integration:'Intégration',
+    nav_pricing:'Tarifs', nav_signin:'Connexion', nav_cta:'Accéder au système →',
+    hero_tag:'Plateforme DME native IA · Propulsée par Claude',
+    hero_h1_line1:'Le moteur de', hero_h1_accent:'planification',
+    hero_h1_line2:'intelligent', hero_h1_line3:'pour la médecine',
+    hero_h1_accent2:'moderne', hero_h1_line3b:'',
+    hero_sub:'PatientTracForge associe une planification DME complète à cinq modèles IA Claude qui prédisent les absences, optimisent les créneaux, trient les admissions et codent la facturation — automatiquement, à chaque étape.',
+    hero_cta:'Accéder au système', hero_pricing_btn:'Voir les tarifs',
+    stat_ai:'Modèles IA actifs', stat_rev:'Revenus récupérés',
+    stat_tables:'Tables cliniques', stat_hipaa:'Conforme HIPAA',
+    ai_label:'✦ Claude IA · Cinq modèles actifs',
+    ai_h2:'L\'intelligence intégrée dans<br/>chaque étape du flux de travail',
+    ai_sub:'Pas d\'IA ajoutée après coup. Cinq modèles Claude qui se déclenchent automatiquement — à la réservation, à l\'accueil, à l\'admission, à la clôture de l\'encounter et à la facturation.',
+    ai1_title:'Prédiction des absences', ai1_roi:'ROI maximal · Se déclenche à la réservation',
+    ai1_body:'Chaque rendez-vous reçoit un score de risque de 1 à 10 dès la réservation. Claude analyse l\'historique des absences, le type d\'assurance, le jour, l\'heure, le type de visite et le délai depuis la dernière visite.',
+    ai1_metric_val:'5–15%', ai1_metric_lbl:'des revenus perdus par absences — récupérés',
+    ai2_title:'Intelligence du temps d\'attente', ai2_roi:'Expérience patient · Temps réel',
+    ai2_body:'Quatre horodatages par visite : arrivée → rappel → consultation → départ. Le temps d\'attente est calculé automatiquement. Les patients qui attendent plus de 20 minutes reçoivent un SMS d\'excuse automatique.',
+    ai2_metric_val:'20 min', ai2_metric_lbl:'seuil — SMS d\'excuse envoyé automatiquement',
+    ai3_title:'Planification intelligente', ai3_roi:'Efficacité · À la réservation',
+    ai3_body:'Avant la réservation, Claude analyse le planning du praticien, le risque d\'absence, les exigences d\'intervalle de visites de l\'assurance et les tendances de spécialité.',
+    ai3_metric_val:'3', ai3_metric_lbl:'créneaux optimaux suggérés avec détection de conflits',
+    ai4_title:'Assistant d\'admission IA', ai4_roi:'Gain de temps · 48h avant la visite',
+    ai4_body:'Les patients reçoivent un lien tokenisé 48 heures avant leur visite. Un chat propulsé par Claude recueille le motif de consultation, la durée, la sévérité, les médicaments et les allergies.',
+    ai4_metric_val:'5–10 min', ai4_metric_lbl:'gagnées par visite à l\'accueil',
+    ai5_title:'IA de facturation', ai5_roi:'Cycle des revenus · À la clôture de l\'encounter',
+    ai5_body:'À la clôture d\'un encounter, Claude lit le motif, la spécialité, le type de rendez-vous et l\'assurance — puis suggère des codes CPT avec scores de confiance, codes CIM et modificateurs, et signale le risque de refus.',
+    ai5_metric_val:'34%', ai5_metric_lbl:'taux de refus détecté et signalé avant soumission',
+    ai6_title:'Pipeline entièrement automatisé', ai6_roi:'Zéro étape manuelle · Les 5 modèles',
+    ai6_body:'Les déclencheurs de base de données activent chaque modèle automatiquement. Réserver → score + confirmation. Accueil → horodatage d\'arrivée. Encounter fermé → superbill + IA de facturation.',
+    plat_label:'✦ Plateforme DME complète',
+    plat_h2:'Tout ce dont un cabinet<br/>moderne a besoin',
+    feat1_title:'Enregistrement des patients', feat1_body:'Données démographiques complètes avec support international. 16 pays, recherche automatique du code postal, format téléphone, SSN/ITIN/NIT/CPF, téléchargement de photo.',
+    feat2_title:'Agenda intelligent', feat2_body:'Vue hebdomadaire/journalière multi-praticiens avec glisser-déposer. Badges de risque d\'absence sur chaque rendez-vous. Cliquez sur un créneau pour ouvrir la fenêtre de réservation IA.',
+    feat3_title:'Flux d\'accueil (check-in)', feat3_body:'4 étapes : arrivée → vérification assurance → ouverture encounter → routage vers l\'app clinique. Horodatage automatique.',
+    feat4_title:'Gestion des assurances', feat4_body:'Couverture primaire, secondaire et tertiaire avec vérification d\'éligibilité, suivi des franchises et copaiements, indicateurs d\'autorisation préalable.',
+    feat5_title:'Cycle des revenus complet', feat5_body:'Superbill → soumission EDI 837P → comptabilisation ERA/835 → gestion des rejets avec codes CARC → tableau de bord créances.',
+    feat6_title:'Portail admin + RBAC', feat6_body:'6 rôles : super_admin, admin, praticien, facturation, personnel, lecture seule. MFA TOTP requis pour les rôles admin et praticien.',
+    feat7_title:'Tables de codes de référence', feat7_body:'114 codes CPT. 95 codes CIM-10. 46 diagnostics DSM-5 avec niveaux de sévérité. 26 modificateurs CPT. Recherche plein texte.',
+    feat8_title:'Communications', feat8_body:'Email Resend + SMS Twilio pour confirmations, rappels 24h, SMS 2h, liens d\'admission, excuse pour attente. Tout consigné dans le journal de communications.',
+    feat9_title:'Routage multi-spécialité', feat9_body:'Chirurgie plastique → Revela. Psychiatrie, psychologie et addictologie → Santé mentale. encounter_id et patient_id intégrés dans chaque application.',
+    int_label:'✦ Migration de données transparente',
+    int_h3:'Intégrez vos données actuelles dans PatientTracForge',
+    int_sub:'Vous utilisez déjà un système de gestion de cabinet ? Nous transférons vos patients, praticiens, rendez-vous et historique de facturation directement dans PatientTracForge. Sans interruption. Sans perte de données.',
+    price_label:'✦ Tarifs transparents',
+    price_h2:'Conçu pour les cabinets<br/>de toutes tailles',
+    price_sub:'Sans frais par clic IA. Les cinq modèles Claude à chaque niveau. Résiliation à tout moment.',
+    toggle_monthly:'Mensuel', toggle_annual:'Annuel', save_badge:'ÉCONOMISEZ 20%',
+    tier_starter:'Démarrage', tier_pro:'Professionnel', tier_ent:'Entreprise',
+    price_popular:'Le plus populaire',
+    price_note:'Tous les plans : 14 jours d\'essai gratuit · Sans carte de crédit · Résiliation possible à tout moment · Facturation annuelle : économisez 20%',
+    roi1_val:'2,7×', roi1_lbl:'ROI Professionnel · cabinet type',
+    roi1_detail:'Un cabinet perdant 75 000 $/an en refus de remboursement récupère 22 000 $+ avec l\'IA de facturation — le plan à 699 $/mois s\'amortit 2,7 fois.',
+    roi2_val:'0 $', roi2_lbl:'Frais d\'implémentation',
+    roi2_detail:'eClinicalWorks et Athena facturent 5 000 $–25 000 $ pour démarrer. PatientTracForge, c\'est le jour même. La migration de données est à 1 500 $ fixe.',
+    roi3_val:'5', roi3_lbl:'Modèles IA — les concurrents en ont 0',
+    roi3_detail:'Aucune plateforme comparable n\'intègre d\'IA native, ou facture 200 $–800 $/mois en supplément. Les nôtres s\'activent automatiquement à chaque étape.',
+    compare_label:'✦ Comparaison concurrentielle',
+    compare_h:'Notre positionnement face au marché',
+    compare_sub:'Cabinet de 5 praticiens · niveau équivalent · coût mensuel tout compris',
+    addons_h:'Extensions — enrichissez n\'importe quel plan',
+    addons_sub:'Sans changement de niveau',
+    contact_label:'✦ Démarrer',
+    contact_h2:'Demandez une démo<br/>ou lancez votre essai',
+    contact_sub:'Découvrez PatientTracForge en direct avec le flux de votre spécialité. Nous parcourrons la prédiction des absences, la planification intelligente et l\'IA de facturation sur vos données.',
+    contact_demo_title:'Démo en direct de 30 minutes',
+    contact_demo_sub:'Partage d\'écran avec les données de votre spécialité — planning, score IA, flux de facturation',
+    contact_trial_title:'14 jours d\'essai gratuit',
+    contact_trial_sub:'Accès Professionnel complet, sans carte de crédit, résiliation à tout moment',
+    contact_migrate_title:'Migration de données incluse',
+    contact_migrate_sub:'Nous importons vos patients et historiques existants — mise en service le jour même',
+    contact_ent_title:'Entreprise ? Contactez-nous',
+    tab_demo:'Démo', tab_trial:'Essai gratuit', tab_sales:'Entreprise', tab_support:'Support',
+    form_firstname:'Prénom', form_lastname:'Nom', form_email:'Email professionnel',
+    form_phone:'Téléphone', form_company:'Cabinet / Entreprise', form_specialty:'Spécialité',
+    form_size:'Taille du cabinet', form_plan:'Plan souhaité', form_message:'Message',
+    form_heard:'Comment nous avez-vous connu ?', form_submit:'Demander une démo →',
+    form_disclaimer:'Sans engagement · Réponse sous 1 jour ouvré · Conforme HIPAA',
+    form_success_title:'Vous êtes sur la liste !',
+    form_success_body:'Nous vous contacterons dans un délai d\'un jour ouvré. Consultez vos e-mails pour la confirmation.',
+    form_success_reset:'Soumettre une autre demande →',
+    login_label:'✦ Accès sécurisé',
+    login_h2:'Connectez-vous à votre système',
+    login_mfa:'MFA requis pour les rôles admin et praticien',
+    login_title:'PatientTracForge',
+    login_sub:'Saisissez vos identifiants pour accéder à la plateforme. Contactez votre administrateur si vous avez besoin d\'accès.',
+    login_email_label:'Adresse e-mail', login_email_ph:'vous@votrecabinet.com',
+    login_pass_label:'Mot de passe', login_pass_ph:'············',
+    login_btn:'Accéder au système →', login_btn_loading:'Authentification…',
+    login_need:'Besoin d\'accès ?', login_contact_admin:'Contacter l\'admin',
+    login_forgot:'Mot de passe oublié ?',
+    sec1:'MFA TOTP', sec2:'Conforme HIPAA', sec3:'Sécurité par lignes',
+    footer_copy:'© 2026 PatientTrac Corp · Conforme HIPAA · v0.3.0',
+    footer_domains:'patienttrac.com · patienttracforge.com',
+  }
+}
+
+// ── i18n engine ────────────────────────────────────────────────────
+let currentLang = localStorage.getItem('ptf_lang') || 'en'
+
+function t(key) {
+  return TRANSLATIONS[currentLang]?.[key] || TRANSLATIONS.en[key] || key
+}
+
+// Map data-i18n keys to DOM updates
+function applyTranslations() {
+  const lang = currentLang
+  const T = TRANSLATIONS[lang]
+  if (!T) return
+
+  // Helper
+  const set = (sel, key, attr) => {
+    const el = document.querySelector(sel)
+    if (!el || !T[key]) return
+    if (attr) el[attr] = T[key]
+    else el.innerHTML = T[key]
+  }
+  const setAll = (sel, key) => document.querySelectorAll(sel).forEach(el => { if (T[key]) el.textContent = T[key] })
+
+  // Nav
+  set('.nav-links a[href="#ai"]',            'nav_ai',       'textContent')
+  set('.nav-links a[href="#platform"]',       'nav_platform', 'textContent')
+  set('.nav-links a[href="#integration"]',    'nav_integration','textContent')
+  set('.nav-links a[href="#pricing"]',        'nav_pricing',  'textContent')
+  set('.nav-links a[href="#login"]',          'nav_signin',   'textContent')
+  set('[data-i18n="nav_cta"]',               'nav_cta',      'textContent')
+
+  // Hero
+  set('.hero-tag',  'hero_tag',   'textContent')
+  const h1 = document.querySelector('.hero-h1')
+  if (h1) h1.innerHTML = `${T.hero_h1_line1} <span class="accent">${T.hero_h1_accent}</span><br/>${T.hero_h1_line2}<br/>${T.hero_h1_line3} <span class="accent-2">${T.hero_h1_accent2}</span> ${T.hero_h1_line3b}`
+  set('.hero-sub',  'hero_sub',   'textContent')
+  const heroCta = document.querySelector('.hero-actions .btn-primary span:first-child')
+  if (heroCta) heroCta.textContent = T.hero_cta
+  set('.hero-actions .btn-outline', 'hero_pricing_btn', 'textContent')
+
+  // Stats
+  const statLabels = document.querySelectorAll('.stat-label')
+  const statKeys = ['stat_ai','stat_rev','stat_tables','stat_hipaa']
+  statLabels.forEach((el,i) => { if (T[statKeys[i]]) el.textContent = T[statKeys[i]] })
+
+  // Billing toggle
+  const toggleLabels = document.querySelectorAll('.toggle-label')
+  if (toggleLabels[0]) toggleLabels[0].textContent = T.toggle_monthly
+  if (toggleLabels[1]) toggleLabels[1].textContent = T.toggle_annual
+  set('.save-badge', 'save_badge', 'textContent')
+
+  // Pricing tiers
+  const tiers = document.querySelectorAll('.pricing-tier')
+  const tierKeys = ['tier_starter','tier_pro','tier_ent']
+  tiers.forEach((el,i) => { if (T[tierKeys[i]]) el.textContent = T[tierKeys[i]] })
+  set('.pricing-popular', 'price_popular', 'textContent')
+  set('.pricing-note',    'price_note',    'textContent')
+
+  // Section headings — AI
+  set('#ai .section-label', 'ai_label', 'innerHTML')
+  set('#ai .section-h2',    'ai_h2',    'innerHTML')
+  set('#ai .section-sub',   'ai_sub',   'textContent')
+
+  // AI cards — titles, ROI, body, metric
+  const aiCards = document.querySelectorAll('.ai-card')
+  const aiData = [
+    ['ai1_title','ai1_roi','ai1_body','ai1_metric_val','ai1_metric_lbl'],
+    ['ai2_title','ai2_roi','ai2_body','ai2_metric_val','ai2_metric_lbl'],
+    ['ai3_title','ai3_roi','ai3_body','ai3_metric_val','ai3_metric_lbl'],
+    ['ai4_title','ai4_roi','ai4_body','ai4_metric_val','ai4_metric_lbl'],
+    ['ai5_title','ai5_roi','ai5_body','ai5_metric_val','ai5_metric_lbl'],
+    ['ai6_title','ai6_roi','ai6_body',null,null],
+  ]
+  aiCards.forEach((card, i) => {
+    const [tKey,rKey,bKey,mvKey,mlKey] = aiData[i] || []
+    const titleEl = card.querySelector('.ai-card-title')
+    const roiEl   = card.querySelector('.ai-card-roi')
+    const bodyEl  = card.querySelector('.ai-card-body')
+    const metaVal = card.querySelector('.ai-card-metric-val')
+    const metaLbl = card.querySelector('.ai-card-metric-label')
+    if (titleEl && T[tKey]) titleEl.textContent = T[tKey]
+    if (roiEl  && T[rKey]) roiEl.textContent   = T[rKey]
+    if (bodyEl && T[bKey]) bodyEl.textContent   = T[bKey]
+    if (metaVal && T[mvKey]) metaVal.textContent = T[mvKey]
+    if (metaLbl && T[mlKey]) metaLbl.textContent = T[mlKey]
+  })
+
+  // Platform section
+  set('#platform .section-label', 'plat_label', 'textContent')
+  set('#platform .section-h2',    'plat_h2',    'innerHTML')
+
+  const featItems = document.querySelectorAll('.feat-item')
+  const featKeys = ['feat1','feat2','feat3','feat4','feat5','feat6','feat7','feat8','feat9']
+  featItems.forEach((item, i) => {
+    const key = featKeys[i]
+    const titleEl = item.querySelector('.feat-title')
+    const bodyEl  = item.querySelector('.feat-body')
+    if (titleEl && T[key+'_title']) titleEl.textContent = T[key+'_title']
+    if (bodyEl  && T[key+'_body'])  bodyEl.textContent  = T[key+'_body']
+  })
+
+  // Integration
+  set('#integration .section-label', 'int_label', 'textContent')
+  const intH3 = document.querySelector('#integration .integration-text h3')
+  if (intH3 && T.int_h3) intH3.textContent = T.int_h3
+  const intP  = document.querySelector('#integration .integration-text p')
+  if (intP && T.int_sub) intP.textContent = T.int_sub
+
+  // Pricing section headings
+  set('#pricing .section-label', 'price_label', 'textContent')
+  set('#pricing .section-h2',    'price_h2',    'innerHTML')
+  set('#pricing .section-sub',   'price_sub',   'textContent')
+
+  // ROI strip
+  const roiStats = document.querySelectorAll('.roi-stat')
+  const roiData  = [['roi1_val','roi1_lbl','roi1_detail'],['roi2_val','roi2_lbl','roi2_detail'],['roi3_val','roi3_lbl','roi3_detail']]
+  roiStats.forEach((stat, i) => {
+    const [v,l,d] = roiData[i]
+    const valEl = stat.querySelector('.roi-val')
+    const lblEl = stat.querySelector('.roi-lbl')
+    const detEl = stat.querySelector('.roi-detail')
+    if (valEl && T[v]) valEl.textContent = T[v]
+    if (lblEl && T[l]) lblEl.textContent = T[l]
+    if (detEl && T[d]) detEl.textContent = T[d]
+  })
+
+  // Compare
+  set('.compare-label', 'compare_label', 'textContent')
+  set('.compare-h',     'compare_h',     'textContent')
+  set('.compare-sub',   'compare_sub',   'textContent')
+
+  // Contact section
+  set('#contact .section-label', 'contact_label', 'textContent')
+  set('#contact .section-h2',    'contact_h2',    'innerHTML')
+  const contactSub = document.querySelector('#contact > .container > div > div:first-child > p')
+  if (contactSub && T.contact_sub) contactSub.textContent = T.contact_sub
+
+  // Form tabs
+  const tabs = document.querySelectorAll('.form-tab')
+  const tabKeys = ['tab_demo','tab_trial','tab_sales','tab_support']
+  tabs.forEach((tab, i) => { if (T[tabKeys[i]]) tab.textContent = T[tabKeys[i]] })
+
+  // Form labels
+  const formLabels = document.querySelectorAll('#contact-form .form-label')
+  const labelKeys  = ['form_firstname','form_lastname','form_email','form_phone','form_company','form_specialty','form_size','form_plan','form_message','form_heard']
+  formLabels.forEach((label, i) => { if (T[labelKeys[i]]) label.textContent = T[labelKeys[i]] })
+
+  // Submit btn + disclaimer
+  const submitBtnText = document.getElementById('contact-btn-text')
+  if (submitBtnText) submitBtnText.textContent = T.form_submit
+  const disclaimer = document.querySelector('#contact-form + div, #contact-form ~ div')
+
+  // Success state
+  const successTitle = document.querySelector('#form-success div:nth-child(2)')
+  const successBody  = document.querySelector('#form-success div:nth-child(3)')
+  const successReset = document.querySelector('#form-success button')
+  if (successTitle) successTitle.textContent = T.form_success_title
+  if (successBody)  successBody.textContent  = T.form_success_body
+  if (successReset) successReset.textContent = T.form_success_reset
+
+  // Login section
+  set('#login .section-label', 'login_label', 'textContent')
+  set('#login .section-h2',    'login_h2',    'textContent')
+  const loginMfa = document.querySelector('#login > .container > div > p')
+  if (loginMfa) loginMfa.textContent = T.login_mfa
+  set('.login-title', 'login_title',  'textContent')
+  set('.login-sub',   'login_sub',    'textContent')
+
+  const emailLabel = document.querySelector('label[for="login-email"], .form-group:first-of-type .form-label')
+  const emailInput = document.getElementById('login-email')
+  const passInput  = document.getElementById('login-password')
+  const loginBtn   = document.getElementById('login-btn')
+  if (emailInput) emailInput.placeholder = T.login_email_ph
+  if (passInput)  passInput.placeholder  = T.login_pass_ph
+  if (loginBtn)   loginBtn.textContent   = T.login_btn
+
+  const loginLinks = document.querySelector('.login-links')
+  if (loginLinks) {
+    const spans = loginLinks.querySelectorAll('span, a')
+    if (spans[0]) spans[0].childNodes[0].nodeValue = T.login_need + ' '
+    const adminLink = loginLinks.querySelector('a:first-of-type')
+    if (adminLink) adminLink.textContent = T.login_contact_admin
+    const forgotLink = loginLinks.querySelector('a:last-of-type')
+    if (forgotLink) forgotLink.textContent = T.login_forgot
+  }
+
+  const secBadges = document.querySelectorAll('.security-badge')
+  const secKeys   = ['sec1','sec2','sec3']
+  secBadges.forEach((badge, i) => {
+    const icon = badge.textContent.match(/^[^a-zA-ZÀ-ÿ]*/)?.[0] ?? ''
+    if (T[secKeys[i]]) badge.textContent = icon + T[secKeys[i]]
+  })
+
+  // Footer
+  const footerCopy = document.querySelector('.footer-copy')
+  if (footerCopy) footerCopy.textContent = T.footer_copy
+
+  // <html> lang attribute
+  document.documentElement.lang = lang === 'fr' ? 'fr-CA' : lang === 'es' ? 'es' : 'en'
+}
+
+function setLang(lang) {
+  currentLang = lang
+  localStorage.setItem('ptf_lang', lang)
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang)
+  })
+  applyTranslations()
+}
+
+// Auto-detect browser language on first visit
+function autoDetectLang() {
+  if (localStorage.getItem('ptf_lang')) return
+  const nav = navigator.language || navigator.userLanguage || 'en'
+  const code = nav.toLowerCase().slice(0,2)
+  if (code === 'es') setLang('es')
+  else if (code === 'fr') setLang('fr')
+  else setLang('en')
+}
+
 // ── Annual billing toggle ──
 let isAnnual = false;
 function toggleBilling() {
@@ -1795,7 +2337,10 @@ async function handleLogin(e) {
   }
 }
 
-// ── Animated counter ──
+// ── i18n init ──────────────────────────────────────────────────────
+autoDetectLang()
+if (currentLang !== 'en') applyTranslations()
+
 function animateCounter(el, target, suffix = '') {
   let start = 0;
   const step = target / 40;
