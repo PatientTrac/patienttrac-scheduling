@@ -1,8 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from '@/lib/auth'
-
-// Main app
 import { AppShell }    from '@/components/layout/AppShell'
 import { Dashboard }   from '@/pages/Dashboard'
 import { Patients }    from '@/pages/Patients'
@@ -15,13 +13,12 @@ import { Billing }     from '@/pages/Billing'
 import { Insurance }   from '@/pages/Insurance'
 import { Encounters }  from '@/pages/Encounters'
 import { Settings }    from '@/pages/Settings'
-
-// Admin portal
 import { AdminLogin }       from '@/admin/pages/AdminLogin'
 import { AdminShell }       from '@/admin/components/AdminShell'
 import { AdminOverview }    from '@/admin/pages/AdminOverview'
 import { UserManagement }   from '@/admin/pages/UserManagement'
 import { AppointmentTypes } from '@/admin/pages/AppointmentTypes'
+import { MfaSetup }         from '@/admin/pages/MfaSetup'
 import { AdminFacilities, AdminRoles, AdminAudit, AdminSettings } from '@/admin/pages/AdminStubs'
 
 const queryClient = new QueryClient({
@@ -34,7 +31,6 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            {/* ── Main scheduling app ── */}
             <Route path="/" element={<AppShell />}>
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard"           element={<Dashboard />} />
@@ -49,9 +45,8 @@ export default function App() {
               <Route path="insurance"           element={<Insurance />} />
               <Route path="settings"            element={<Settings />} />
             </Route>
-
-            {/* ── Admin portal ── */}
-            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/login"  element={<AdminLogin />} />
+            <Route path="/admin/mfa-setup" element={<MfaSetup />} />
             <Route path="/admin" element={<AdminShell />}>
               <Route index           element={<AdminOverview />} />
               <Route path="users"      element={<UserManagement />} />
