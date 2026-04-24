@@ -1,22 +1,1012 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="PatientTracForge — EMR Scheduling Platform" />
-    <title>PatientTracForge</title>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PatientTracForge — AI-Powered Practice Management Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Rajdhani:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#060e1c;--navy2:#0a1628;--navy3:#0f1e35;--navy4:#162d4f;
+  --gold:#c9a96e;--gold2:#e8c98a;--gold3:#fdf3e0;
+  --teal:#4a7fa8;--teal2:#6fb3d9;
+  --red:#e11d48;--amber:#f59e0b;--green:#10b981;--green2:#6ee7b7;
+  --ivory:#f0ece4;--muted:#3a5470;--muted2:#2a3f56;
+  --fd:'Rajdhani',sans-serif;
+  --fg:'Cormorant Garamond','Georgia',serif;
+  --fb:'DM Sans',system-ui,sans-serif;
+  --fm:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--ivory);font-family:var(--fb);overflow-x:hidden}
 
-    <!-- Google Fonts: Rajdhani (display) + DM Sans (body) + DM Mono (data) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@300;400;500&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+/* ── NOISE ── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.5}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:70px;background:rgba(6,14,28,0.9);border-bottom:1px solid rgba(201,169,110,0.1);backdrop-filter:blur(20px);transition:all 0.3s}
+nav.scrolled{background:rgba(6,14,28,0.98);border-color:rgba(201,169,110,0.2)}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.nav-brand{display:flex;flex-direction:column;line-height:1}
+.nav-brand-sub{font-family:var(--fm);font-size:8px;letter-spacing:0.28em;color:var(--teal);text-transform:uppercase}
+.nav-brand-name{font-family:var(--fg);font-size:21px;font-weight:300;color:var(--ivory);letter-spacing:0.04em}
+.nav-links{display:flex;align-items:center;gap:2.2rem}
+.nav-links a{font-family:var(--fb);font-size:13px;color:var(--muted);text-decoration:none;letter-spacing:0.05em;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta-wrap{display:flex;gap:10px;align-items:center}
+.btn-ghost-sm{padding:8px 20px;border:1px solid rgba(201,169,110,0.3);border-radius:3px;background:transparent;color:var(--gold);font-family:var(--fb);font-size:13px;cursor:pointer;transition:all 0.2s;letter-spacing:0.05em}
+.btn-ghost-sm:hover{background:rgba(201,169,110,0.08);border-color:var(--gold)}
+.btn-solid-sm{padding:8px 22px;border:none;border-radius:3px;background:var(--gold);color:var(--navy);font-family:var(--fb);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;letter-spacing:0.05em}
+.btn-solid-sm:hover{background:var(--gold2);transform:translateY(-1px)}
+
+/* ══════════════════════════════════════════
+   HERO — DYNAMIC AI PRACTICE MANAGEMENT
+══════════════════════════════════════════ */
+.hero{min-height:100vh;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:90px 5% 0}
+
+/* Deep space background */
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 100% 80% at 50% 120%,rgba(74,127,168,0.18) 0%,transparent 55%),radial-gradient(ellipse 60% 50% at 85% 15%,rgba(201,169,110,0.09) 0%,transparent 50%),radial-gradient(ellipse 40% 60% at 5% 70%,rgba(16,185,129,0.05) 0%,transparent 50%),var(--navy)}
+
+/* Animated perspective grid — conveying data infrastructure */
+.hero-grid{position:absolute;inset:0;overflow:hidden}
+.hero-grid::before{
+  content:'';position:absolute;
+  width:200%;height:200%;
+  top:-50%;left:-50%;
+  background-image:
+    linear-gradient(rgba(74,127,168,0.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(74,127,168,0.07) 1px,transparent 1px);
+  background-size:60px 60px;
+  animation:gridMove 20s linear infinite;
+  transform-origin:center center;
+}
+@keyframes gridMove{0%{transform:perspective(800px) rotateX(25deg) translateY(0)}100%{transform:perspective(800px) rotateX(25deg) translateY(60px)}}
+
+/* Orbs */
+.orb{position:absolute;border-radius:50%;filter:blur(100px);animation:orbDrift 12s ease-in-out infinite}
+.orb1{width:600px;height:600px;background:rgba(74,127,168,0.13);top:-15%;left:-12%;animation-delay:0s}
+.orb2{width:450px;height:450px;background:rgba(201,169,110,0.08);bottom:5%;right:-10%;animation-delay:-5s}
+.orb3{width:300px;height:300px;background:rgba(16,185,129,0.06);top:35%;right:15%;animation-delay:-9s}
+@keyframes orbDrift{0%,100%{transform:translate(0,0)}33%{transform:translate(24px,-28px)}66%{transform:translate(-18px,22px)}}
+
+/* ── HERO CONTENT ── */
+.hero-content{position:relative;z-index:3;text-align:center;max-width:980px;animation:fadeUp 1s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+.hero-eyebrow{display:flex;align-items:center;justify-content:center;gap:14px;font-family:var(--fm);font-size:10px;letter-spacing:0.3em;color:var(--teal);text-transform:uppercase;margin-bottom:28px;animation:fadeUp 1s ease 0.1s both}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';display:block;width:48px;height:1px;background:linear-gradient(90deg,transparent,var(--teal))}
+.hero-eyebrow::after{background:linear-gradient(90deg,var(--teal),transparent)}
+.hero-h1{font-family:var(--fg);font-size:clamp(3.2rem,7.5vw,7rem);font-weight:300;line-height:0.92;letter-spacing:0.01em;margin-bottom:14px;animation:fadeUp 1s ease 0.2s both}
+.hero-h1 em{font-style:italic;color:var(--gold)}
+.hero-h1 .sub-h{display:block;font-family:var(--fd);font-size:clamp(1rem,2.2vw,2rem);font-weight:600;letter-spacing:0.22em;color:var(--teal2);margin-top:10px;text-transform:uppercase}
+.hero-desc{font-size:clamp(14px,1.6vw,17px);color:rgba(240,236,228,0.48);line-height:1.85;max-width:660px;margin:30px auto 44px;font-weight:300;animation:fadeUp 1s ease 0.38s both}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp 1s ease 0.5s both}
+.btn-hero-primary{padding:17px 48px;background:var(--gold);color:var(--navy);border:none;border-radius:3px;font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:0.16em;cursor:pointer;transition:all 0.28s;text-decoration:none;display:inline-block;position:relative;overflow:hidden}
+.btn-hero-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,0.15) 50%,transparent 60%);transform:translateX(-100%);transition:transform 0.5s}
+.btn-hero-primary:hover::after{transform:translateX(100%)}
+.btn-hero-primary:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 12px 32px rgba(201,169,110,0.3)}
+.btn-hero-ghost{padding:16px 48px;background:transparent;color:var(--ivory);border:1px solid rgba(240,236,228,0.18);border-radius:3px;font-family:var(--fd);font-size:15px;font-weight:600;letter-spacing:0.16em;cursor:pointer;transition:all 0.25s;text-decoration:none;display:inline-block}
+.btn-hero-ghost:hover{border-color:rgba(240,236,228,0.5);background:rgba(240,236,228,0.04);transform:translateY(-2px)}
+
+/* ══════════════════════════════════════════
+   DYNAMIC AI COMMAND CENTER VISUAL
+   Replaces hero image — futuristic live UI
+══════════════════════════════════════════ */
+.hero-visual-wrap{position:relative;z-index:3;width:100%;max-width:1100px;margin:52px auto 0;animation:fadeUp 1s ease 0.65s both;padding-bottom:0}
+.hv-outer{background:rgba(6,14,28,0.8);border:1px solid rgba(74,127,168,0.22);border-radius:14px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.5),0 0 0 1px rgba(201,169,110,0.06) inset;position:relative}
+.hv-outer::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 5%,var(--gold) 35%,var(--teal2) 65%,transparent 95%);animation:topGlow 4s ease-in-out infinite}
+@keyframes topGlow{0%,100%{opacity:0.6}50%{opacity:1}}
+
+/* Window chrome bar */
+.hv-chrome{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:var(--navy2);border-bottom:1px solid rgba(255,255,255,0.05)}
+.hv-chrome-left{display:flex;align-items:center;gap:14px}
+.hv-dots{display:flex;gap:6px}
+.hv-dot{width:11px;height:11px;border-radius:50%}
+.hv-chrome-title{font-family:var(--fm);font-size:10px;color:var(--teal);letter-spacing:0.16em;text-transform:uppercase}
+.hv-chrome-right{display:flex;align-items:center;gap:16px}
+.hv-status{display:flex;align-items:center;gap:5px;font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:0.1em}
+.hv-status-dot{width:5px;height:5px;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* Dashboard grid inside visual */
+.hv-body{display:grid;grid-template-columns:180px 1fr 260px;grid-template-rows:auto;min-height:380px}
+
+/* Left sidebar */
+.hv-sidebar{background:var(--navy2);border-right:1px solid rgba(255,255,255,0.05);padding:16px 0}
+.hv-sb-section{font-family:var(--fm);font-size:8px;letter-spacing:0.2em;color:var(--muted2);text-transform:uppercase;padding:8px 14px 4px}
+.hv-sb-item{display:flex;align-items:center;gap:9px;padding:9px 14px;cursor:pointer;transition:background 0.15s;font-family:var(--fb);font-size:12px;color:var(--muted);position:relative}
+.hv-sb-item:hover,.hv-sb-item.active{background:rgba(201,169,110,0.07);color:var(--ivory)}
+.hv-sb-item.active{color:var(--gold)}
+.hv-sb-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold);border-radius:0 2px 2px 0}
+.hv-sb-badge{margin-left:auto;font-family:var(--fm);font-size:9px;padding:1px 6px;border-radius:2px;background:rgba(225,29,72,0.18);color:#ff8fa8}
+.hv-sb-badge.green{background:rgba(16,185,129,0.15);color:var(--green2)}
+.hv-sb-badge.gold{background:rgba(201,169,110,0.15);color:var(--gold)}
+
+/* Center main panel */
+.hv-main{padding:18px;overflow:hidden;display:flex;flex-direction:column;gap:12px}
+
+/* KPI metrics row */
+.hv-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.hv-metric{background:var(--navy4);border-radius:7px;padding:12px;border:1px solid rgba(255,255,255,0.04);position:relative;overflow:hidden}
+.hv-metric::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.hv-m-teal::after{background:var(--teal);opacity:0.5}
+.hv-m-gold::after{background:var(--gold);opacity:0.6}
+.hv-m-green::after{background:var(--green);opacity:0.5}
+.hv-m-red::after{background:var(--red);opacity:0.4}
+.hv-metric-label{font-family:var(--fm);font-size:8px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;margin-bottom:5px}
+.hv-metric-val{font-family:var(--fd);font-size:20px;font-weight:700;line-height:1}
+.hv-metric-delta{font-family:var(--fm);font-size:9px;margin-top:3px}
+.delta-up{color:var(--green2)}
+.delta-dn{color:#ff8fa8}
+
+/* Revenue chart bars */
+.hv-chart{background:var(--navy4);border-radius:7px;padding:12px 14px;border:1px solid rgba(255,255,255,0.04)}
+.hv-chart-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.hv-chart-title{font-family:var(--fm);font-size:9px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase}
+.hv-chart-val{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--gold)}
+.hv-bars{display:flex;align-items:flex-end;gap:5px;height:60px}
+.hv-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.hv-bar{width:100%;border-radius:2px 2px 0 0;transition:height 0.6s ease;position:relative;overflow:hidden}
+.hv-bar::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,transparent,rgba(255,255,255,0.12))}
+.hv-bar-gold{background:var(--gold);opacity:0.8}
+.hv-bar-teal{background:var(--teal);opacity:0.7}
+.hv-bar-label{font-family:var(--fm);font-size:8px;color:var(--muted)}
+
+/* Patient queue */
+.hv-table-wrap{flex:1;overflow:hidden}
+.hv-table{width:100%;border-collapse:collapse}
+.hv-table th{font-family:var(--fm);font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:left}
+.hv-table td{font-family:var(--fb);font-size:11px;padding:8px 8px;border-bottom:1px solid rgba(255,255,255,0.03);vertical-align:middle}
+.hv-pill{display:inline-block;padding:2px 7px;border-radius:2px;font-family:var(--fm);font-size:8px;letter-spacing:0.08em}
+.hv-pill-green{background:rgba(16,185,129,0.15);color:var(--green2)}
+.hv-pill-amber{background:rgba(245,158,11,0.12);color:#fcd34d}
+.hv-pill-red{background:rgba(225,29,72,0.12);color:#ff8fa8}
+.hv-pill-teal{background:rgba(74,127,168,0.15);color:var(--teal2)}
+.hv-flag-badge{font-family:var(--fm);font-size:8px;padding:2px 6px;border-radius:2px;background:rgba(225,29,72,0.15);color:#ff8fa8;font-weight:600}
+.hv-name{color:var(--ivory);font-weight:500}
+
+/* Right AI panel */
+.hv-ai-panel{border-left:1px solid rgba(255,255,255,0.05);padding:16px;display:flex;flex-direction:column;gap:10px;background:rgba(6,14,28,0.4)}
+.hv-ai-hdr{font-family:var(--fm);font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--teal);display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.hv-ai-pulse{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:pulse 1.5s infinite}
+.hv-ai-flag{border-radius:5px;padding:8px 10px 8px 12px;border-left:2px solid;font-family:var(--fb);font-size:11px;line-height:1.4;position:relative;opacity:0;transform:translateX(10px);transition:all 0.4s}
+.hv-ai-flag.show{opacity:1;transform:translateX(0)}
+.hv-ai-flag-cat{font-family:var(--fm);font-size:8px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px}
+.hv-ai-crit{background:rgba(225,29,72,0.08);border-color:var(--red)}
+.hv-ai-warn{background:rgba(245,158,11,0.08);border-color:var(--amber)}
+.hv-ai-info{background:rgba(74,127,168,0.1);border-color:var(--teal)}
+.hv-ai-crit .hv-ai-flag-cat{color:#ff8fa8}
+.hv-ai-warn .hv-ai-flag-cat{color:#fcd34d}
+.hv-ai-info .hv-ai-flag-cat{color:var(--teal2)}
+.hv-ai-flag-text{color:rgba(240,236,228,0.6);font-size:11px}
+
+/* Risk score gauge */
+.hv-risk{background:rgba(225,29,72,0.06);border:1px solid rgba(225,29,72,0.15);border-radius:6px;padding:10px}
+.hv-risk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.hv-risk-label{font-family:var(--fm);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)}
+.hv-risk-val{font-family:var(--fd);font-size:22px;font-weight:700;color:#ff8fa8;line-height:1}
+.hv-risk-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
+.hv-risk-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--red));border-radius:2px;transition:width 1s ease}
+
+/* Billing mini chart */
+.hv-billing{background:var(--navy4);border-radius:6px;padding:10px;border:1px solid rgba(255,255,255,0.04)}
+.hv-billing-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.hv-billing-label{font-family:var(--fm);font-size:8px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase}
+.hv-billing-val{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--gold)}
+.hv-billing-bars{display:flex;gap:3px;align-items:flex-end;height:32px}
+.hv-bb{width:100%;border-radius:1px 1px 0 0;background:rgba(201,169,110,0.3)}
+
+/* Floating data particles outside visual */
+.hv-particle{position:absolute;font-family:var(--fm);font-size:9px;color:var(--teal);opacity:0;letter-spacing:0.08em;animation:particleFloat 7s ease-in-out infinite;pointer-events:none;white-space:nowrap;z-index:2}
+@keyframes particleFloat{0%,100%{opacity:0;transform:translateY(0)}20%,80%{opacity:0.14}50%{opacity:0.22;transform:translateY(-14px)}}
+
+/* ── HERO STATS BAR ── */
+.hero-stats-bar{position:relative;z-index:3;width:100%;max-width:1000px;margin:36px auto 60px;display:flex;justify-content:center;gap:0;animation:fadeUp 1s ease 0.8s both}
+.hstat{flex:1;text-align:center;padding:20px 10px;border-right:1px solid rgba(255,255,255,0.06);position:relative}
+.hstat:last-child{border-right:none}
+.hstat::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,110,0.2),transparent)}
+.hstat-val{font-family:var(--fg);font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:300;color:var(--gold);line-height:1}
+.hstat-label{font-family:var(--fm);font-size:9px;letter-spacing:0.18em;color:var(--muted);text-transform:uppercase;margin-top:5px}
+
+/* ── SHARED LAYOUT ── */
+.full-divider{padding:0 5%}
+.divider-line{height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,110,0.12),transparent);max-width:1400px;margin:0 auto}
+section{padding:100px 5%;max-width:1400px;margin:0 auto}
+.sec-label{font-family:var(--fm);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--teal);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sec-label::before{content:'';width:32px;height:1px;background:var(--teal)}
+.sec-title{font-family:var(--fg);font-size:clamp(2rem,3.8vw,3.6rem);font-weight:300;line-height:1.1;letter-spacing:0.02em;margin-bottom:18px}
+.sec-title em{font-style:italic;color:var(--gold)}
+.sec-body{font-family:var(--fb);font-size:15px;color:rgba(240,236,228,0.45);line-height:1.9;font-weight:300;max-width:560px}
+
+/* ── FEATURES ── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(74,127,168,0.08);border:1px solid rgba(74,127,168,0.08);border-radius:10px;overflow:hidden;margin-top:52px}
+.feat-card{background:var(--navy2);padding:30px 26px;transition:background 0.25s;position:relative;overflow:hidden;cursor:default}
+.feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,110,0.5),transparent);transform:scaleX(0);transition:transform 0.4s}
+.feat-card:hover{background:var(--navy3)}
+.feat-card:hover::before{transform:scaleX(1)}
+.feat-icon-wrap{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;border:1px solid rgba(74,127,168,0.2)}
+.feat-num{font-family:var(--fm);font-size:9px;color:var(--gold);opacity:0.5;letter-spacing:0.14em;margin-bottom:8px}
+.feat-name{font-family:var(--fg);font-size:1.45rem;font-weight:400;color:var(--ivory);margin-bottom:10px;letter-spacing:0.02em}
+.feat-desc{font-family:var(--fb);font-size:13px;color:rgba(240,236,228,0.42);line-height:1.75;font-weight:300}
+.feat-tag{display:inline-block;margin-top:14px;font-family:var(--fm);font-size:9px;letter-spacing:0.1em;padding:3px 10px;border-radius:2px;background:rgba(74,127,168,0.1);color:var(--teal2)}
+
+/* ── VALUE PROPS ── */
+.value-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;margin-top:0}
+.value-numbers{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.value-card{background:var(--navy3);border:1px solid rgba(74,127,168,0.12);border-radius:10px;padding:24px;position:relative;overflow:hidden;transition:transform 0.2s}
+.value-card:hover{transform:translateY(-3px)}
+.value-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.vc-gold::before{background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.vc-teal::before{background:linear-gradient(90deg,transparent,var(--teal2),transparent)}
+.vc-green::before{background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.vc-red::before{background:linear-gradient(90deg,transparent,var(--red),transparent)}
+.value-number{font-family:var(--fg);font-size:3.2rem;font-weight:300;line-height:1;margin-bottom:6px}
+.vn-gold{color:var(--gold)}
+.vn-teal{color:var(--teal2)}
+.vn-green{color:var(--green2)}
+.vn-red{color:#ff8fa8}
+.value-metric{font-family:var(--fm);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px}
+.value-metric-gold{color:var(--gold)}
+.value-metric-teal{color:var(--teal2)}
+.value-metric-green{color:var(--green)}
+.value-metric-red{color:var(--red)}
+.value-desc{font-family:var(--fb);font-size:12px;color:rgba(240,236,228,0.4);line-height:1.6}
+
+/* ── COMPARE ── */
+.compare-table{width:100%;border-collapse:collapse;margin-top:48px;font-size:13px}
+.compare-table th{padding:12px 14px;font-family:var(--fm);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.07);text-align:left}
+.compare-table th:first-child{color:var(--muted);width:260px}
+.col-us-h{background:rgba(201,169,110,0.08);color:var(--gold)!important;border-top:2px solid var(--gold)!important;border-bottom-color:rgba(201,169,110,0.25)!important}
+.col-o{color:rgba(240,236,228,0.28)!important}
+.compare-table td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);font-family:var(--fb)}
+.compare-table td:first-child{color:rgba(240,236,228,0.45);font-size:12px}
+.col-us-d{background:rgba(201,169,110,0.04)}
+.compare-table tr:hover td{background:rgba(255,255,255,0.015)}
+.compare-table tr:hover .col-us-d{background:rgba(201,169,110,0.07)}
+.ck{color:var(--green);font-size:14px}
+.cx{color:rgba(255,255,255,0.12);font-size:14px}
+.cp{color:var(--amber);font-size:11px;font-family:var(--fm)}
+
+/* ── PRICING ── */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:52px}
+.price-card{background:var(--navy3);border:1px solid rgba(74,127,168,0.13);border-radius:10px;padding:30px 26px;position:relative;overflow:hidden;transition:transform 0.2s}
+.price-card:hover{transform:translateY(-4px)}
+.price-card.featured{border-color:rgba(201,169,110,0.3);background:var(--navy4)}
+.price-card.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.price-badge{position:absolute;top:14px;right:14px;font-family:var(--fm);font-size:8px;letter-spacing:0.14em;padding:4px 10px;border-radius:2px;background:rgba(201,169,110,0.14);color:var(--gold);text-transform:uppercase}
+.price-tier{font-family:var(--fm);font-size:9px;letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.price-name{font-family:var(--fg);font-size:1.7rem;font-weight:400;color:var(--ivory);margin-bottom:4px}
+.price-amount{font-family:var(--fd);font-size:2.8rem;font-weight:700;color:var(--gold);line-height:1;margin:14px 0 4px}
+.price-amount sup{font-size:1.1rem;vertical-align:top;margin-top:6px}
+.price-amount sub{font-family:var(--fb);font-size:13px;font-weight:300;color:var(--muted)}
+.price-sub-desc{font-family:var(--fb);font-size:12px;color:rgba(240,236,228,0.35);line-height:1.6;margin-bottom:22px;font-weight:300}
+.price-hr{height:1px;background:rgba(255,255,255,0.07);margin-bottom:18px}
+.pf{display:flex;align-items:flex-start;gap:9px;margin-bottom:9px;font-family:var(--fb);font-size:12px;color:rgba(240,236,228,0.55)}
+.pf-dot{width:4px;height:4px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:7px}
+.pf-dot.gd{background:var(--gold)}
+.price-cta{display:block;width:100%;padding:12px;border-radius:4px;font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;text-align:center;text-decoration:none;margin-top:22px;border:none}
+.pc-ghost{background:transparent;border:1px solid rgba(74,127,168,0.28)!important;color:var(--teal2)}
+.pc-ghost:hover{background:rgba(74,127,168,0.09)}
+.pc-primary{background:var(--gold);color:var(--navy)}
+.pc-primary:hover{background:var(--gold2);transform:translateY(-1px)}
+
+/* ── SECURITY ── */
+.sec-grid{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center}
+.sec-tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sec-tile{background:var(--navy3);border:1px solid rgba(74,127,168,0.13);border-radius:8px;padding:18px}
+.sec-tile-label{font-family:var(--fm);font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:var(--teal);margin-bottom:7px}
+.sec-tile-title{font-family:var(--fd);font-size:15px;font-weight:600;color:var(--ivory);margin-bottom:5px}
+.sec-tile-body{font-family:var(--fb);font-size:12px;color:rgba(240,236,228,0.38);line-height:1.6}
+
+/* ── LOGIN MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(6,14,28,0.93);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(16px)}
+.overlay.open{opacity:1;pointer-events:all}
+.login-box{background:var(--navy3);border:1px solid rgba(201,169,110,0.2);border-radius:14px;width:440px;max-width:92vw;position:relative;overflow:hidden;transform:translateY(18px) scale(0.97);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1)}
+.overlay.open .login-box{transform:translateY(0) scale(1)}
+.login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.lb-hdr{padding:26px 26px 18px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.lb-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.lb-title{font-family:var(--fg);font-size:1.75rem;font-weight:300;color:var(--ivory);letter-spacing:0.04em}
+.lb-sub{font-family:var(--fb);font-size:12px;color:rgba(240,236,228,0.35);margin-top:3px}
+.lb-body{padding:22px 26px}
+.lb-label{font-family:var(--fm);font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+.lb-input{width:100%;background:var(--navy2);border:1px solid rgba(74,127,168,0.2);border-radius:5px;padding:10px 13px;font-family:var(--fm);font-size:12px;color:var(--ivory);outline:none;margin-bottom:14px;transition:border-color 0.2s}
+.lb-input:focus{border-color:rgba(201,169,110,0.4)}
+.lb-or{display:flex;align-items:center;gap:10px;margin:2px 0 14px;font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:0.1em}
+.lb-or::before,.lb-or::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.07)}
+.lb-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px;border:1px solid rgba(255,255,255,0.1);border-radius:5px;background:transparent;color:var(--ivory);font-family:var(--fb);font-size:13px;cursor:pointer;transition:all 0.2s;margin-bottom:14px}
+.lb-google:hover{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.18)}
+.mfa-box{background:rgba(201,169,110,0.05);border:1px solid rgba(201,169,110,0.14);border-radius:7px;padding:14px;margin-bottom:14px;display:none}
+.mfa-box.show{display:block}
+.mfa-hdr{font-family:var(--fm);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.mfa-desc{font-family:var(--fb);font-size:11px;color:rgba(240,236,228,0.4);line-height:1.6;margin-bottom:10px}
+.mfa-digits{display:flex;gap:6px;justify-content:center}
+.mfa-d{width:42px;height:50px;background:var(--navy2);border:1px solid rgba(201,169,110,0.2);border-radius:5px;text-align:center;font-family:var(--fd);font-size:20px;font-weight:700;color:var(--gold);outline:none;transition:border-color 0.2s}
+.mfa-d:focus{border-color:rgba(201,169,110,0.6)}
+.lb-btn{width:100%;padding:12px;border:none;border-radius:5px;background:var(--gold);color:var(--navy);font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s}
+.lb-btn:hover{background:var(--gold2)}
+.lb-secure{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:12px;font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:0.08em}
+.lb-close{position:absolute;top:14px;right:14px;width:27px;height:27px;border-radius:5px;border:1px solid rgba(255,255,255,0.09);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.15s}
+.lb-close:hover{color:var(--ivory);border-color:rgba(255,255,255,0.2)}
+.lb-footer{padding:13px 26px;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between}
+.lb-flink{font-family:var(--fb);font-size:12px;color:var(--muted);cursor:pointer;transition:color 0.2s}
+.lb-flink:hover{color:var(--teal2)}
+
+/* ── FOOTER ── */
+.site-footer{background:var(--navy2);border-top:1px solid rgba(255,255,255,0.05);padding:56px 5% 28px}
+.footer-inner{max-width:1400px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;margin-bottom:44px}
+.footer-brand-name{font-family:var(--fg);font-size:1.3rem;font-weight:300;color:var(--ivory);margin-bottom:10px;letter-spacing:0.04em}
+.footer-brand-desc{font-family:var(--fb);font-size:12px;color:rgba(240,236,228,0.3);line-height:1.7;font-weight:300}
+.footer-col-title{font-family:var(--fm);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:7px}
+.footer-links a{font-family:var(--fb);font-size:12px;color:rgba(240,236,228,0.3);text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:var(--gold)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:22px;border-top:1px solid rgba(255,255,255,0.05)}
+.footer-copy{font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:0.08em}
+.footer-hipaa{display:flex;align-items:center;gap:5px;font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:0.1em}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:1000px){.hv-body{grid-template-columns:1fr}.hv-sidebar,.hv-ai-panel{display:none}.feat-grid{grid-template-columns:1fr 1fr}.price-grid{grid-template-columns:1fr}.footer-top{grid-template-columns:1fr 1fr}.sec-grid,.value-grid{grid-template-columns:1fr}.nav-links{display:none}}
+@media(max-width:640px){.feat-grid{grid-template-columns:1fr}.hero-stats-bar{flex-direction:column;gap:0}.hstat{border-right:none;border-bottom:1px solid rgba(255,255,255,0.06)}.hstat:last-child{border-bottom:none}}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <svg width="34" height="34" viewBox="0 0 44 44" fill="none">
+      <circle cx="22" cy="22" r="18" stroke="#c9a96e" stroke-width="0.75" opacity="0.5"/>
+      <path d="M22 4C30 12 33 17 33 22C33 27 30 32 22 40C14 32 11 27 11 22C11 17 14 12 22 4Z" fill="none" stroke="#f0ece4" stroke-width="1" opacity="0.7"/>
+      <circle cx="22" cy="22" r="3" fill="#c9a96e"/>
+    </svg>
+    <div class="nav-brand">
+      <span class="nav-brand-sub">PatientTrac</span>
+      <span class="nav-brand-name">Forge</span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#roi">ROI</a>
+    <a href="#compare">Compare</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#security">Security</a>
+    <a href="mailto:sales@patienttrac.com">Contact</a>
+  </div>
+  <div class="nav-cta-wrap">
+    <button class="btn-ghost-sm" onclick="openLogin()">Sign in</button>
+    <button class="btn-solid-sm" onclick="openLogin()">Start free trial</button>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <!-- Floating data particles -->
+  <div class="hv-particle" style="top:22%;left:3%;animation-delay:0s">A/R aging: $48,200 outstanding</div>
+  <div class="hv-particle" style="top:38%;right:2%;animation-delay:-3s">AI CPT suggestion: 99214 · conf 97%</div>
+  <div class="hv-particle" style="bottom:38%;left:2%;animation-delay:-6s">Eligibility verified · Aetna PPO · Active</div>
+  <div class="hv-particle" style="bottom:28%;right:3%;animation-delay:-2s">Risk score 78 · OR clearance: HOLD</div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">AI-Powered Practice Management</div>
+    <h1 class="hero-h1">
+      Your practice,<br><em>intelligently</em> run.
+      <span class="sub-h">PatientTracForge</span>
+    </h1>
+    <p class="hero-desc">The only practice management platform built on clinical heritage and redesigned for AI — handling scheduling, billing, insurance, and patient data with the confidence of 20+ years of experience and the intelligence of 2026.</p>
+    <div class="hero-ctas">
+      <a href="#" class="btn-hero-primary" onclick="openLogin();return false">Start your free 30-day trial</a>
+      <a href="#features" class="btn-hero-ghost">See all features</a>
+    </div>
+  </div>
+
+  <!-- ═══ DYNAMIC AI COMMAND CENTER ═══ -->
+  <div class="hero-visual-wrap">
+    <div class="hv-outer">
+      <!-- Chrome bar -->
+      <div class="hv-chrome">
+        <div class="hv-chrome-left">
+          <div class="hv-dots">
+            <div class="hv-dot" style="background:#e11d48;opacity:0.7"></div>
+            <div class="hv-dot" style="background:#f59e0b;opacity:0.7"></div>
+            <div class="hv-dot" style="background:#10b981;opacity:0.7"></div>
+          </div>
+          <span class="hv-chrome-title">PatientTracForge · Practice Command Center</span>
+        </div>
+        <div class="hv-chrome-right">
+          <div class="hv-status"><div class="hv-status-dot" style="background:var(--green)"></div>Supabase · Live</div>
+          <div class="hv-status"><div class="hv-status-dot" style="background:var(--teal)"></div>AI · Active</div>
+          <div class="hv-status"><div class="hv-status-dot" style="background:var(--red);animation-duration:0.8s"></div>2 Critical flags</div>
+        </div>
+      </div>
+
+      <!-- Dashboard body -->
+      <div class="hv-body">
+
+        <!-- LEFT SIDEBAR -->
+        <div class="hv-sidebar">
+          <div class="hv-sb-section">Practice</div>
+          <div class="hv-sb-item active">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+          </div>
+          <div class="hv-sb-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            Patients
+            <span class="hv-sb-badge">14</span>
+          </div>
+          <div class="hv-sb-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Schedule
+          </div>
+          <div class="hv-sb-section">Billing</div>
+          <div class="hv-sb-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Billing
+            <span class="hv-sb-badge gold">$48K A/R</span>
+          </div>
+          <div class="hv-sb-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            Superbills
+            <span class="hv-sb-badge green">3 new</span>
+          </div>
+          <div class="hv-sb-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+            Insurance
+          </div>
+          <div class="hv-sb-section">AI Tools</div>
+          <div class="hv-sb-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+            Risk flags
+            <span class="hv-sb-badge">6</span>
+          </div>
+        </div>
+
+        <!-- CENTER MAIN -->
+        <div class="hv-main">
+          <!-- KPI row -->
+          <div class="hv-metrics">
+            <div class="hv-metric hv-m-gold">
+              <div class="hv-metric-label">MTD Revenue</div>
+              <div class="hv-metric-val" style="color:var(--gold)">$284K</div>
+              <div class="hv-metric-delta delta-up">↑ +18% vs last month</div>
+            </div>
+            <div class="hv-metric hv-m-teal">
+              <div class="hv-metric-label">Patients today</div>
+              <div class="hv-metric-val" style="color:var(--teal2)">14</div>
+              <div class="hv-metric-delta delta-up">↑ +2 from yesterday</div>
+            </div>
+            <div class="hv-metric hv-m-green">
+              <div class="hv-metric-val" style="color:var(--green2);font-size:16px;margin-top:2px">94%</div>
+              <div class="hv-metric-label" style="margin-top:3px">Claim approval rate</div>
+              <div class="hv-metric-delta delta-up">↑ Above 90% target</div>
+            </div>
+            <div class="hv-metric hv-m-red">
+              <div class="hv-metric-label">Denial risk flags</div>
+              <div class="hv-metric-val" style="color:#ff8fa8">3</div>
+              <div class="hv-metric-delta delta-dn">AI review recommended</div>
+            </div>
+          </div>
+
+          <!-- Revenue chart -->
+          <div class="hv-chart">
+            <div class="hv-chart-hdr">
+              <span class="hv-chart-title">Monthly revenue — last 6 months</span>
+              <span class="hv-chart-val">$284,210 MTD</span>
+            </div>
+            <div class="hv-bars">
+              <div class="hv-bar-wrap"><div class="hv-bar hv-bar-teal" style="height:38px"></div><span class="hv-bar-label">Nov</span></div>
+              <div class="hv-bar-wrap"><div class="hv-bar hv-bar-teal" style="height:44px"></div><span class="hv-bar-label">Dec</span></div>
+              <div class="hv-bar-wrap"><div class="hv-bar hv-bar-teal" style="height:36px"></div><span class="hv-bar-label">Jan</span></div>
+              <div class="hv-bar-wrap"><div class="hv-bar hv-bar-teal" style="height:48px"></div><span class="hv-bar-label">Feb</span></div>
+              <div class="hv-bar-wrap"><div class="hv-bar hv-bar-gold" style="height:52px"></div><span class="hv-bar-label">Mar</span></div>
+              <div class="hv-bar-wrap"><div class="hv-bar hv-bar-gold" style="height:56px"></div><span class="hv-bar-label">Apr</span></div>
+            </div>
+          </div>
+
+          <!-- Patient queue table -->
+          <div class="hv-table-wrap">
+            <table class="hv-table">
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Procedure</th>
+                  <th>Insurance</th>
+                  <th>Status</th>
+                  <th>AI flags</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="hv-name">Sarah L.</span></td>
+                  <td style="color:rgba(240,236,228,0.45)">Rhinoplasty consult</td>
+                  <td style="color:rgba(240,236,228,0.45)">Aetna PPO</td>
+                  <td><span class="hv-pill hv-pill-teal">Consult · 9:00 AM</span></td>
+                  <td style="color:rgba(240,236,228,0.2)">—</td>
+                </tr>
+                <tr>
+                  <td><span class="hv-name">Marcus K.</span></td>
+                  <td style="color:rgba(240,236,228,0.45)">Post-op facelift</td>
+                  <td style="color:rgba(240,236,228,0.45)">BCBS</td>
+                  <td><span class="hv-pill hv-pill-green">Checked in</span></td>
+                  <td style="color:rgba(240,236,228,0.2)">—</td>
+                </tr>
+                <tr>
+                  <td><span class="hv-name">Jennifer T.</span></td>
+                  <td style="color:rgba(240,236,228,0.45)">Breast reconstruction</td>
+                  <td style="color:rgba(240,236,228,0.45)">UHC</td>
+                  <td><span class="hv-pill hv-pill-red">OR Hold</span></td>
+                  <td><span class="hv-flag-badge">2 Critical</span></td>
+                </tr>
+                <tr>
+                  <td><span class="hv-name">Angela M.</span></td>
+                  <td style="color:rgba(240,236,228,0.45)">Abdominoplasty</td>
+                  <td style="color:rgba(240,236,228,0.45)">Medicare</td>
+                  <td><span class="hv-pill hv-pill-amber">Pre-op · 3:30 PM</span></td>
+                  <td><span class="hv-flag-badge" style="background:rgba(245,158,11,0.15);color:#fcd34d">1 Warning</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- RIGHT AI PANEL -->
+        <div class="hv-ai-panel">
+          <div class="hv-ai-hdr">
+            <div class="hv-ai-pulse"></div>
+            AI intelligence · Live
+          </div>
+
+          <div class="hv-ai-flag hv-ai-crit" id="hf1">
+            <div class="hv-ai-flag-cat">Critical · Cardiovascular</div>
+            <div class="hv-ai-flag-text">BP 158/96 — cardiology clearance required</div>
+          </div>
+          <div class="hv-ai-flag hv-ai-crit" id="hf2">
+            <div class="hv-ai-flag-cat">Critical · Prior radiation</div>
+            <div class="hv-ai-flag-text">Chest XRT — implant failure 3× elevated</div>
+          </div>
+          <div class="hv-ai-flag hv-ai-warn" id="hf3">
+            <div class="hv-ai-flag-cat">Warning · Family history</div>
+            <div class="hv-ai-flag-text">Paternal MI age 52 — ECG needed</div>
+          </div>
+          <div class="hv-ai-flag hv-ai-info" id="hf4">
+            <div class="hv-ai-flag-cat">Info · Billing · Angela M.</div>
+            <div class="hv-ai-flag-text">AI suggests CPT 15877 · conf 94%</div>
+          </div>
+
+          <div class="hv-risk">
+            <div class="hv-risk-top">
+              <span class="hv-risk-label">Risk score · Jennifer T.</span>
+              <span class="hv-risk-val">78</span>
+            </div>
+            <div class="hv-risk-bar"><div class="hv-risk-fill" id="riskFill" style="width:0%"></div></div>
+          </div>
+
+          <div class="hv-billing">
+            <div class="hv-billing-hdr">
+              <span class="hv-billing-label">A/R aging</span>
+              <span class="hv-billing-val">$48,200</span>
+            </div>
+            <div class="hv-billing-bars">
+              <div class="hv-bb" style="height:28px;opacity:0.5"></div>
+              <div class="hv-bb" style="height:20px;opacity:0.4"></div>
+              <div class="hv-bb" style="height:32px;opacity:0.6"></div>
+              <div class="hv-bb" style="height:18px;opacity:0.35"></div>
+              <div class="hv-bb" style="height:24px;background:rgba(225,29,72,0.4);opacity:0.7"></div>
+            </div>
+          </div>
+
+          <div style="font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:0.08em;text-align:center;padding-top:4px">
+            Powered by Claude · Anthropic
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="hero-stats-bar">
+  <div class="hstat">
+    <div class="hstat-val">20+</div>
+    <div class="hstat-label">Years clinical heritage</div>
+  </div>
+  <div class="hstat">
+    <div class="hstat-val">94%</div>
+    <div class="hstat-label">Average claim approval</div>
+  </div>
+  <div class="hstat">
+    <div class="hstat-val">$284K</div>
+    <div class="hstat-label">Avg monthly revenue tracked</div>
+  </div>
+  <div class="hstat">
+    <div class="hstat-val">12</div>
+    <div class="hstat-label">AI risk categories</div>
+  </div>
+  <div class="hstat">
+    <div class="hstat-val">3</div>
+    <div class="hstat-label">Clinical specialty modules</div>
+  </div>
+</div>
+
+<div class="full-divider"><div class="divider-line"></div></div>
+
+<!-- ═══ FEATURES ═══ -->
+<section id="features">
+  <div class="reveal">
+    <div class="sec-label">Platform Features</div>
+    <h2 class="sec-title">Every tool your practice<br>needs. <em>Unified by AI.</em></h2>
+    <p class="sec-body">PatientTracForge replaces five disconnected systems with one AI-powered platform — so your team spends less time on administration and more time on patient care.</p>
+  </div>
+  <div class="feat-grid reveal" style="transition-delay:0.15s">
+    <div class="feat-card">
+      <div class="feat-icon-wrap" style="background:rgba(201,169,110,0.08)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+      <div class="feat-num">01</div>
+      <div class="feat-name">Smart Scheduling</div>
+      <p class="feat-desc">Multi-provider drag-and-drop calendar with AI slot recommendations, conflict detection, automated reminders, and OR suite coordination across all specialties.</p>
+      <span class="feat-tag">Multi-provider · OR suites · Reminders</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap" style="background:rgba(16,185,129,0.08)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+      <div class="feat-num">02</div>
+      <div class="feat-name">AI Billing Engine</div>
+      <p class="feat-desc">AI-generated CPT and ICD-10 code suggestions with confidence scores. Denial risk prediction before submission. A/R aging dashboards. Direct ERA posting.</p>
+      <span class="feat-tag">CPT · ICD-10 · 94% approval rate</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap" style="background:rgba(74,127,168,0.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6fb3d9" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+      <div class="feat-num">03</div>
+      <div class="feat-name">Patient Registration</div>
+      <p class="feat-desc">Complete demographics — US and 16 international formats, smart ZIP lookup, photo upload, emergency contacts, digital consent, and insurance card capture in one workflow.</p>
+      <span class="feat-tag">US + 16 countries · Digital consent</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap" style="background:rgba(245,158,11,0.08)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <div class="feat-num">04</div>
+      <div class="feat-name">AI Risk Intelligence</div>
+      <p class="feat-desc">12 clinical risk categories assessed before every visit — cardiovascular, family history, substance use, medications, surgical history. Composite 0–100 risk score with OR clearance status.</p>
+      <span class="feat-tag">12 categories · Pre-visit briefing</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap" style="background:rgba(74,127,168,0.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6fb3d9" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6m-6 4h4"/></svg></div>
+      <div class="feat-num">05</div>
+      <div class="feat-name">Insurance Management</div>
+      <p class="feat-desc">Primary, secondary, and tertiary coverage. Real-time eligibility verification. Automated prior auth tracking. ERA reconciliation. Copay and deductible management.</p>
+      <span class="feat-tag">Real-time eligibility · ERA posting</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap" style="background:rgba(201,169,110,0.08)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="1.5"><rect x="8" y="8" width="4" height="4"/><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M21 16h-3a2 2 0 00-2 2v3m5-5v5h-5"/></svg></div>
+      <div class="feat-num">06</div>
+      <div class="feat-name">Specialty Modules</div>
+      <p class="feat-desc">Revela for plastic surgery. Mental Health for behavioral health. Each clinical module shares the same patient record and encounter — one chart, unlimited clinical depth.</p>
+      <span class="feat-tag">Revela · Mental Health · More coming</span>
+    </div>
+  </div>
+</section>
+
+<div class="full-divider"><div class="divider-line"></div></div>
+
+<!-- ═══ ROI / VALUE PROPS ═══ -->
+<section id="roi">
+  <div class="value-grid">
+    <div class="reveal">
+      <div class="sec-label">Practice ROI</div>
+      <h2 class="sec-title">AI efficiency means<br><em>real revenue gains.</em></h2>
+      <p class="sec-body" style="margin-bottom:20px">Most practices using PatientTracForge see measurable improvement in claim approval rates, A/R days outstanding, and administrative time within the first 90 days.</p>
+      <p class="sec-body">Our AI billing engine alone typically recovers 8–12% of previously denied or undercoded claims — paying for the platform many times over.</p>
+      <a href="#" class="btn-hero-primary" style="margin-top:32px;display:inline-block;font-size:14px;padding:14px 36px" onclick="openLogin();return false">Calculate your ROI →</a>
+    </div>
+    <div class="value-numbers reveal" style="transition-delay:0.2s">
+      <div class="value-card vc-gold">
+        <div class="value-number vn-gold">18%</div>
+        <div class="value-metric value-metric-gold">Revenue increase</div>
+        <div class="value-desc">Average revenue increase in first 6 months from AI CPT optimization and denial reduction</div>
+      </div>
+      <div class="value-card vc-teal">
+        <div class="value-number vn-teal">12</div>
+        <div class="value-metric value-metric-teal">Days less in A/R</div>
+        <div class="value-desc">Average reduction in days outstanding through automated ERA posting and AI denial alerts</div>
+      </div>
+      <div class="value-card vc-green">
+        <div class="value-number vn-green">3.2 hrs</div>
+        <div class="value-metric value-metric-green">Saved daily</div>
+        <div class="value-desc">Admin time saved per provider per day through AI intake, auto-coding, and smart scheduling</div>
+      </div>
+      <div class="value-card vc-red">
+        <div class="value-number vn-red">94%</div>
+        <div class="value-metric value-metric-red">Claim approval</div>
+        <div class="value-desc">Average first-pass claim approval rate — vs 76% industry average for manual coding practices</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="full-divider"><div class="divider-line"></div></div>
+
+<!-- ═══ COMPARE ═══ -->
+<section id="compare" class="reveal">
+  <div class="sec-label">Comparison</div>
+  <h2 class="sec-title">How PatientTracForge<br>compares to <em>alternatives.</em></h2>
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th class="col-us-h">PatientTracForge</th>
+        <th class="col-o">Athenahealth</th>
+        <th class="col-o">Kareo</th>
+        <th class="col-o">DrChrono</th>
+        <th class="col-o">Jane App</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>AI pre-visit risk assessment</td><td class="col-us-d"><span class="ck">✓</span> 12 categories</td><td class="col-o"><span class="cx">✗</span></td><td class="col-o"><span class="cx">✗</span></td><td class="col-o"><span class="cx">✗</span></td><td class="col-o"><span class="cx">✗</span></td></tr>
+      <tr><td>AI CPT/ICD code suggestions</td><td class="col-us-d"><span class="ck">✓</span> + denial risk score</td><td class="col-o"><span class="cp">Partial</span></td><td class="col-o"><span class="cx">✗</span></td><td class="col-o"><span class="cp">Partial</span></td><td class="col-o"><span class="cx">✗</span></td></tr>
+      <tr><td>Plastic surgery clinical module</td><td class="col-us-d"><span class="ck">✓</span> Revela</td><td class="col-o"><span class="cp">Partial</span></td><td class="col-o"><span class="cx">✗</span></td><td class="col-o"><span class="cp">Partial</span></td><td class="col-o"><span class="cx">✗</span></td></tr>
+      <tr><td>Behavioral health module</td><td class="col-us-d"><span class="ck">✓</span> Mental Health</td><td class="col-o"><span class="ck">✓</span></td><td class="col-o"><span class="cp">Partial</span></td><td class="col-o"><span class="ck">✓</span></td><td class="col-o"><span class="ck">✓</span></td></tr>
+      <tr><td>Real-time eligibility verification</td><td class="col-us-d"><span class="ck">✓</span></td><td class="col-o"><span class="ck">✓</span></td><td class="col-o"><span class="ck">✓</span></td><td class="col-o"><span class="ck">✓</span></td><td class="col-o"><span class="cp">Partial</span></td></tr>
+      <tr><td>MFA / Google Authenticator</td><td class="col-us-d"><span class="ck">✓</span> Required for providers</td><td class="col-o"><span class="ck">✓</span></td><td class="col-o"><span class="cp">Optional</span></td><td class="col-o"><span class="ck">✓</span></td><td class="col-o"><span class="ck">✓</span></td></tr>
+      <tr><td>Surgeon iPad interface</td><td class="col-us-d"><span class="ck">✓</span> Draw + voice + camera</td><td class="col-o"><span class="cx">✗</span></td><td class="col-o"><span class="cx">✗</span></td><td class="col-o"><span class="cp">Mobile only</span></td><td class="col-o"><span class="cx">✗</span></td></tr>
+      <tr><td>International patient support</td><td class="col-us-d"><span class="ck">✓</span> 16 countries</td><td class="col-o"><span class="cp">US only</span></td><td class="col-o"><span class="cp">US only</span></td><td class="col-o"><span class="cp">Partial</span></td><td class="col-o"><span class="cp">CA/UK</span></td></tr>
+      <tr><td>HIPAA compliant</td><td class="col-us-d"><span class="ck">✓</span></td><td class="col-o"><span class="ck">✓</span></td><td class="col-o"><span class="ck">✓</span></td><td class="col-o"><span class="ck">✓</span></td><td class="col-o"><span class="ck">✓</span></td></tr>
+      <tr><td>Pricing model</td><td class="col-us-d" style="color:var(--gold);font-family:var(--fm)">Flat per provider</td><td class="col-o">% of revenue</td><td class="col-o">Per provider</td><td class="col-o">Per provider</td><td class="col-o">Per provider</td></tr>
+      <tr><td>Starting price / provider / month</td><td class="col-us-d" style="color:var(--gold);font-family:var(--fm)">$299</td><td class="col-o">$140 + % revenue</td><td class="col-o">$110</td><td class="col-o">$199</td><td class="col-o">$74 CAD</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="full-divider"><div class="divider-line"></div></div>
+
+<!-- ═══ PRICING ═══ -->
+<section id="pricing" class="reveal">
+  <div class="sec-label">Pricing</div>
+  <h2 class="sec-title">Flat rate. No percentage<br>of <em>your revenue.</em></h2>
+  <p class="sec-body">One predictable monthly rate per provider. No hidden fees, no percentage of collections, no surprise charges as you grow. Cancel anytime.</p>
+  <div class="price-grid">
+    <div class="price-card">
+      <div class="price-tier">Starter</div>
+      <div class="price-name">Essential</div>
+      <div class="price-amount"><sup>$</sup>299<sub>/mo · 1 provider</sub></div>
+      <p class="price-sub-desc">Full scheduling, billing, and AI intake for solo practices.</p>
+      <div class="price-hr"></div>
+      <div class="pf"><div class="pf-dot"></div>Patient scheduling + calendar</div>
+      <div class="pf"><div class="pf-dot"></div>Demographics + insurance</div>
+      <div class="pf"><div class="pf-dot"></div>AI intake + risk flags</div>
+      <div class="pf"><div class="pf-dot"></div>Billing + superbill generation</div>
+      <div class="pf"><div class="pf-dot"></div>1 provider · 1 facility</div>
+      <div class="pf"><div class="pf-dot"></div>Email + chat support</div>
+      <a href="#" class="price-cta pc-ghost" onclick="openLogin();return false">Start free trial</a>
+    </div>
+    <div class="price-card featured">
+      <div class="price-badge">Most popular</div>
+      <div class="price-tier">Professional</div>
+      <div class="price-name">Practice</div>
+      <div class="price-amount"><sup>$</sup>699<sub>/mo · up to 5 providers</sub></div>
+      <p class="price-sub-desc">The complete platform for growing multi-provider practices.</p>
+      <div class="price-hr"></div>
+      <div class="pf"><div class="pf-dot gd"></div>Everything in Essential</div>
+      <div class="pf"><div class="pf-dot gd"></div>Up to 5 providers</div>
+      <div class="pf"><div class="pf-dot gd"></div>All AI features unlocked</div>
+      <div class="pf"><div class="pf-dot gd"></div>Revela plastic surgery module</div>
+      <div class="pf"><div class="pf-dot gd"></div>Mental Health module</div>
+      <div class="pf"><div class="pf-dot gd"></div>Multi-facility · Priority support</div>
+      <a href="#" class="price-cta pc-primary" onclick="openLogin();return false">Start free trial</a>
+    </div>
+    <div class="price-card">
+      <div class="price-tier">Enterprise</div>
+      <div class="price-name">Enterprise</div>
+      <div class="price-amount"><sup>$</sup>1,499<sub>/mo · unlimited</sub></div>
+      <p class="price-sub-desc">For large practices, hospital groups, and multi-location orgs.</p>
+      <div class="price-hr"></div>
+      <div class="pf"><div class="pf-dot"></div>Everything in Professional</div>
+      <div class="pf"><div class="pf-dot"></div>Unlimited providers + facilities</div>
+      <div class="pf"><div class="pf-dot"></div>Custom AI workflows</div>
+      <div class="pf"><div class="pf-dot"></div>Data migration included</div>
+      <div class="pf"><div class="pf-dot"></div>Dedicated account manager</div>
+      <div class="pf"><div class="pf-dot"></div>SLA + uptime guarantee</div>
+      <a href="mailto:sales@patienttrac.com" class="price-cta pc-ghost">Contact sales</a>
+    </div>
+  </div>
+  <p style="text-align:center;margin-top:22px;font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:0.1em">
+    Add-ons: Data migration $1,500 one-time · Revela $299/mo · Mental Health $299/mo · Custom AI $2,500 + $199/mo
+  </p>
+</section>
+
+<div class="full-divider"><div class="divider-line"></div></div>
+
+<!-- ═══ SECURITY ═══ -->
+<section id="security" class="reveal">
+  <div class="sec-grid">
+    <div>
+      <div class="sec-label">Security & Compliance</div>
+      <h2 class="sec-title">HIPAA-grade<br>from <em>day one.</em></h2>
+      <p class="sec-body" style="margin-bottom:18px">Every patient record is protected by Supabase Row Level Security, org-level data isolation, Google Authenticator TOTP multi-factor authentication, and a complete HIPAA audit trail on every access.</p>
+      <p class="sec-body">All application functions — patient data, scheduling, billing — are behind authentication. No patient information is ever accessible from the public homepage.</p>
+    </div>
+    <div class="sec-tiles">
+      <div class="sec-tile">
+        <div class="sec-tile-label">Authentication</div>
+        <div class="sec-tile-title">MFA Required</div>
+        <div class="sec-tile-body">Google Authenticator TOTP enforced for all provider and admin roles on every login</div>
+      </div>
+      <div class="sec-tile">
+        <div class="sec-tile-label">Data isolation</div>
+        <div class="sec-tile-title">Row-Level Security</div>
+        <div class="sec-tile-body">Practices cannot access each other's patient data — enforced at the database level</div>
+      </div>
+      <div class="sec-tile">
+        <div class="sec-tile-label">Audit trail</div>
+        <div class="sec-tile-title">Full HIPAA Log</div>
+        <div class="sec-tile-body">Every login, record access, and data change is timestamped and stored for compliance</div>
+      </div>
+      <div class="sec-tile">
+        <div class="sec-tile-label">Infrastructure</div>
+        <div class="sec-tile-title">Supabase + Netlify</div>
+        <div class="sec-tile-body">SOC2 Type II infrastructure. All data stored in US East. TLS 256-bit encryption</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="full-divider"><div class="divider-line"></div></div>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">PatientTracForge</div>
+        <p class="footer-brand-desc">AI-powered practice management — scheduling, billing, and clinical documentation built on 20+ years of clinical heritage, rebuilt for the AI era. HIPAA compliant.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Platform</div>
+        <ul class="footer-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#" onclick="openLogin();return false">Sign in to app</a></li>
+          <li><a href="https://patienttracforge.com/revela">Revela — Plastic Surgery</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="mailto:sales@patienttrac.com">Contact sales</a></li>
+          <li><a href="mailto:support@patienttrac.com">Support</a></li>
+          <li><a href="mailto:legal@patienttrac.com">Legal</a></li>
+          <li><a href="#">HIPAA Notice</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <ul class="footer-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">BAA Agreement</a></li>
+          <li><a href="#">Security</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 PatientTrac Corp · PatientTracForge · All rights reserved</span>
+      <div class="footer-hipaa">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        HIPAA Compliant · Supabase us-east-1 · SOC2 Infrastructure
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ LOGIN MODAL ═══ -->
+<div class="overlay" id="loginOverlay">
+  <div class="login-box">
+    <button class="lb-close" onclick="closeLogin()">✕</button>
+    <div class="lb-hdr">
+      <div class="lb-logo">
+        <svg width="26" height="26" viewBox="0 0 44 44" fill="none">
+          <circle cx="22" cy="22" r="18" stroke="#c9a96e" stroke-width="0.75" opacity="0.5"/>
+          <path d="M22 4C30 12 33 17 33 22C33 27 30 32 22 40C14 32 11 27 11 22C11 17 14 12 22 4Z" fill="none" stroke="#f0ece4" stroke-width="1" opacity="0.7"/>
+          <circle cx="22" cy="22" r="3" fill="#c9a96e"/>
+        </svg>
+        <span style="font-family:var(--fg);font-size:16px;font-weight:300;color:var(--ivory);letter-spacing:0.06em">PatientTracForge</span>
+      </div>
+      <div class="lb-title">Sign in</div>
+      <div class="lb-sub">Patient data · Scheduling · Billing — all require authentication · HIPAA compliant</div>
+    </div>
+    <div class="lb-body">
+      <button class="lb-google" onclick="handleGoogle()">
+        <svg width="17" height="17" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Continue with Google
+      </button>
+      <div class="lb-or">or sign in with email</div>
+      <label class="lb-label">Email address</label>
+      <input class="lb-input" type="email" placeholder="you@yourpractice.com" id="lbEmail"/>
+      <label class="lb-label">Password</label>
+      <input class="lb-input" type="password" placeholder="••••••••" id="lbPass"/>
+      <div class="mfa-box" id="mfaBox">
+        <div class="mfa-hdr">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+          Google Authenticator — 6-digit code
+        </div>
+        <p class="mfa-desc">Open Google Authenticator on your phone and enter the code for PatientTracForge. Required for all provider and admin accounts.</p>
+        <div class="mfa-digits">
+          <input class="mfa-d" maxlength="1" id="d1" oninput="mf(this,'d2')" onkeydown="mb(event,this,'')"/>
+          <input class="mfa-d" maxlength="1" id="d2" oninput="mf(this,'d3')" onkeydown="mb(event,this,'d1')"/>
+          <input class="mfa-d" maxlength="1" id="d3" oninput="mf(this,'d4')" onkeydown="mb(event,this,'d2')"/>
+          <input class="mfa-d" maxlength="1" id="d4" oninput="mf(this,'d5')" onkeydown="mb(event,this,'d3')"/>
+          <input class="mfa-d" maxlength="1" id="d5" oninput="mf(this,'d6')" onkeydown="mb(event,this,'d4')"/>
+          <input class="mfa-d" maxlength="1" id="d6" oninput="mf(this,'')"   onkeydown="mb(event,this,'d5')"/>
+        </div>
+      </div>
+      <button class="lb-btn" onclick="handleLogin()">Sign in securely →</button>
+      <div class="lb-secure">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        256-bit TLS · HIPAA compliant · Google Authenticator MFA
+      </div>
+    </div>
+    <div class="lb-footer">
+      <span class="lb-flink">Forgot password?</span>
+      <span class="lb-flink" onclick="closeLogin()">Need access? <span style="color:var(--teal2)">Contact admin</span></span>
+    </div>
+  </div>
+</div>
+
+<script>
+// Nav scroll
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>40))
+
+// Scroll reveal
+const ro=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')}),{threshold:0.08,rootMargin:'0px 0px -30px 0px'})
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el))
+
+// AI flags animate on scroll
+const flagIds=['hf1','hf2','hf3','hf4']
+let flagsAnimated=false
+function animateAIFlags(){
+  if(flagsAnimated)return; flagsAnimated=true
+  flagIds.forEach((id,i)=>setTimeout(()=>{const el=document.getElementById(id);if(el)el.classList.add('show')},i*380))
+  setTimeout(()=>{const rf=document.getElementById('riskFill');if(rf)rf.style.width='78%'},200)
+}
+const fo=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)animateAIFlags()}),{threshold:0.2})
+const hv=document.querySelector('.hv-outer')
+if(hv)fo.observe(hv)
+
+// Login
+function openLogin(){document.getElementById('loginOverlay').classList.add('open');document.body.style.overflow='hidden'}
+function closeLogin(){document.getElementById('loginOverlay').classList.remove('open');document.body.style.overflow=''}
+document.getElementById('loginOverlay').addEventListener('click',e=>{if(e.target.id==='loginOverlay')closeLogin()})
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLogin()})
+
+function handleLogin(){
+  const email=document.getElementById('lbEmail').value
+  const pass=document.getElementById('lbPass').value
+  const mfa=document.getElementById('mfaBox')
+  if(!mfa.classList.contains('show')){
+    if(!email||!pass){alert('Please enter your email and password.');return}
+    mfa.classList.add('show')
+    document.getElementById('d1').focus()
+    return
+  }
+  const code=[...document.querySelectorAll('.mfa-d')].map(d=>d.value).join('')
+  if(code.length<6){alert('Please enter your complete 6-digit authenticator code.');return}
+  alert(`✓ Authenticating as ${email}\n\nIn production:\n1. supabase.auth.signInWithPassword()\n2. TOTP code validated against Supabase MFA\n3. Redirect to practice dashboard\n\nProject: mskormozwekezjmtcylv`)
+  closeLogin()
+}
+function handleGoogle(){
+  alert('Google OAuth flow\n\nIn production:\nsupabase.auth.signInWithOAuth({ provider: "google" })\n\nThen MFA verification and redirect to dashboard.')
+  closeLogin()
+}
+function mf(el,nid){if(el.value&&nid)document.getElementById(nid).focus()}
+function mb(e,el,pid){if(e.key==='Backspace'&&!el.value&&pid)document.getElementById(pid).focus()}
+</script>
+</body>
 </html>
