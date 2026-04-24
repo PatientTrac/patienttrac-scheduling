@@ -14,6 +14,7 @@ import { Billing }     from '@/pages/Billing'
 import { Insurance }   from '@/pages/Insurance'
 import { Encounters }  from '@/pages/Encounters'
 import { Settings }    from '@/pages/Settings'
+import { Intake }      from '@/pages/Intake'
 import { AdminLogin }       from '@/admin/pages/AdminLogin'
 import { AdminShell }       from '@/admin/components/AdminShell'
 import { AdminOverview }    from '@/admin/pages/AdminOverview'
@@ -32,25 +33,29 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
+            {/* Patient-facing intake — no auth, no shell */}
+            <Route path="/intake" element={<Intake />} />
+
             <Route path="/" element={<AppShell />}>
               <Route index element={<Navigate to="/dashboard" replace />} />
-              <Route path="dashboard"                      element={<Dashboard />} />
-              <Route path="patients"                       element={<Patients />} />
-              <Route path="patients/new"                   element={<NewPatient />} />
-              <Route path="patients/:patientId"            element={<PatientDetail />} />
-              <Route path="providers/new"                  element={<NewProvider />} />
-              <Route path="facilities/new"                 element={<NewFacility />} />
-              <Route path="schedule"                       element={<Schedule />} />
+              <Route path="dashboard"                       element={<Dashboard />} />
+              <Route path="patients"                        element={<Patients />} />
+              <Route path="patients/new"                    element={<NewPatient />} />
+              <Route path="patients/:patientId"             element={<PatientDetail />} />
+              <Route path="providers/new"                   element={<NewProvider />} />
+              <Route path="facilities/new"                  element={<NewFacility />} />
+              <Route path="schedule"                        element={<Schedule />} />
               <Route path="schedule/checkin/:appointmentId" element={<CheckIn />} />
-              <Route path="encounters"                     element={<Encounters />} />
-              <Route path="billing"                        element={<Billing />} />
-              <Route path="insurance"                      element={<Insurance />} />
-              <Route path="settings"                       element={<Settings />} />
+              <Route path="encounters"                      element={<Encounters />} />
+              <Route path="billing"                         element={<Billing />} />
+              <Route path="insurance"                       element={<Insurance />} />
+              <Route path="settings"                        element={<Settings />} />
             </Route>
+
             <Route path="/admin/login"     element={<AdminLogin />} />
             <Route path="/admin/mfa-setup" element={<MfaSetup />} />
             <Route path="/admin" element={<AdminShell />}>
-              <Route index           element={<AdminOverview />} />
+              <Route index             element={<AdminOverview />} />
               <Route path="users"      element={<UserManagement />} />
               <Route path="facilities" element={<AdminFacilities />} />
               <Route path="appt-types" element={<AppointmentTypes />} />

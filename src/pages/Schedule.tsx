@@ -9,6 +9,13 @@ const ORG_ID = '00000000-0000-0000-0000-000000000001'
 const HOURS = Array.from({ length: 13 }, (_, i) => i + 7) // 7am–7pm
 const SLOT_HEIGHT = 64 // px per hour
 
+const NOSHOW_BADGE: Record<string, { label: string; cls: string }> = {
+  low:      { label: '▸ Low',      cls: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
+  medium:   { label: '▲ Med',      cls: 'bg-amber-500/20   text-amber-400   border-amber-500/30' },
+  high:     { label: '⚠ High',     cls: 'bg-orange-500/20  text-orange-400  border-orange-500/30' },
+  critical: { label: '🔴 Critical', cls: 'bg-red-500/20     text-red-400     border-red-500/30' },
+}
+
 const STATUS_COLORS: Record<string, string> = {
   scheduled:  'bg-blue-500/20  border-blue-500/40  text-blue-300',
   confirmed:  'bg-gold-500/20  border-gold-500/40  text-gold-300',
@@ -59,6 +66,28 @@ export function Schedule() {
   // Fetch appointments for visible range
   const startDate = format(weekDays[0], 'yyyy-MM-dd')
   const endDate   = format(weekDays[weekDays.length - 1], 'yyyy-MM-dd')
+
+  // Fetch no-show risk scores for visible appointments
+  const { data: noshowScores = [] } = useQuery({
+    queryKey: ['noshow-scores', startDate, endDate],
+    queryFn: async () => {
+      const apptIds = appointments.map((a: any) => a.appointment_id)
+      if (!apptIds.length) return []
+      const { data } = await supabase.schema('cr').from('noshow_risk_scores')
+        .select('appointment_id, risk_score, risk_label, risk_factors, recommendation')
+        .in('appointment_id', apptIds)
+        .order('scored_at', { ascending: false })
+      // Dedupe by appointment_id — keep most recent
+      const seen = new Set<number>()
+      return (data ?? []).filter((r: any) => {
+        if (seen.has(r.appointment_id)) return false
+        seen.add(r.appointment_id); return true
+      })
+    },
+    enabled: appointments.length > 0,
+  })
+
+  const riskByAppt = Object.fromEntries(noshowScores.map((s: any) => [s.appointment_id, s]))
 
   const { data: appointments = [], isLoading } = useQuery({
     queryKey: ['appointments-cal', startDate, endDate, filterProvider],
@@ -310,10 +339,13 @@ export function Schedule() {
                     const colors = STATUS_COLORS[appt.status] ?? STATUS_COLORS.scheduled
                     const apptType = apptTypes.find((t: any) => t.appt_type_id === appt.appt_type_id)
 
+                    const risk = riskByAppt[appt.appointment_id]
+                    const rb = risk ? NOSHOW_BADGE[risk.risk_label] : null
                     return (
                       <div key={appt.appointment_id}
                         draggable
                         onDragStart={e => handleDragStart(e, appt)}
+                        title={risk ? `No-show risk: ${risk.risk_label} (${risk.risk_score}/10)\n${risk.recommendation}` : undefined}
                         style={{
                           position: 'absolute',
                           top: `${top}px`,
@@ -322,16 +354,26 @@ export function Schedule() {
                           zIndex: 10,
                           borderLeftColor: apptType?.color ?? '#c9a96e',
                         }}
-                        className={cn('rounded-sm border border-l-2 px-1.5 py-1 cursor-grab active:cursor-grabbing overflow-hidden transition-all hover:z-20 hover:shadow-gold-sm', colors)}
+                        className={cn('rounded-sm border border-l-2 px-1.5 py-1 cursor-grab active:cursor-grabbing overflow-hidden transition-all hover:z-20', colors)}
                       >
-                        <div className="font-body text-[11px] font-medium leading-tight truncate">
-                          {appt.patient?.last_name}, {appt.patient?.first_name}
+                        <div className="flex items-start justify-between gap-1">
+                          <div className="font-body text-[11px] font-medium leading-tight truncate flex-1">
+                            {appt.patient?.last_name}, {appt.patient?.first_name}
+                          </div>
+                          {rb && (
+                            <span className={cn('flex-shrink-0 font-mono text-[8px] px-1 py-0.5 rounded border leading-none', rb.cls)}>
+                              {rb.label}
+                            </span>
+                          )}
                         </div>
                         {height > 36 && (
                           <div className="font-mono text-[9px] opacity-70 truncate">{appt.appointment_type}</div>
                         )}
                         {height > 50 && (
                           <div className="font-mono text-[9px] opacity-50">{appt.appointment_time}</div>
+                        )}
+                        {height > 64 && risk?.recommendation && (
+                          <div className="font-mono text-[8px] opacity-50 truncate mt-0.5 italic">{risk.recommendation}</div>
                         )}
                       </div>
                     )
