@@ -3,262 +3,346 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>HIPAA Compliance — PatientTracForge by PatientTrac Corp</title>
+<title>HIPAA Compliance — PatientTracForge · PatientTrac Corp</title>
+<meta name="description" content="PatientTracForge HIPAA Compliance. Cumplimiento HIPAA. Conformité HIPAA."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-:root{--navy-950:#020a14;--navy-900:#060e1c;--navy-800:#0a1628;--gold:#c9a96e;--cyan:#00d4ff;--text:#e8eaf0;--muted:#8a9bc0;--subtle:#3a4a6a;--green:#4ade80}
+:root{--navy-950:#020a14;--gold:#c9a96e;--cyan:#00d4ff;--text:#e8eaf0;--muted:#8a9bc0;--subtle:#3a4a6a;--green:#4ade80}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--navy-950);color:var(--text);line-height:1.7}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
 nav{position:sticky;top:0;background:rgba(2,10,20,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,169,110,0.1);z-index:100}
 .nav-inner{max-width:960px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
 .nav-logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:20px;color:var(--gold);text-decoration:none}
+.nav-right{display:flex;align-items:center;gap:14px}
 .nav-back{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:0.08em}
 .nav-back:hover{color:var(--gold)}
+.lang-sw{display:flex;border:1px solid rgba(201,169,110,0.2);overflow:hidden}
+.lang-btn{font-family:'DM Mono',monospace;font-size:10px;padding:5px 9px;background:transparent;border:none;color:var(--subtle);cursor:pointer;transition:all 0.2s}
+.lang-btn:hover{color:var(--gold);background:rgba(201,169,110,0.06)}
+.lang-btn.on{background:rgba(201,169,110,0.15);color:var(--gold)}
+.lang-block{display:none}.lang-block.on{display:block}
 .page{max-width:960px;margin:0 auto;padding:60px 24px 100px;position:relative;z-index:1}
-.legal-header{margin-bottom:48px;padding-bottom:32px;border-bottom:1px solid rgba(201,169,110,0.1)}
 .legal-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;display:block;margin-bottom:12px}
 .legal-h1{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.05}
 .legal-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--subtle)}
-section.legal-section{margin-bottom:56px;scroll-margin-top:80px}
-h2.legal-h2{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:600;color:var(--gold);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid rgba(201,169,110,0.1)}
-h3.legal-h3{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:600;color:var(--text);margin:24px 0 12px}
-p{color:var(--muted);margin-bottom:14px;font-size:15px}
-strong{color:var(--text)}
-/* Compliance grid */
-.compliance-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:24px 0;background:rgba(201,169,110,0.06)}
-.compliance-card{background:var(--navy-950);padding:24px}
-.comp-icon{font-size:24px;margin-bottom:12px}
-.comp-title{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
-.comp-body{font-size:13px;color:var(--muted);line-height:1.6}
-/* Safeguard table */
-.safeguard-table{width:100%;border-collapse:collapse;margin:16px 0}
-.safeguard-table th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--subtle);padding:10px 14px;border-bottom:1px solid rgba(201,169,110,0.1);text-align:left}
-.safeguard-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--muted);vertical-align:top;font-size:14px}
-.safeguard-table td:first-child{color:var(--text);font-weight:500;width:220px}
-.safeguard-table td.status{text-align:center;width:80px}
-.status-yes{color:var(--green);font-size:16px}
-/* Checklist */
-.checklist{display:flex;flex-direction:column;gap:10px;margin:16px 0}
-.check-item{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:rgba(10,22,40,0.6);border:1px solid rgba(74,222,128,0.1)}
-.check-item-icon{color:var(--green);font-size:16px;flex-shrink:0;margin-top:1px}
-.check-item-text{font-size:14px;color:var(--muted);line-height:1.5}
-.check-item-text strong{color:var(--text)}
-/* BAA callout */
-.baa-box{background:rgba(201,169,110,0.05);border:1px solid rgba(201,169,110,0.25);padding:28px 32px;margin:24px 0;display:flex;gap:24px;align-items:flex-start}
-.baa-icon{font-size:32px;flex-shrink:0}
-.baa-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px}
-.baa-body{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:14px}
-.btn-baa{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;background:var(--gold);color:#020a14;border:none;padding:10px 20px;cursor:pointer;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;font-weight:500}
-.btn-baa:hover{opacity:0.9}
-/* Sub-processor table */
-.sp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
-.sp-table th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--subtle);padding:8px 12px;border-bottom:1px solid rgba(201,169,110,0.1);text-align:left}
-.sp-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--muted);vertical-align:top}
-.sp-table td:first-child{color:var(--text);font-weight:500}
-.sp-baa-yes{color:var(--green);font-family:'DM Mono',monospace;font-size:11px}
-/* Contact */
-.contact-box{background:rgba(10,22,40,0.8);border:1px solid rgba(201,169,110,0.15);padding:24px 28px;margin-top:24px}
-.contact-box h3{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:600;color:var(--text);margin-bottom:12px}
-.contact-line{display:flex;gap:12px;margin-bottom:8px;font-size:14px}
-.contact-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--subtle);width:100px;flex-shrink:0;margin-top:2px}
-.contact-val a{color:var(--gold);text-decoration:none}
-footer.legal-footer{border-top:1px solid rgba(201,169,110,0.08);padding:32px 0;margin-top:64px;position:relative;z-index:1}
-.footer-inner{max-width:960px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
-.footer-brand{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold)}
-.footer-copy{font-family:'DM Mono',monospace;font-size:10px;color:var(--subtle);margin-top:2px}
-.footer-links{display:flex;gap:20px}
-.footer-links a{font-family:'DM Mono',monospace;font-size:10px;color:var(--subtle);text-decoration:none}
-.footer-links a:hover,.footer-links a.active{color:var(--gold)}
-@media(max-width:700px){.compliance-grid{grid-template-columns:1fr}.baa-box{flex-direction:column}}
+.legal-header{margin-bottom:48px;padding-bottom:32px;border-bottom:1px solid rgba(201,169,110,0.1)}
+section.ls{margin-bottom:56px;scroll-margin-top:80px}
+h2.lh2{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:600;color:var(--gold);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid rgba(201,169,110,0.1)}
+p{color:var(--muted);margin-bottom:14px;font-size:15px}strong{color:var(--text)}
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:24px 0;background:rgba(201,169,110,0.06)}
+.cc{background:var(--navy-950);padding:24px}.ci{font-size:24px;margin-bottom:12px}
+.ct{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.cb{font-size:13px;color:var(--muted);line-height:1.6}
+.st{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+.st th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--subtle);padding:10px 14px;border-bottom:1px solid rgba(201,169,110,0.1);text-align:left}
+.st td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--muted);vertical-align:top;font-size:14px}
+.st td:first-child{color:var(--text);font-weight:500;width:200px}.st td.sc{text-align:center;width:80px}
+.sy{color:var(--green);font-size:16px}
+.cklist{display:flex;flex-direction:column;gap:10px;margin:16px 0}
+.ck{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:rgba(10,22,40,0.6);border:1px solid rgba(74,222,128,0.1)}
+.cki{color:var(--green);font-size:16px;flex-shrink:0;margin-top:1px}.ckt{font-size:14px;color:var(--muted);line-height:1.5}.ckt strong{color:var(--text)}
+.baa{background:rgba(201,169,110,0.05);border:1px solid rgba(201,169,110,0.25);padding:28px 32px;margin:24px 0;display:flex;gap:24px;align-items:flex-start}
+.bai{font-size:32px;flex-shrink:0}.bat{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px}
+.bab{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.babt{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;background:var(--gold);color:#020a14;border:none;padding:10px 20px;cursor:pointer;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;font-weight:500}
+.spt{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+.spt th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--subtle);padding:8px 12px;border-bottom:1px solid rgba(201,169,110,0.1);text-align:left}
+.spt td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--muted);vertical-align:top}
+.spt td:first-child{color:var(--text);font-weight:500}.spy{color:var(--green);font-family:'DM Mono',monospace;font-size:11px}
+.cbox{background:rgba(10,22,40,0.8);border:1px solid rgba(201,169,110,0.15);padding:24px 28px;margin-top:24px}
+.cbox h3{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:600;color:var(--text);margin-bottom:12px}
+.cl{display:flex;gap:12px;margin-bottom:8px;font-size:14px}.clb{font-family:'DM Mono',monospace;font-size:10px;color:var(--subtle);width:130px;flex-shrink:0;margin-top:2px}
+.cl a{color:var(--gold);text-decoration:none}.cl a:hover{text-decoration:underline}
+footer{border-top:1px solid rgba(201,169,110,0.08);padding:32px 0;margin-top:64px;position:relative;z-index:1}
+.fi{max-width:960px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.fb{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold)}.fc{font-family:'DM Mono',monospace;font-size:10px;color:var(--subtle);margin-top:2px}
+.fl{display:flex;gap:20px;flex-wrap:wrap}.fl a{font-family:'DM Mono',monospace;font-size:10px;color:var(--subtle);text-decoration:none}.fl a:hover,.fl a.on{color:var(--gold)}
+@media(max-width:700px){.cgrid{grid-template-columns:1fr}.baa{flex-direction:column}}
 </style>
 </head>
 <body>
 <nav>
   <div class="nav-inner">
     <a href="/" class="nav-logo">PatientTracForge</a>
-    <a href="/" class="nav-back">← Back to home</a>
+    <div class="nav-right">
+      <div class="lang-sw">
+        <button class="lang-btn" data-lang="en" onclick="setL('en')">EN</button>
+        <button class="lang-btn" data-lang="es" onclick="setL('es')">ES</button>
+        <button class="lang-btn" data-lang="fr" onclick="setL('fr')">FR</button>
+      </div>
+      <a href="/" class="nav-back" id="back-link">&#8592; Back to home</a>
+    </div>
   </div>
 </nav>
-
 <div class="page">
-  <div class="legal-header">
-    <span class="legal-tag">✦ Compliance · HIPAA</span>
-    <h1 class="legal-h1">HIPAA Compliance</h1>
-    <div class="legal-meta">PatientTrac Corp · PatientTracForge v0.3 · Last reviewed: April 24, 2026</div>
-  </div>
 
-  <p style="font-size:16px;color:var(--muted);max-width:700px;margin-bottom:40px">PatientTracForge is built from the ground up to meet HIPAA's Privacy Rule, Security Rule, and Breach Notification Rule requirements. This page documents our technical and administrative safeguards, sub-processor BAAs, and how to request compliance documentation.</p>
-
-  <!-- Summary cards -->
-  <div class="compliance-grid">
-    <div class="compliance-card">
-      <div class="comp-icon">🛡</div>
-      <div class="comp-title">Business Associate</div>
-      <div class="comp-body">PatientTrac Corp operates as a HIPAA Business Associate. We sign a BAA with every Covered Entity customer before any PHI is processed.</div>
-    </div>
-    <div class="compliance-card">
-      <div class="comp-icon">🔐</div>
-      <div class="comp-title">Encryption</div>
-      <div class="comp-body">All PHI encrypted in transit (TLS 1.3) and at rest (AES-256). Database-level encryption via Supabase on AWS us-east-1.</div>
-    </div>
-    <div class="compliance-card">
-      <div class="comp-icon">🔑</div>
-      <div class="comp-title">Access Control</div>
-      <div class="comp-body">6-role RBAC matrix. TOTP MFA required for all admin and provider roles. Row Level Security isolates every tenant's data by org_id.</div>
-    </div>
-    <div class="compliance-card">
-      <div class="comp-icon">📋</div>
-      <div class="comp-title">Audit Logging</div>
-      <div class="comp-body">Every login, PHI access, and data modification is logged to saas.auth_audit_log. Retained for 6 years per HIPAA requirements.</div>
-    </div>
-    <div class="compliance-card">
-      <div class="comp-icon">🔔</div>
-      <div class="comp-title">Breach Notification</div>
-      <div class="comp-body">Breach notification to Covered Entities within 60 days of discovery, including details of PHI involved, individuals affected, and corrective actions.</div>
-    </div>
-    <div class="compliance-card">
-      <div class="comp-icon">🤝</div>
-      <div class="comp-title">Sub-processor BAAs</div>
-      <div class="comp-body">All sub-processors handling PHI (Supabase, Anthropic, Resend, Twilio) operate under executed Business Associate Agreements.</div>
-    </div>
-  </div>
-
-  <!-- BAA callout -->
-  <div class="baa-box">
-    <div class="baa-icon">📄</div>
-    <div>
-      <div class="baa-title">Request a Business Associate Agreement</div>
-      <div class="baa-body">All Covered Entities and Business Associates using PatientTracForge must execute a BAA before storing Protected Health Information. Our BAA covers all sub-processors, data retention obligations, breach notification procedures, and PHI destruction upon termination.</div>
-      <a href="mailto:legal@patienttrac.com?subject=BAA Request — PatientTracForge&body=Please send me a Business Associate Agreement for PatientTracForge. Our practice/organization: [NAME]. NPI: [NPI]. Contact: [EMAIL]." class="btn-baa">Request BAA → legal@patienttrac.com</a>
-    </div>
-  </div>
-
-  <!-- Technical safeguards -->
-  <section class="legal-section" id="technical">
-    <h2 class="legal-h2">Technical Safeguards (HIPAA § 164.312)</h2>
-    <table class="safeguard-table">
-      <thead><tr><th>Safeguard</th><th>Implementation</th><th style="text-align:center">Status</th></tr></thead>
-      <tbody>
-        <tr><td>Access control</td><td>6-role RBAC (super_admin, admin, provider, billing, staff, readonly) enforced at API and database level. Row Level Security on all cr.* and saas.* tables.</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>Unique user identification</td><td>Every user assigned a unique UUID in auth.users. No shared accounts. Session tokens tied to individual user IDs.</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>Emergency access</td><td>super_admin role retains access to all org data for emergency scenarios. All emergency access logged.</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>Automatic logoff</td><td>Session expiration enforced via Supabase JWT TTL. Re-authentication required after inactivity.</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>Encryption (transit)</td><td>TLS 1.3 enforced on all API calls, database connections, and edge function invocations. Netlify enforces HTTPS.</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>Encryption (at rest)</td><td>AES-256 encryption of all Supabase PostgreSQL data at rest via AWS RDS encryption. Backups encrypted.</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>Audit controls</td><td>saas.auth_audit_log captures all authentication events, MFA completions, and role changes. cr.encounter_workflow logs all clinical steps.</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>Integrity controls</td><td>Database constraints, foreign keys, and RLS policies prevent unauthorized modification. Supabase Realtime change feed for audit.</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>Transmission security</td><td>All data transmitted via HTTPS. API keys stored only in Supabase environment variables (never in frontend). Service role keys restricted to edge functions.</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>MFA / authentication</td><td>Google Authenticator TOTP required for admin and provider roles. 30-second token window, 3 tolerance windows for clock drift.</td><td class="status"><span class="status-yes">✓</span></td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- Administrative safeguards -->
-  <section class="legal-section" id="administrative">
-    <h2 class="legal-h2">Administrative Safeguards (HIPAA § 164.308)</h2>
-    <div class="checklist">
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Security Officer:</strong> Designated HIPAA Security Officer responsible for policy development, training, and incident response.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Risk analysis:</strong> Annual HIPAA security risk assessment identifying threats to PHI confidentiality, integrity, and availability.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Workforce training:</strong> All employees with PHI access complete HIPAA training at hire and annually. Background checks required.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Access management:</strong> Least-privilege access. Access granted by role, reviewed quarterly. Terminated immediately upon employee departure.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Incident response:</strong> Documented breach response procedure. Detection → containment → assessment → notification → remediation.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Contingency plan:</strong> Automated Supabase backups (daily). Recovery Time Objective (RTO): 4 hours. Recovery Point Objective (RPO): 24 hours.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Business associate management:</strong> BAAs executed with all sub-processors before PHI access. Annual review of sub-processor compliance.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Evaluation:</strong> Annual technical and non-technical evaluation of HIPAA safeguards. Findings documented and remediated.</div></div>
-    </div>
-  </section>
-
-  <!-- Physical safeguards -->
-  <section class="legal-section" id="physical">
-    <h2 class="legal-h2">Physical Safeguards (HIPAA § 164.310)</h2>
-    <p>PatientTracForge is fully cloud-hosted. Physical safeguards are implemented through our infrastructure providers:</p>
-    <div class="checklist">
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>AWS (via Supabase):</strong> SOC 2 Type II, ISO 27001, HIPAA-eligible. Data centers with physical access controls, surveillance, and environmental safeguards. US-east-1 (Virginia).</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Netlify:</strong> CDN hosting with no PHI stored at CDN layer. All dynamic data transits to Supabase only. SOC 2 compliant.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Workstation controls:</strong> Remote work policy requires encrypted drives, VPN access for administrative functions, and screen locks.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Media disposal:</strong> Electronic PHI destroyed per NIST SP 800-88 standards upon contract termination. Certificate of destruction available on request.</div></div>
-    </div>
-  </section>
-
-  <!-- AI and HIPAA -->
-  <section class="legal-section" id="ai-hipaa">
-    <h2 class="legal-h2">AI Features &amp; HIPAA</h2>
-    <p>PatientTracForge uses Anthropic's Claude API to power five AI features. All AI processing of PHI is governed by our BAA with Anthropic and the following safeguards:</p>
-    <table class="safeguard-table">
-      <thead><tr><th>AI Feature</th><th>PHI transmitted</th><th>Anthropic BAA</th><th style="text-align:center">Status</th></tr></thead>
-      <tbody>
-        <tr><td>No-show prediction</td><td>Age, appointment type, insurance type, visit history (no names)</td><td>✓ Covered</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>Smart scheduling</td><td>Provider schedule, insurance type (no patient names)</td><td>✓ Covered</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>AI intake assistant</td><td>Chief complaint, medications, symptoms — minimum necessary PHI</td><td>✓ Covered</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>Billing AI</td><td>Encounter diagnosis, CPT codes, insurance type — minimum necessary</td><td>✓ Covered</td><td class="status"><span class="status-yes">✓</span></td></tr>
-        <tr><td>Wait time tracking</td><td>Timestamps only — no clinical PHI transmitted to AI</td><td>N/A</td><td class="status"><span class="status-yes">✓</span></td></tr>
-      </tbody>
-    </table>
-    <p style="margin-top:12px">Anthropic does not use customer-submitted PHI to train its models. All Claude API calls are processed under our enterprise agreement which includes Anthropic's BAA. PHI is transmitted using minimum necessary standard — patient names are excluded from AI prompts wherever clinically feasible.</p>
-  </section>
-
-  <!-- Sub-processors -->
-  <section class="legal-section" id="subprocessors">
-    <h2 class="legal-h2">Sub-Processors Handling PHI</h2>
-    <table class="sp-table">
-      <thead><tr><th>Sub-processor</th><th>Role</th><th>Location</th><th>BAA</th></tr></thead>
-      <tbody>
-        <tr><td>Supabase Inc.</td><td>PostgreSQL database, authentication, edge function runtime</td><td>AWS us-east-1 (Virginia)</td><td><span class="sp-baa-yes">✓ Executed</span></td></tr>
-        <tr><td>Anthropic PBC</td><td>Claude AI API — all 5 AI features</td><td>US (API)</td><td><span class="sp-baa-yes">✓ Executed</span></td></tr>
-        <tr><td>Resend, Inc.</td><td>Transactional email — appointment confirmations, intake links</td><td>US</td><td><span class="sp-baa-yes">✓ Executed</span></td></tr>
-        <tr><td>Twilio Inc.</td><td>SMS — appointment reminders, wait apology messages</td><td>US</td><td><span class="sp-baa-yes">✓ Executed</span></td></tr>
-        <tr><td>Netlify, Inc.</td><td>Application hosting (CDN layer — no PHI stored)</td><td>US</td><td>N/A — no PHI</td></tr>
-        <tr><td>Stripe, Inc.</td><td>Payment processing — billing only, no PHI</td><td>US</td><td>N/A — no PHI</td></tr>
-      </tbody>
-    </table>
-    <p>To request our full sub-processor list, copies of executed BAAs, or our SOC 2 report, email <a href="mailto:legal@patienttrac.com" style="color:var(--gold)">legal@patienttrac.com</a>.</p>
-  </section>
-
-  <!-- Patient rights -->
-  <section class="legal-section" id="patient-rights">
-    <h2 class="legal-h2">Patient Rights &amp; Provider Obligations</h2>
-    <p>PatientTracForge enables Covered Entities to fulfill their patient rights obligations under HIPAA:</p>
-    <div class="checklist">
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Right of access:</strong> Providers can export a complete patient record (all encounters, diagnoses, billing) at any time via the patient profile page.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Right to amend:</strong> Patient records can be updated or annotated at any time. All changes are timestamped and attributed to the modifying user.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Right to accounting:</strong> The auth_audit_log and encounter_workflow tables provide a complete accounting of PHI disclosures and access events.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Right to restrict:</strong> Providers can mark patient records for restricted access using the RBAC system. Records can be flagged to limit staff visibility.</div></div>
-      <div class="check-item"><div class="check-item-icon">✓</div><div class="check-item-text"><strong>Right to confidential communications:</strong> Patient preferred contact method and language preferences are stored and honored in all communications.</div></div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section class="legal-section" id="contact-hipaa">
-    <h2 class="legal-h2">Compliance Contact</h2>
-    <p>For HIPAA compliance questions, BAA requests, breach reports, or compliance documentation:</p>
-    <div class="contact-box">
-      <h3>PatientTrac Corp — HIPAA &amp; Compliance</h3>
-      <div class="contact-line"><span class="contact-lbl">HIPAA / Legal</span><span class="contact-val"><a href="mailto:legal@patienttrac.com">legal@patienttrac.com</a></span></div>
-      <div class="contact-line"><span class="contact-lbl">BAA requests</span><span class="contact-val"><a href="mailto:legal@patienttrac.com?subject=BAA Request">legal@patienttrac.com</a> · subject: "BAA Request"</span></div>
-      <div class="contact-line"><span class="contact-lbl">Breach report</span><span class="contact-val"><a href="mailto:legal@patienttrac.com?subject=Security Incident">legal@patienttrac.com</a> · subject: "Security Incident"</span></div>
-      <div class="contact-line"><span class="contact-lbl">Support</span><span class="contact-val"><a href="mailto:support@patienttrac.com">support@patienttrac.com</a></span></div>
-      <div class="contact-line"><span class="contact-lbl">Sales</span><span class="contact-val"><a href="mailto:sales@patienttrac.com">sales@patienttrac.com</a> · <a href="mailto:sales@patienttracforge.com">sales@patienttracforge.com</a></span></div>
-      <div class="contact-line"><span class="contact-lbl">Website</span><span class="contact-val"><a href="https://patienttrac.com">patienttrac.com</a> · <a href="https://patienttracforge.com">patienttracforge.com</a></span></div>
-    </div>
-  </section>
+<div class="lang-block" data-lang="en">
+<div class="legal-header"><span class="legal-tag">&#10022; Compliance &middot; HIPAA</span><h1 class="legal-h1">HIPAA Compliance</h1><div class="legal-meta">PatientTrac Corp &middot; PatientTracForge v0.3 &middot; Last reviewed: April 24, 2026</div></div>
+<p style="font-size:16px;color:var(--muted);max-width:700px;margin-bottom:40px">PatientTracForge is built from the ground up to meet HIPAA's Privacy Rule, Security Rule, and Breach Notification Rule. This page documents our technical and administrative safeguards, sub-processor BAAs, and how to request compliance documentation.</p>
+<div class="cgrid">
+<div class="cc"><div class="ci">&#128737;</div><div class="ct">Business Associate</div><div class="cb">We sign a BAA with every Covered Entity before any PHI is processed.</div></div>
+<div class="cc"><div class="ci">&#128272;</div><div class="ct">Encryption</div><div class="cb">All PHI encrypted in transit (TLS 1.3) and at rest (AES-256) via Supabase on AWS us-east-1.</div></div>
+<div class="cc"><div class="ci">&#128273;</div><div class="ct">Access Control</div><div class="cb">6-role RBAC. TOTP MFA required for admin and provider roles. Row Level Security per org_id.</div></div>
+<div class="cc"><div class="ci">&#128203;</div><div class="ct">Audit Logging</div><div class="cb">Every login, PHI access, and data change logged to saas.auth_audit_log. Retained 6 years.</div></div>
+<div class="cc"><div class="ci">&#128276;</div><div class="ct">Breach Notification</div><div class="cb">Notification to Covered Entities within 60 days with full incident details and corrective actions.</div></div>
+<div class="cc"><div class="ci">&#129309;</div><div class="ct">Sub-processor BAAs</div><div class="cb">All PHI sub-processors (Supabase, Anthropic, Resend, Twilio) operate under executed BAAs.</div></div>
 </div>
+<div class="baa"><div class="bai">&#128196;</div><div><div class="bat">Request a Business Associate Agreement</div><div class="bab">All Covered Entities and Business Associates must execute a BAA before storing PHI. Our BAA covers all sub-processors, retention obligations, breach notification procedures, and PHI destruction at termination.</div><a href="mailto:legal@patienttrac.com?subject=BAA Request" class="babt">Request BAA &rarr; legal@patienttrac.com</a></div></div>
+<section class="ls"><h2 class="lh2">Technical Safeguards (HIPAA &sect; 164.312)</h2>
+<table class="st"><thead><tr><th>Safeguard</th><th>Implementation</th><th style="text-align:center">Status</th></tr></thead><tbody>
+<tr><td>Access control</td><td>6-role RBAC at API and database level. Row Level Security on all cr.* and saas.* tables.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Unique user ID</td><td>UUID per user. No shared accounts. Session tokens tied to individual user IDs.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Emergency access</td><td>super_admin role retains access for emergencies. All emergency access logged.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Automatic logoff</td><td>Session expiry via Supabase JWT TTL. Re-authentication required after inactivity.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Encryption in transit</td><td>TLS 1.3 on all API calls, database connections, and edge function invocations.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Encryption at rest</td><td>AES-256 on all Supabase PostgreSQL data via AWS RDS encryption. Backups encrypted.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Audit controls</td><td>saas.auth_audit_log captures all auth events, MFA completions, and role changes.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Integrity controls</td><td>Database constraints, foreign keys, and RLS prevent unauthorized modification.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Transmission security</td><td>HTTPS enforced. API keys in Supabase environment only &mdash; never in frontend code.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>MFA</td><td>Google Authenticator TOTP required for all admin and provider roles.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+</tbody></table></section>
+<section class="ls"><h2 class="lh2">Administrative Safeguards (HIPAA &sect; 164.308)</h2>
+<div class="cklist">
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Security Officer:</strong> Designated HIPAA Security Officer for policy, training, and incident response.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Risk analysis:</strong> Annual security risk assessment identifying threats to PHI confidentiality, integrity, and availability.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Workforce training:</strong> All employees with PHI access complete HIPAA training at hire and annually. Background checks required.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Access management:</strong> Least-privilege access. Reviewed quarterly. Revoked immediately upon termination.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Incident response:</strong> Detection &rarr; containment &rarr; assessment &rarr; notification &rarr; remediation. Documented procedure.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Contingency plan:</strong> Daily automated backups. RTO: 4 hours. RPO: 24 hours.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Sub-processor management:</strong> BAAs before PHI access. Annual compliance reviews.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Evaluation:</strong> Annual technical and non-technical HIPAA safeguard evaluation. Findings remediated.</div></div>
+</div></section>
+<section class="ls"><h2 class="lh2">Physical Safeguards (HIPAA &sect; 164.310)</h2>
+<div class="cklist">
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>AWS (via Supabase):</strong> SOC 2 Type II, ISO 27001, HIPAA-eligible. Physical access controls, surveillance, environmental safeguards. US-east-1 (Virginia).</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Netlify:</strong> CDN hosting &mdash; no PHI stored at CDN layer. SOC 2 compliant.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Workstations:</strong> Encrypted drives and screen locks required for all remote work.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Media disposal:</strong> PHI destroyed per NIST SP 800-88. Certificate of destruction available on request.</div></div>
+</div></section>
+<section class="ls"><h2 class="lh2">AI Features &amp; HIPAA</h2>
+<table class="st"><thead><tr><th>AI Feature</th><th>PHI transmitted</th><th>Anthropic BAA</th><th style="text-align:center">Status</th></tr></thead><tbody>
+<tr><td>No-show prediction</td><td>Age, appt type, insurance type, visit history (no names)</td><td>&#10003; Covered</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Smart scheduling</td><td>Provider schedule, insurance type (no patient names)</td><td>&#10003; Covered</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>AI intake assistant</td><td>Chief complaint, medications, symptoms &mdash; minimum necessary</td><td>&#10003; Covered</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Billing AI</td><td>Diagnosis, CPT codes, insurance type &mdash; minimum necessary</td><td>&#10003; Covered</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Wait time tracking</td><td>Timestamps only &mdash; no clinical PHI transmitted to AI</td><td>N/A</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+</tbody></table>
+<p style="margin-top:12px">Anthropic does not use customer PHI to train models. All Claude API calls processed under our enterprise BAA with Anthropic.</p></section>
+<section class="ls"><h2 class="lh2">Sub-Processors Handling PHI</h2>
+<table class="spt"><thead><tr><th>Sub-processor</th><th>Role</th><th>Location</th><th>BAA</th></tr></thead><tbody>
+<tr><td>Supabase Inc.</td><td>PostgreSQL DB, auth, edge functions</td><td>AWS us-east-1</td><td><span class="spy">&#10003; Executed</span></td></tr>
+<tr><td>Anthropic PBC</td><td>Claude AI &mdash; all 5 AI features</td><td>US (API)</td><td><span class="spy">&#10003; Executed</span></td></tr>
+<tr><td>Resend, Inc.</td><td>Email &mdash; confirmations, intake links</td><td>US</td><td><span class="spy">&#10003; Executed</span></td></tr>
+<tr><td>Twilio Inc.</td><td>SMS &mdash; reminders, wait apology</td><td>US</td><td><span class="spy">&#10003; Executed</span></td></tr>
+<tr><td>Netlify, Inc.</td><td>App hosting &mdash; no PHI at CDN layer</td><td>US</td><td>N/A</td></tr>
+<tr><td>Stripe, Inc.</td><td>Payments &mdash; billing only, no PHI</td><td>US</td><td>N/A</td></tr>
+</tbody></table>
+<p>Sub-processor list or executed BAA copies: <a href="mailto:legal@patienttrac.com" style="color:var(--gold)">legal@patienttrac.com</a></p></section>
+<section class="ls"><h2 class="lh2">Patient Rights &amp; Provider Obligations</h2>
+<div class="cklist">
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Right of access:</strong> Export complete patient record at any time from the patient profile page.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Right to amend:</strong> Records updated any time. All changes timestamped and attributed to the modifying user.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Right to accounting:</strong> auth_audit_log and encounter_workflow provide complete PHI access accounting.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Right to restrict:</strong> RBAC allows marking records for restricted staff visibility.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Confidential communications:</strong> Patient language and contact preferences stored and honored in all communications.</div></div>
+</div></section>
+<section class="ls"><h2 class="lh2">Compliance Contact</h2>
+<div class="cbox"><h3>PatientTrac Corp &mdash; HIPAA &amp; Compliance</h3>
+<div class="cl"><span class="clb">HIPAA / Legal</span><span><a href="mailto:legal@patienttrac.com">legal@patienttrac.com</a></span></div>
+<div class="cl"><span class="clb">BAA requests</span><span><a href="mailto:legal@patienttrac.com?subject=BAA Request">legal@patienttrac.com</a> &middot; subject: &ldquo;BAA Request&rdquo;</span></div>
+<div class="cl"><span class="clb">Breach report</span><span><a href="mailto:legal@patienttrac.com?subject=Security Incident">legal@patienttrac.com</a> &middot; subject: &ldquo;Security Incident&rdquo;</span></div>
+<div class="cl"><span class="clb">Support</span><span><a href="mailto:support@patienttrac.com">support@patienttrac.com</a></span></div>
+<div class="cl"><span class="clb">Sales</span><span><a href="mailto:sales@patienttrac.com">sales@patienttrac.com</a> &middot; <a href="mailto:sales@patienttracforge.com">sales@patienttracforge.com</a></span></div>
+</div></section>
+</div><!-- /en -->
 
-<footer class="legal-footer">
-  <div class="footer-inner">
-    <div>
-      <div class="footer-brand">PatientTrac Corp</div>
-      <div class="footer-copy">© 2026 PatientTrac Corp · HIPAA Business Associate</div>
-    </div>
-    <div class="footer-links">
-      <a href="/privacy.html">Privacy Policy</a>
-      <a href="/terms.html">Terms of Service</a>
-      <a href="/hipaa.html" class="active">HIPAA Compliance</a>
-      <a href="/">Home</a>
+<div class="lang-block" data-lang="es">
+<div class="legal-header"><span class="legal-tag">&#10022; Cumplimiento &middot; HIPAA</span><h1 class="legal-h1">Cumplimiento HIPAA</h1><div class="legal-meta">PatientTrac Corp &middot; PatientTracForge v0.3 &middot; &Uacute;ltima revisi&oacute;n: 24 de abril de 2026</div></div>
+<p style="font-size:16px;color:var(--muted);max-width:700px;margin-bottom:40px">PatientTracForge fue dise&ntilde;ado desde su base para cumplir con la Regla de Privacidad, la Regla de Seguridad y la Regla de Notificaci&oacute;n de Incumplimiento de HIPAA. Esta p&aacute;gina documenta nuestras salvaguardas t&eacute;cnicas y administrativas, los BAA de subprocesadores y c&oacute;mo solicitar documentaci&oacute;n de cumplimiento.</p>
+<div class="cgrid">
+<div class="cc"><div class="ci">&#128737;</div><div class="ct">Socio Comercial</div><div class="cb">Firmamos un BAA con cada Entidad Cubierta antes de procesar cualquier ISP.</div></div>
+<div class="cc"><div class="ci">&#128272;</div><div class="ct">Cifrado</div><div class="cb">Todas las ISP cifradas en tr&aacute;nsito (TLS 1.3) y en reposo (AES-256) mediante Supabase en AWS us-east-1.</div></div>
+<div class="cc"><div class="ci">&#128273;</div><div class="ct">Control de acceso</div><div class="cb">RBAC de 6 roles. MFA TOTP obligatorio para administrador y proveedor. RLS por org_id.</div></div>
+<div class="cc"><div class="ci">&#128203;</div><div class="ct">Registro de auditor&iacute;a</div><div class="cb">Cada inicio de sesi&oacute;n, acceso a ISP y cambio registrado en saas.auth_audit_log. Retenido 6 a&ntilde;os.</div></div>
+<div class="cc"><div class="ci">&#128276;</div><div class="ct">Notificaci&oacute;n de incumplimiento</div><div class="cb">Notificaci&oacute;n a Entidades Cubiertas en 60 d&iacute;as con detalles completos del incidente.</div></div>
+<div class="cc"><div class="ci">&#129309;</div><div class="ct">BAA de subprocesadores</div><div class="cb">Todos los subprocesadores con ISP (Supabase, Anthropic, Resend, Twilio) operan bajo BAA ejecutados.</div></div>
+</div>
+<div class="baa"><div class="bai">&#128196;</div><div><div class="bat">Solicitar un Acuerdo de Socio Comercial (BAA)</div><div class="bab">Todas las Entidades Cubiertas y Socios Comerciales deben ejecutar un BAA antes de almacenar ISP. Nuestro BAA cubre todos los subprocesadores, las obligaciones de retenci&oacute;n, los procedimientos de notificaci&oacute;n y la destrucci&oacute;n de ISP al finalizar el contrato.</div><a href="mailto:legal@patienttrac.com?subject=Solicitud de BAA" class="babt">Solicitar BAA &rarr; legal@patienttrac.com</a></div></div>
+<section class="ls"><h2 class="lh2">Salvaguardas t&eacute;cnicas (HIPAA &sect; 164.312)</h2>
+<table class="st"><thead><tr><th>Salvaguarda</th><th>Implementaci&oacute;n</th><th style="text-align:center">Estado</th></tr></thead><tbody>
+<tr><td>Control de acceso</td><td>RBAC de 6 roles a nivel de API y base de datos. RLS en todas las tablas cr.* y saas.*.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>ID &uacute;nico de usuario</td><td>UUID por usuario. Sin cuentas compartidas. Tokens vinculados a IDs individuales.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Acceso de emergencia</td><td>Rol super_admin retiene acceso en emergencias. Todo acceso de emergencia registrado.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Cierre de sesi&oacute;n autom&aacute;tico</td><td>Vencimiento de sesi&oacute;n mediante JWT de Supabase. Reautenticaci&oacute;n requerida tras inactividad.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Cifrado en tr&aacute;nsito</td><td>TLS 1.3 en todas las llamadas API, conexiones de base de datos e invocaciones de funciones edge.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Cifrado en reposo</td><td>AES-256 en todos los datos PostgreSQL de Supabase mediante cifrado AWS RDS. Copias de seguridad cifradas.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Controles de auditor&iacute;a</td><td>saas.auth_audit_log captura todos los eventos de autenticaci&oacute;n, MFA y cambios de rol.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Controles de integridad</td><td>Restricciones de base de datos, claves for&aacute;neas y pol&iacute;ticas RLS previenen modificaciones no autorizadas.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Seguridad de transmisi&oacute;n</td><td>HTTPS obligatorio. Claves API solo en variables de entorno Supabase &mdash; nunca en el frontend.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>MFA</td><td>Google Authenticator TOTP obligatorio para todos los roles de administrador y proveedor.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+</tbody></table></section>
+<section class="ls"><h2 class="lh2">Salvaguardas administrativas (HIPAA &sect; 164.308)</h2>
+<div class="cklist">
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Oficial de seguridad:</strong> Oficial de Seguridad HIPAA designado para pol&iacute;ticas, capacitaci&oacute;n y respuesta a incidentes.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>An&aacute;lisis de riesgos:</strong> Evaluaci&oacute;n anual de riesgos de seguridad HIPAA sobre confidencialidad, integridad y disponibilidad de ISP.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Capacitaci&oacute;n del personal:</strong> Todo el personal con acceso a ISP completa la capacitaci&oacute;n HIPAA al ingresar y anualmente. Verificaci&oacute;n de antecedentes requerida.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Gesti&oacute;n de accesos:</strong> Acceso de m&iacute;nimo privilegio. Revisi&oacute;n trimestral. Revocaci&oacute;n inmediata al t&eacute;rmino del empleo.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Respuesta a incidentes:</strong> Detecci&oacute;n &rarr; contenci&oacute;n &rarr; evaluaci&oacute;n &rarr; notificaci&oacute;n &rarr; remediaci&oacute;n. Procedimiento documentado.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Plan de contingencia:</strong> Copias de seguridad autom&aacute;ticas diarias. RTO: 4 horas. RPO: 24 horas.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Gesti&oacute;n de socios comerciales:</strong> BAA antes del acceso a ISP. Revisiones anuales de cumplimiento.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Evaluaci&oacute;n:</strong> Evaluaci&oacute;n t&eacute;cnica y no t&eacute;cnica anual de salvaguardas HIPAA. Hallazgos remediados.</div></div>
+</div></section>
+<section class="ls"><h2 class="lh2">Salvaguardas f&iacute;sicas (HIPAA &sect; 164.310)</h2>
+<div class="cklist">
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>AWS (mediante Supabase):</strong> SOC 2 Tipo II, ISO 27001, elegible para HIPAA. Controles de acceso f&iacute;sico, vigilancia y salvaguardas ambientales. US-east-1 (Virginia).</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Netlify:</strong> Alojamiento CDN sin ISP almacenada en la capa CDN. Cumple SOC 2.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Estaciones de trabajo:</strong> Unidades cifradas y bloqueo de pantalla requeridos para trabajo remoto.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Eliminaci&oacute;n de medios:</strong> ISP destruida conforme a NIST SP 800-88. Certificado de destrucci&oacute;n disponible bajo solicitud.</div></div>
+</div></section>
+<section class="ls"><h2 class="lh2">Funciones de IA e HIPAA</h2>
+<table class="st"><thead><tr><th>Funci&oacute;n de IA</th><th>ISP transmitida</th><th>BAA de Anthropic</th><th style="text-align:center">Estado</th></tr></thead><tbody>
+<tr><td>Predicci&oacute;n de inasistencias</td><td>Edad, tipo de cita, tipo de seguro, historial (sin nombres)</td><td>&#10003; Cubierto</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Agendamiento inteligente</td><td>Horario del proveedor, tipo de seguro (sin nombres de pacientes)</td><td>&#10003; Cubierto</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Asistente de ingreso IA</td><td>Queja principal, medicamentos, s&iacute;ntomas &mdash; m&iacute;nimo necesario</td><td>&#10003; Cubierto</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>IA de facturaci&oacute;n</td><td>Diagn&oacute;stico, c&oacute;digos CPT, tipo de seguro &mdash; m&iacute;nimo necesario</td><td>&#10003; Cubierto</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Tiempo de espera</td><td>Solo marcas de tiempo &mdash; sin ISP cl&iacute;nica transmitida a IA</td><td>N/A</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+</tbody></table>
+<p style="margin-top:12px">Anthropic no utiliza las ISP enviadas por los clientes para entrenar sus modelos. Todas las llamadas a la API de Claude se procesan bajo nuestro BAA empresarial con Anthropic.</p></section>
+<section class="ls"><h2 class="lh2">Subprocesadores que manejan ISP</h2>
+<table class="spt"><thead><tr><th>Subprocesador</th><th>Funci&oacute;n</th><th>Ubicaci&oacute;n</th><th>BAA</th></tr></thead><tbody>
+<tr><td>Supabase Inc.</td><td>Base de datos PostgreSQL, autenticaci&oacute;n, funciones edge</td><td>AWS us-east-1</td><td><span class="spy">&#10003; Ejecutado</span></td></tr>
+<tr><td>Anthropic PBC</td><td>API Claude &mdash; las 5 funciones de IA</td><td>EE. UU. (API)</td><td><span class="spy">&#10003; Ejecutado</span></td></tr>
+<tr><td>Resend, Inc.</td><td>Correo &mdash; confirmaciones de citas, enlaces de ingreso</td><td>EE. UU.</td><td><span class="spy">&#10003; Ejecutado</span></td></tr>
+<tr><td>Twilio Inc.</td><td>SMS &mdash; recordatorios, mensajes de disculpa por espera</td><td>EE. UU.</td><td><span class="spy">&#10003; Ejecutado</span></td></tr>
+<tr><td>Netlify, Inc.</td><td>Alojamiento de la app &mdash; sin ISP en la capa CDN</td><td>EE. UU.</td><td>N/A</td></tr>
+<tr><td>Stripe, Inc.</td><td>Pagos &mdash; solo facturaci&oacute;n, sin ISP</td><td>EE. UU.</td><td>N/A</td></tr>
+</tbody></table>
+<p>Para solicitar la lista de subprocesadores o copias de los BAA ejecutados: <a href="mailto:legal@patienttrac.com" style="color:var(--gold)">legal@patienttrac.com</a></p></section>
+<section class="ls"><h2 class="lh2">Derechos del paciente y obligaciones del proveedor</h2>
+<div class="cklist">
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Derecho de acceso:</strong> Exportaci&oacute;n completa del expediente del paciente en cualquier momento desde su perfil.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Derecho a enmienda:</strong> Expedientes actualizables en cualquier momento. Cambios con marca de tiempo y atribuidos al usuario modificante.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Derecho a contabilizaci&oacute;n:</strong> auth_audit_log y encounter_workflow brindan contabilizaci&oacute;n completa de los accesos a ISP.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Derecho a restringir:</strong> El sistema RBAC permite marcar expedientes para visibilidad restringida del personal.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Comunicaciones confidenciales:</strong> Preferencias de idioma y contacto del paciente almacenadas y respetadas en todas las comunicaciones.</div></div>
+</div></section>
+<section class="ls"><h2 class="lh2">Contacto de cumplimiento</h2>
+<div class="cbox"><h3>PatientTrac Corp &mdash; HIPAA y Cumplimiento</h3>
+<div class="cl"><span class="clb">HIPAA / Legal</span><span><a href="mailto:legal@patienttrac.com">legal@patienttrac.com</a></span></div>
+<div class="cl"><span class="clb">Solicitudes BAA</span><span><a href="mailto:legal@patienttrac.com?subject=Solicitud BAA">legal@patienttrac.com</a> &middot; asunto: &ldquo;Solicitud BAA&rdquo;</span></div>
+<div class="cl"><span class="clb">Reporte de incidente</span><span><a href="mailto:legal@patienttrac.com?subject=Incidente de Seguridad">legal@patienttrac.com</a> &middot; asunto: &ldquo;Incidente de Seguridad&rdquo;</span></div>
+<div class="cl"><span class="clb">Soporte</span><span><a href="mailto:support@patienttrac.com">support@patienttrac.com</a></span></div>
+<div class="cl"><span class="clb">Ventas</span><span><a href="mailto:sales@patienttrac.com">sales@patienttrac.com</a> &middot; <a href="mailto:sales@patienttracforge.com">sales@patienttracforge.com</a></span></div>
+</div></section>
+</div><!-- /es -->
+
+<div class="lang-block" data-lang="fr">
+<div class="legal-header"><span class="legal-tag">&#10022; Conformit&eacute; &middot; HIPAA</span><h1 class="legal-h1">Conformit&eacute; HIPAA</h1><div class="legal-meta">PatientTrac Corp &middot; PatientTracForge v0.3 &middot; Derni&egrave;re r&eacute;vision&nbsp;: 24 avril 2026</div></div>
+<p style="font-size:16px;color:var(--muted);max-width:700px;margin-bottom:40px">PatientTracForge a &eacute;t&eacute; con&ccedil;u de A &agrave; Z pour r&eacute;pondre aux exigences de la R&egrave;gle de Confidentialit&eacute;, de la R&egrave;gle de S&eacute;curit&eacute; et de la R&egrave;gle de Notification des Violations HIPAA. Cette page documente nos mesures de protection techniques et administratives, les BAA des sous-traitants et la proc&eacute;dure de demande de documentation de conformit&eacute;.</p>
+<div class="cgrid">
+<div class="cc"><div class="ci">&#128737;</div><div class="ct">Partenaire commercial</div><div class="cb">Nous signons un BAA avec chaque Entit&eacute; Couverte avant tout traitement d&rsquo;ISP.</div></div>
+<div class="cc"><div class="ci">&#128272;</div><div class="ct">Chiffrement</div><div class="cb">Toutes les ISP chiffr&eacute;es en transit (TLS 1.3) et au repos (AES-256) via Supabase sur AWS us-east-1.</div></div>
+<div class="cc"><div class="ci">&#128273;</div><div class="ct">Contr&ocirc;le des acc&egrave;s</div><div class="cb">RBAC &agrave; 6 r&ocirc;les. MFA TOTP obligatoire pour admin et praticien. S&eacute;curit&eacute; au niveau des lignes par org_id.</div></div>
+<div class="cc"><div class="ci">&#128203;</div><div class="ct">Journal d&rsquo;audit</div><div class="cb">Chaque connexion, acc&egrave;s aux ISP et modification consign&eacute;s dans saas.auth_audit_log. Conserv&eacute;s 6 ans.</div></div>
+<div class="cc"><div class="ci">&#128276;</div><div class="ct">Notification des violations</div><div class="cb">Notification aux Entit&eacute;s Couvertes dans les 60 jours avec tous les d&eacute;tails de l&rsquo;incident.</div></div>
+<div class="cc"><div class="ci">&#129309;</div><div class="ct">BAA des sous-traitants</div><div class="cb">Tous les sous-traitants traitant des ISP (Supabase, Anthropic, Resend, Twilio) op&egrave;rent sous BAA ex&eacute;cut&eacute;s.</div></div>
+</div>
+<div class="baa"><div class="bai">&#128196;</div><div><div class="bat">Demander un Accord de Partenaire Commercial (BAA)</div><div class="bab">Toutes les Entit&eacute;s Couvertes et les Partenaires Commerciaux doivent conclure un BAA avant de stocker des ISP. Notre BAA couvre tous les sous-traitants, les obligations de conservation, les proc&eacute;dures de notification des violations et la destruction des ISP &agrave; la r&eacute;siliation.</div><a href="mailto:legal@patienttrac.com?subject=Demande de BAA" class="babt">Demander un BAA &rarr; legal@patienttrac.com</a></div></div>
+<section class="ls"><h2 class="lh2">Mesures de protection techniques (HIPAA &sect; 164.312)</h2>
+<table class="st"><thead><tr><th>Mesure de protection</th><th>Mise en &oelig;uvre</th><th style="text-align:center">Statut</th></tr></thead><tbody>
+<tr><td>Contr&ocirc;le des acc&egrave;s</td><td>RBAC &agrave; 6 r&ocirc;les au niveau API et base de donn&eacute;es. RLS sur toutes les tables cr.* et saas.*.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Identification unique</td><td>UUID par utilisateur. Pas de comptes partag&eacute;s. Jetons de session li&eacute;s aux IDs individuels.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Acc&egrave;s d&rsquo;urgence</td><td>R&ocirc;le super_admin conserve l&rsquo;acc&egrave;s en urgence. Tout acc&egrave;s d&rsquo;urgence est consign&eacute;.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>D&eacute;connexion automatique</td><td>Expiration de session via JWT Supabase. R&eacute;authentification requise apr&egrave;s inactivit&eacute;.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Chiffrement en transit</td><td>TLS 1.3 sur tous les appels API, connexions base de donn&eacute;es et invocations de fonctions edge.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Chiffrement au repos</td><td>AES-256 sur toutes les donn&eacute;es PostgreSQL Supabase via chiffrement AWS RDS. Sauvegardes chiffr&eacute;es.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Contr&ocirc;les d&rsquo;audit</td><td>saas.auth_audit_log capture tous les &eacute;v&eacute;nements d&rsquo;authentification, MFA et changements de r&ocirc;le.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Contr&ocirc;les d&rsquo;int&eacute;grit&eacute;</td><td>Contraintes base de donn&eacute;es, cl&eacute;s &eacute;trang&egrave;res et RLS emp&ecirc;chent toute modification non autoris&eacute;e.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>S&eacute;curit&eacute; des transmissions</td><td>HTTPS obligatoire. Cl&eacute;s API uniquement dans les variables d&rsquo;environnement Supabase &mdash; jamais dans le frontend.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>MFA</td><td>Google Authenticator TOTP obligatoire pour tous les r&ocirc;les admin et praticien.</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+</tbody></table></section>
+<section class="ls"><h2 class="lh2">Mesures de protection administratives (HIPAA &sect; 164.308)</h2>
+<div class="cklist">
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Responsable de la s&eacute;curit&eacute;&nbsp;:</strong> Responsable de la S&eacute;curit&eacute; HIPAA d&eacute;sign&eacute; pour les politiques, la formation et la r&eacute;ponse aux incidents.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Analyse des risques&nbsp;:</strong> &Eacute;valuation annuelle des risques de s&eacute;curit&eacute; HIPAA sur la confidentialit&eacute;, l&rsquo;int&eacute;grit&eacute; et la disponibilit&eacute; des ISP.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Formation du personnel&nbsp;:</strong> Tout le personnel ayant acc&egrave;s aux ISP suit une formation HIPAA &agrave; l&rsquo;embauche et annuellement. V&eacute;rification des ant&eacute;c&eacute;dents requise.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Gestion des acc&egrave;s&nbsp;:</strong> Principe du moindre privil&egrave;ge. Revue trimestrielle. R&eacute;vocation imm&eacute;diate au d&eacute;part.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>R&eacute;ponse aux incidents&nbsp;:</strong> D&eacute;tection &rarr; confinement &rarr; &eacute;valuation &rarr; notification &rarr; rem&eacute;diation. Proc&eacute;dure document&eacute;e.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Plan de continuit&eacute;&nbsp;:</strong> Sauvegardes automatiques quotidiennes. RTO&nbsp;: 4 heures. RPO&nbsp;: 24 heures.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Gestion des partenaires&nbsp;:</strong> BAA avant tout acc&egrave;s aux ISP. Revues annuelles de conformit&eacute;.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>&Eacute;valuation&nbsp;:</strong> &Eacute;valuation technique et non technique annuelle des mesures HIPAA. Constatations r&eacute;m&eacute;di&eacute;es.</div></div>
+</div></section>
+<section class="ls"><h2 class="lh2">Mesures de protection physiques (HIPAA &sect; 164.310)</h2>
+<div class="cklist">
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>AWS (via Supabase)&nbsp;:</strong> SOC 2 Type II, ISO 27001, &eacute;ligible HIPAA. Contr&ocirc;les d&rsquo;acc&egrave;s physiques, vid&eacute;osurveillance, mesures environnementales. US-east-1 (Virginie).</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Netlify&nbsp;:</strong> H&eacute;bergement CDN sans ISP stock&eacute;e au niveau CDN. Conforme SOC 2.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Postes de travail&nbsp;:</strong> Disques chiffr&eacute;s et verrouillage des &eacute;crans obligatoires en t&eacute;l&eacute;travail.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Destruction des supports&nbsp;:</strong> ISP d&eacute;truits conform&eacute;ment &agrave; NIST SP 800-88. Certificat de destruction disponible sur demande.</div></div>
+</div></section>
+<section class="ls"><h2 class="lh2">Fonctionnalit&eacute;s IA et HIPAA</h2>
+<table class="st"><thead><tr><th>Fonctionnalit&eacute; IA</th><th>ISP transmises</th><th>BAA Anthropic</th><th style="text-align:center">Statut</th></tr></thead><tbody>
+<tr><td>Pr&eacute;diction des absences</td><td>&Acirc;ge, type de RDV, assurance, historique (sans noms)</td><td>&#10003; Couvert</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Planification intelligente</td><td>Planning praticien, type assurance (sans noms)</td><td>&#10003; Couvert</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Assistant d&rsquo;admission IA</td><td>Motif, m&eacute;dicaments, sympt&ocirc;mes &mdash; strictement n&eacute;cessaires</td><td>&#10003; Couvert</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>IA de facturation</td><td>Diagnostic, codes CPT, assurance &mdash; strictement n&eacute;cessaires</td><td>&#10003; Couvert</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+<tr><td>Temps d&rsquo;attente</td><td>Horodatages uniquement &mdash; aucune ISP clinique transmise &agrave; l&rsquo;IA</td><td>N/A</td><td class="sc"><span class="sy">&#10003;</span></td></tr>
+</tbody></table>
+<p style="margin-top:12px">Anthropic n&rsquo;utilise pas les ISP soumises par les clients pour entra&icirc;ner ses mod&egrave;les. Tous les appels &agrave; l&rsquo;API Claude sont trait&eacute;s dans le cadre de notre BAA entreprise avec Anthropic.</p></section>
+<section class="ls"><h2 class="lh2">Sous-traitants traitant des ISP</h2>
+<table class="spt"><thead><tr><th>Sous-traitant</th><th>R&ocirc;le</th><th>Localisation</th><th>BAA</th></tr></thead><tbody>
+<tr><td>Supabase Inc.</td><td>Base de donn&eacute;es PostgreSQL, authentification, fonctions edge</td><td>AWS us-east-1</td><td><span class="spy">&#10003; Ex&eacute;cut&eacute;</span></td></tr>
+<tr><td>Anthropic PBC</td><td>API Claude IA &mdash; les 5 fonctionnalit&eacute;s IA</td><td>&Eacute;tats-Unis (API)</td><td><span class="spy">&#10003; Ex&eacute;cut&eacute;</span></td></tr>
+<tr><td>Resend, Inc.</td><td>E-mail &mdash; confirmations, liens d&rsquo;admission</td><td>&Eacute;tats-Unis</td><td><span class="spy">&#10003; Ex&eacute;cut&eacute;</span></td></tr>
+<tr><td>Twilio Inc.</td><td>SMS &mdash; rappels, messages d&rsquo;excuse</td><td>&Eacute;tats-Unis</td><td><span class="spy">&#10003; Ex&eacute;cut&eacute;</span></td></tr>
+<tr><td>Netlify, Inc.</td><td>H&eacute;bergement app &mdash; sans ISP en couche CDN</td><td>&Eacute;tats-Unis</td><td>N/A</td></tr>
+<tr><td>Stripe, Inc.</td><td>Paiements &mdash; facturation uniquement, sans ISP</td><td>&Eacute;tats-Unis</td><td>N/A</td></tr>
+</tbody></table>
+<p>Pour demander la liste des sous-traitants ou des copies des BAA ex&eacute;cut&eacute;s&nbsp;: <a href="mailto:legal@patienttrac.com" style="color:var(--gold)">legal@patienttrac.com</a></p></section>
+<section class="ls"><h2 class="lh2">Droits des patients et obligations des praticiens</h2>
+<div class="cklist">
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Droit d&rsquo;acc&egrave;s&nbsp;:</strong> Export complet du dossier patient &agrave; tout moment depuis la page de profil.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Droit de rectification&nbsp;:</strong> Dossiers modifiables &agrave; tout moment. Toutes les modifications sont horodat&eacute;es et attribu&eacute;es.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Droit de comptabilisation&nbsp;:</strong> auth_audit_log et encounter_workflow fournissent une comptabilisation compl&egrave;te des acc&egrave;s aux ISP.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Droit de restriction&nbsp;:</strong> Le syst&egrave;me RBAC permet de marquer les dossiers pour un acc&egrave;s restreint.</div></div>
+<div class="ck"><div class="cki">&#10003;</div><div class="ckt"><strong>Communications confidentielles&nbsp;:</strong> Pr&eacute;f&eacute;rences de langue et de contact du patient enregistr&eacute;es et respect&eacute;es.</div></div>
+</div></section>
+<section class="ls"><h2 class="lh2">Contact conformit&eacute;</h2>
+<div class="cbox"><h3>PatientTrac Corp &mdash; HIPAA et Conformit&eacute;</h3>
+<div class="cl"><span class="clb">HIPAA / Juridique</span><span><a href="mailto:legal@patienttrac.com">legal@patienttrac.com</a></span></div>
+<div class="cl"><span class="clb">Demandes BAA</span><span><a href="mailto:legal@patienttrac.com?subject=Demande BAA">legal@patienttrac.com</a> &middot; objet&nbsp;: &laquo;&nbsp;Demande BAA&nbsp;&raquo;</span></div>
+<div class="cl"><span class="clb">Signalement</span><span><a href="mailto:legal@patienttrac.com?subject=Incident de securite">legal@patienttrac.com</a> &middot; objet&nbsp;: &laquo;&nbsp;Incident de s&eacute;curit&eacute;&nbsp;&raquo;</span></div>
+<div class="cl"><span class="clb">Support</span><span><a href="mailto:support@patienttrac.com">support@patienttrac.com</a></span></div>
+<div class="cl"><span class="clb">Commercial</span><span><a href="mailto:sales@patienttrac.com">sales@patienttrac.com</a> &middot; <a href="mailto:sales@patienttracforge.com">sales@patienttracforge.com</a></span></div>
+</div></section>
+</div><!-- /fr -->
+
+</div><!-- /page -->
+<footer>
+  <div class="fi">
+    <div><div class="fb">PatientTrac Corp</div><div class="fc">&copy; 2026 PatientTrac Corp &middot; HIPAA Business Associate</div></div>
+    <div class="fl">
+      <a href="/privacy.html">Privacy &middot; Privacidad &middot; Confidentialit&eacute;</a>
+      <a href="/terms.html">Terms &middot; T&eacute;rminos &middot; Conditions</a>
+      <a href="/hipaa.html" class="on">HIPAA</a>
+      <a href="/">Home &middot; Inicio &middot; Accueil</a>
     </div>
   </div>
 </footer>
+<script>
+var L=localStorage.getItem("ptf_lang")||(navigator.language||"en").slice(0,2);
+if(L!=="es"&&L!=="fr")L="en";
+function setL(l){
+  L=l;localStorage.setItem("ptf_lang",l);
+  document.querySelectorAll(".lang-block").forEach(function(b){b.classList.toggle("on",b.dataset.lang===l)});
+  document.querySelectorAll(".lang-btn").forEach(function(b){b.classList.toggle("on",b.dataset.lang===l)});
+  document.documentElement.lang=l==="fr"?"fr-CA":l==="es"?"es":"en";
+  var backMap={en:"\u2190 Back to home",es:"\u2190 Volver al inicio",fr:"\u2190 Retour \u00e0 l'accueil"};
+  var bl=document.getElementById("back-link");if(bl)bl.textContent=backMap[l];
+}
+setL(L);
+</script>
 </body>
 </html>
