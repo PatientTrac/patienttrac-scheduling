@@ -1,24 +1,74 @@
 [build]
-  command = "npm run build"
+  command = "vite build"
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NPM_FLAGS = "--legacy-peer-deps"
 
+# Serve landing page at root
+[[redirects]]
+  from = "/"
+  to = "/landing.html"
+  status = 200
+
+# All app routes go to React SPA
+[[redirects]]
+  from = "/dashboard"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/patients/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/schedule/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/billing"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/insurance"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/encounters"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/providers/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/facilities/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/settings"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/intake"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/index.html"
+  status = 200
+
+# Catch-all for React SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"

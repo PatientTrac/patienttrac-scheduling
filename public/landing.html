@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PatientTracForge — AI-Powered EMR Scheduling</title>
+<meta name="description" content="The AI-native EMR scheduling platform for modern medical practices. No-show prediction, smart scheduling, billing AI, and full revenue cycle management."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --navy-950: #020a14;
+  --navy-900: #060e1c;
+  --navy-800: #0a1628;
+  --navy-700: #0f2040;
+  --gold:     #c9a96e;
+  --gold-lt:  #e8cc9a;
+  --gold-dk:  #9a7a4a;
+  --cyan:     #00d4ff;
+  --cyan-dk:  #0099cc;
+  --text:     #e8eaf0;
+  --muted:    #8a9bc0;
+  --subtle:   #3a4a6a;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy-950);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ── Animated grid background ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Glow orbs ── */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+.orb-1 { width: 600px; height: 600px; background: rgba(201,169,110,0.06); top: -200px; right: -200px; animation-delay: 0s; }
+.orb-2 { width: 500px; height: 500px; background: rgba(0,212,255,0.05); bottom: -150px; left: -150px; animation-delay: -10s; }
+.orb-3 { width: 400px; height: 400px; background: rgba(120,80,200,0.04); top: 40%; left: 40%; animation-delay: -5s; }
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  33%       { transform: translate(30px,-30px) scale(1.05); }
+  66%       { transform: translate(-20px,20px) scale(0.95); }
+}
+
+/* ── Layout ── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(2,10,20,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201,169,110,0.1);
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+.nav-logo {
+  display: flex; align-items: baseline; gap: 8px;
+}
+.nav-logo-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: 22px; color: var(--gold);
+  letter-spacing: 0.05em;
+}
+.nav-logo-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--subtle); letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-links a {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--muted); text-decoration: none; letter-spacing: 0.1em;
+  text-transform: uppercase; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--gold); }
+.btn-nav {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  background: transparent; border: 1px solid var(--gold);
+  color: var(--gold); padding: 8px 20px; cursor: pointer;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none; transition: all 0.2s;
+}
+.btn-nav:hover { background: rgba(201,169,110,0.1); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 120px 0 80px;
+  position: relative; overflow: hidden;
+}
+.hero-content { max-width: 780px; }
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--cyan); letter-spacing: 0.15em; text-transform: uppercase;
+  border: 1px solid rgba(0,212,255,0.2);
+  background: rgba(0,212,255,0.05);
+  padding: 6px 14px; margin-bottom: 28px;
+  animation: fadeSlideUp 0.8s ease both;
+}
+.hero-tag::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--cyan);
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero-h1 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 700; line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 24px;
+  animation: fadeSlideUp 0.8s 0.1s ease both;
+}
+.hero-h1 .accent { color: var(--gold); }
+.hero-h1 .accent-2 { color: var(--cyan); }
+
+.hero-sub {
+  font-size: 18px; line-height: 1.65; color: var(--muted);
+  max-width: 600px; margin-bottom: 48px;
+  animation: fadeSlideUp 0.8s 0.2s ease both;
+}
+
+.hero-actions {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  animation: fadeSlideUp 0.8s 0.3s ease both;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  background: var(--gold); color: #020a14;
+  border: none; padding: 14px 28px; cursor: pointer;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none; font-weight: 500;
+  transition: all 0.2s; position: relative; overflow: hidden;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+.btn-primary:hover::after { transform: translateX(100%); }
+.btn-primary:hover { background: var(--gold-lt); }
+
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  background: transparent; color: var(--text);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 14px 28px; cursor: pointer;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none; transition: all 0.2s;
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Hero stats */
+.hero-stats {
+  display: flex; gap: 48px; margin-top: 64px;
+  padding-top: 48px; border-top: 1px solid rgba(201,169,110,0.1);
+  animation: fadeSlideUp 0.8s 0.4s ease both;
+}
+.stat-item {}
+.stat-num {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 40px; font-weight: 700; color: var(--gold);
+  line-height: 1;
+}
+.stat-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: var(--subtle); letter-spacing: 0.12em;
+  text-transform: uppercase; margin-top: 4px;
+}
+
+/* Hero visual */
+.hero-visual {
+  position: absolute; right: -40px; top: 50%;
+  transform: translateY(-50%);
+  width: 520px; pointer-events: none;
+  animation: fadeSlideLeft 1s 0.5s ease both;
+}
+.dash-mockup {
+  background: rgba(10,22,40,0.9);
+  border: 1px solid rgba(201,169,110,0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 80px rgba(201,169,110,0.08);
+}
+.dash-bar {
+  background: var(--navy-800);
+  border-bottom: 1px solid rgba(201,169,110,0.1);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.dash-dot { width: 8px; height: 8px; border-radius: 50%; }
+.dash-content { padding: 16px; }
+.dash-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  margin-bottom: 8px;
+}
+.dash-card {
+  background: rgba(15,32,64,0.8);
+  border: 1px solid rgba(201,169,110,0.1);
+  padding: 10px 12px; border-radius: 2px;
+}
+.dash-card-label { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--subtle); text-transform: uppercase; }
+.dash-card-val { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; margin-top: 2px; }
+.dash-appt-list { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+.dash-appt {
+  background: rgba(15,32,64,0.6);
+  border-left: 2px solid;
+  padding: 6px 10px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'DM Mono', monospace; font-size: 9px;
+}
+.risk-badge {
+  font-size: 8px; padding: 2px 6px;
+  border-radius: 2px; font-family: 'DM Mono', monospace;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+
+@keyframes fadeSlideUp   { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeSlideLeft { from { opacity: 0; transform: translateY(-50%) translateX(40px); } to { opacity: 1; transform: translateY(-50%) translateX(0); } }
+@keyframes fadeIn        { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── SECTION BASE ── */
+section { padding: 100px 0; position: relative; z-index: 1; }
+.section-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: var(--gold); letter-spacing: 0.2em; text-transform: uppercase;
+  margin-bottom: 12px; display: block;
+}
+.section-h2 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(36px, 5vw, 60px); font-weight: 700;
+  line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 20px;
+}
+.section-sub { font-size: 17px; line-height: 1.65; color: var(--muted); max-width: 560px; }
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,169,110,0.2), transparent);
+  position: relative; z-index: 1;
+}
+
+/* ── AI FEATURES ── */
+#ai { background: linear-gradient(180deg, var(--navy-950) 0%, rgba(6,14,28,0.5) 100%); }
+.ai-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2px; margin-top: 60px; }
+
+.ai-card {
+  background: rgba(10,22,40,0.6);
+  border: 1px solid rgba(201,169,110,0.08);
+  padding: 36px;
+  position: relative; overflow: hidden;
+  transition: all 0.3s;
+  cursor: default;
+}
+.ai-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,169,110,0.4), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.ai-card:hover { background: rgba(15,32,64,0.8); border-color: rgba(201,169,110,0.2); }
+.ai-card:hover::before { opacity: 1; }
+
+.ai-card-num {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 72px; font-weight: 700; line-height: 1;
+  color: rgba(201,169,110,0.08); position: absolute;
+  top: 20px; right: 24px; letter-spacing: -0.04em;
+  transition: color 0.3s;
+}
+.ai-card:hover .ai-card-num { color: rgba(201,169,110,0.14); }
+
+.ai-card-icon {
+  width: 44px; height: 44px;
+  border: 1px solid rgba(0,212,255,0.2);
+  background: rgba(0,212,255,0.05);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 20px;
+}
+.ai-card-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 22px; font-weight: 600;
+  color: var(--text); margin-bottom: 10px; letter-spacing: 0.02em;
+}
+.ai-card-roi {
+  display: inline-block;
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  color: var(--gold); letter-spacing: 0.12em;
+  border: 1px solid rgba(201,169,110,0.25);
+  padding: 3px 8px; margin-bottom: 14px;
+}
+.ai-card-body { font-size: 14px; line-height: 1.7; color: var(--muted); }
+.ai-card-metric {
+  margin-top: 20px; padding-top: 20px;
+  border-top: 1px solid rgba(201,169,110,0.08);
+  display: flex; align-items: baseline; gap: 8px;
+}
+.ai-card-metric-val {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 28px; font-weight: 700; color: var(--cyan);
+}
+.ai-card-metric-label {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--subtle);
+}
+
+/* ── PLATFORM FEATURES ── */
+#platform { }
+.feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 60px; background: rgba(201,169,110,0.06); }
+.feat-item {
+  background: var(--navy-950);
+  padding: 32px; transition: background 0.3s;
+}
+.feat-item:hover { background: rgba(10,22,40,0.8); }
+.feat-icon { font-size: 24px; margin-bottom: 16px; }
+.feat-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px; font-weight: 600; color: var(--text);
+  margin-bottom: 10px; letter-spacing: 0.02em;
+}
+.feat-body { font-size: 13px; line-height: 1.7; color: var(--muted); }
+.feat-tag {
+  display: inline-block; margin-top: 12px;
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  color: var(--cyan); letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── INTEGRATION ── */
+#integration {
+  background: linear-gradient(135deg, rgba(0,212,255,0.03) 0%, transparent 50%, rgba(201,169,110,0.03) 100%);
+}
+.integration-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-top: 60px; }
+.integration-visual {
+  position: relative;
+}
+.app-node {
+  background: rgba(10,22,40,0.9);
+  border: 1px solid rgba(201,169,110,0.15);
+  padding: 16px 24px; display: inline-flex; align-items: center; gap: 12px;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--text); white-space: nowrap; position: relative;
+}
+.app-node-center {
+  text-align: center; margin: 0 auto;
+  background: rgba(10,22,40,0.95);
+  border: 1px solid rgba(201,169,110,0.4);
+  padding: 20px 32px; display: block; width: fit-content;
+  box-shadow: 0 0 40px rgba(201,169,110,0.1);
+}
+.app-flow {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 0;
+}
+.app-connector {
+  width: 1px; height: 32px;
+  background: linear-gradient(180deg, rgba(201,169,110,0.4), rgba(0,212,255,0.3));
+  position: relative;
+}
+.app-connector::after {
+  content: ''; position: absolute; bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid rgba(0,212,255,0.4);
+}
+.app-branches {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px; width: 100%; margin-top: 0;
+}
+.branch-node {
+  background: rgba(10,22,40,0.7);
+  border: 1px solid rgba(0,212,255,0.15);
+  padding: 14px; text-align: center;
+}
+.branch-title { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 600; color: var(--cyan); }
+.branch-sub { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--subtle); margin-top: 4px; }
+
+.integration-text h3 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 36px; font-weight: 700; margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+.integration-points { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.integration-point {
+  display: flex; gap: 14px; align-items: flex-start;
+  font-size: 14px; line-height: 1.6; color: var(--muted);
+}
+.integration-point::before {
+  content: '▸'; color: var(--gold); flex-shrink: 0; margin-top: 2px;
+}
+
+/* ── PRICING ── */
+#pricing { }
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 2px; margin-top: 60px;
+}
+.pricing-card {
+  background: rgba(10,22,40,0.6);
+  border: 1px solid rgba(201,169,110,0.08);
+  padding: 40px 36px; position: relative;
+  transition: all 0.3s;
+}
+.pricing-card.featured {
+  background: rgba(15,32,64,0.9);
+  border-color: rgba(201,169,110,0.3);
+  z-index: 1; margin: -8px -4px;
+}
+.pricing-card.featured::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.pricing-popular {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--gold); color: #020a14;
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  padding: 4px 12px; letter-spacing: 0.12em; text-transform: uppercase;
+  white-space: nowrap;
+}
+.pricing-tier {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: var(--gold); letter-spacing: 0.15em; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.pricing-price {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 56px; font-weight: 700; line-height: 1;
+  color: var(--text); margin-bottom: 4px;
+}
+.pricing-price span { font-size: 22px; color: var(--muted); }
+.pricing-period { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--subtle); margin-bottom: 8px; }
+.pricing-desc { font-size: 13px; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+.pricing-divider { height: 1px; background: rgba(201,169,110,0.08); margin-bottom: 24px; }
+.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.pricing-feature {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 13px; line-height: 1.5; color: var(--muted);
+}
+.pricing-feature .check { color: var(--gold); flex-shrink: 0; font-size: 12px; }
+.pricing-feature .check-cyan { color: var(--cyan); flex-shrink: 0; font-size: 12px; }
+.pricing-feature .cross { color: var(--subtle); flex-shrink: 0; }
+.btn-pricing {
+  display: block; width: 100%; text-align: center;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  padding: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none; cursor: pointer; transition: all 0.2s;
+  border: 1px solid rgba(201,169,110,0.3); color: var(--gold);
+  background: transparent;
+}
+.btn-pricing:hover { background: rgba(201,169,110,0.1); }
+.btn-pricing-primary {
+  background: var(--gold); color: #020a14; border-color: var(--gold);
+}
+.btn-pricing-primary:hover { background: var(--gold-lt); border-color: var(--gold-lt); color: #020a14; }
+
+.pricing-note {
+  text-align: center; margin-top: 32px;
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--subtle);
+}
+
+/* Enterprise add-ons */
+.addons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 48px; background: rgba(201,169,110,0.06); }
+.addon-item { background: var(--navy-950); padding: 24px; }
+.addon-name { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.addon-price { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gold); margin-bottom: 8px; }
+.addon-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* ── LOGIN SECTION ── */
+#login {
+  background: linear-gradient(180deg, var(--navy-950) 0%, var(--navy-900) 100%);
+  padding: 80px 0 120px;
+}
+.login-wrap {
+  max-width: 440px; margin: 0 auto;
+  background: rgba(10,22,40,0.9);
+  border: 1px solid rgba(201,169,110,0.15);
+  padding: 48px;
+  position: relative;
+}
+.login-wrap::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.login-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 28px; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.02em;
+}
+.login-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+.form-group { margin-bottom: 20px; }
+.form-label {
+  display: block; font-family: 'DM Mono', monospace; font-size: 10px;
+  color: var(--subtle); letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.form-input {
+  width: 100%; background: rgba(6,14,28,0.8);
+  border: 1px solid rgba(201,169,110,0.15);
+  color: var(--text); font-family: 'DM Mono', monospace;
+  font-size: 13px; padding: 12px 16px;
+  outline: none; transition: border-color 0.2s;
+}
+.form-input:focus { border-color: rgba(201,169,110,0.5); }
+.form-input::placeholder { color: var(--subtle); }
+.btn-login {
+  width: 100%; background: var(--gold); color: #020a14;
+  border: none; font-family: 'DM Mono', monospace; font-size: 12px;
+  padding: 14px; cursor: pointer; letter-spacing: 0.15em; text-transform: uppercase;
+  font-weight: 500; transition: background 0.2s; margin-top: 8px;
+}
+.btn-login:hover { background: var(--gold-lt); }
+.login-links {
+  display: flex; justify-content: space-between; margin-top: 16px;
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--subtle);
+}
+.login-links a { color: var(--gold); text-decoration: none; }
+.login-links a:hover { text-decoration: underline; }
+.login-security {
+  margin-top: 24px; padding-top: 24px;
+  border-top: 1px solid rgba(201,169,110,0.08);
+  display: flex; gap: 16px; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--subtle);
+}
+.security-badge { display: flex; align-items: center; gap: 5px; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid rgba(201,169,110,0.08);
+  padding: 48px 0; position: relative; z-index: 1;
+}
+.footer-inner {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 24px;
+}
+.footer-brand { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; color: var(--gold); }
+.footer-copy { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--subtle); margin-top: 4px; }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--subtle); text-decoration: none; }
+.footer-links a:hover { color: var(--gold); }
+
+/* ── Scroll animations ── */
+.reveal {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .hero-visual { display: none; }
+  .feat-grid { grid-template-columns: 1fr 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .pricing-card.featured { margin: 0; }
+  .integration-grid { grid-template-columns: 1fr; }
+  .addons-grid { grid-template-columns: 1fr 1fr; }
+  .nav-links { display: none; }
+}
+@media (max-width: 600px) {
+  .feat-grid { grid-template-columns: 1fr; }
+  .hero-stats { flex-wrap: wrap; gap: 24px; }
+  .addons-grid { grid-template-columns: 1fr; }
+}
+
+/* Animated scan line */
+@keyframes scanline {
+  0% { top: 0; } 100% { top: 100%; }
+}
+.scanline {
+  position: fixed; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.15), transparent);
+  pointer-events: none; z-index: 99;
+  animation: scanline 8s linear infinite;
+}
+</style>
+</head>
+<body>
+
+<div class="scanline"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <span class="nav-logo-text">PatientTracForge</span>
+      <span class="nav-logo-tag">v0.3 · HIPAA</span>
+    </div>
+    <div class="nav-links">
+      <a href="#ai">AI Features</a>
+      <a href="#platform">Platform</a>
+      <a href="#integration">Integration</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#login">Sign In</a>
+    </div>
+    <a href="#login" class="btn-nav">Access System →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-tag">AI-Native EMR Platform · Powered by Claude</div>
+      <h1 class="hero-h1">
+        The <span class="accent">intelligent</span><br/>
+        scheduling engine<br/>
+        for <span class="accent-2">modern</span> medicine
+      </h1>
+      <p class="hero-sub">
+        PatientTracForge combines full EMR scheduling with five Claude AI models that predict no-shows, optimize slots, triage intake, and code billing — automatically, at every step.
+      </p>
+      <div class="hero-actions">
+        <a href="#login" class="btn-primary">
+          <span>Access Your System</span>
+          <span>→</span>
+        </a>
+        <a href="#pricing" class="btn-outline">View Pricing</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">5</div>
+          <div class="stat-label">Active AI Models</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">15%</div>
+          <div class="stat-label">Revenue Recovered</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">51</div>
+          <div class="stat-label">Clinical Tables</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">HIPAA Compliant</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard mockup -->
+    <div class="hero-visual">
+      <div class="dash-mockup">
+        <div class="dash-bar">
+          <div class="dash-dot" style="background:#ff5f57"></div>
+          <div class="dash-dot" style="background:#febc2e"></div>
+          <div class="dash-dot" style="background:#28c840"></div>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4a6a;margin-left:12px">patienttracforge.com/dashboard</span>
+        </div>
+        <div class="dash-content">
+          <div class="dash-row">
+            <div class="dash-card">
+              <div class="dash-card-label">Today's Appts</div>
+              <div class="dash-card-val" style="color:#c9a96e">8</div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card-label">AI Predictions</div>
+              <div class="dash-card-val" style="color:#00d4ff">12</div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card-label">Revenue Risk</div>
+              <div class="dash-card-val" style="color:#ff6b6b">2</div>
+            </div>
+          </div>
+          <div class="dash-appt-list">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:#3a4a6a;padding:4px 0;letter-spacing:0.1em">TODAY'S SCHEDULE — AI RISK SCORES</div>
+            <div class="dash-appt" style="border-color:#28c840">
+              <span style="color:#8a9bc0">09:00 · Martinez, Robert</span>
+              <span class="risk-badge" style="background:rgba(40,200,64,0.15);color:#28c840">▸ LOW · 2/10</span>
+            </div>
+            <div class="dash-appt" style="border-color:#febc2e">
+              <span style="color:#8a9bc0">10:30 · Williams, Jennifer</span>
+              <span class="risk-badge" style="background:rgba(254,188,46,0.15);color:#febc2e">▲ MED · 5/10</span>
+            </div>
+            <div class="dash-appt" style="border-color:#ff6b6b">
+              <span style="color:#8a9bc0">14:00 · Davis, Patricia</span>
+              <span class="risk-badge" style="background:rgba(255,107,107,0.15);color:#ff6b6b">⚠ HIGH · 8/10</span>
+            </div>
+            <div class="dash-appt" style="border-color:#ff4444">
+              <span style="color:#8a9bc0">15:30 · Wilson, Chris</span>
+              <span class="risk-badge" style="background:rgba(255,68,68,0.15);color:#ff4444">🔴 CRIT · 9/10</span>
+            </div>
+            <div style="margin-top:8px;padding:8px;background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.1)">
+              <div style="font-family:'DM Mono',monospace;font-size:8px;color:#00d4ff;letter-spacing:0.1em">✦ BILLING AI · ENCOUNTER #42 CLOSED</div>
+              <div style="font-family:'DM Mono',monospace;font-size:8px;color:#3a4a6a;margin-top:3px">CPT 99213 + 25 suggested · Denial risk 2/10</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- AI FEATURES -->
+<section id="ai">
+  <div class="container">
+    <span class="section-label reveal">✦ Claude AI · Five Active Models</span>
+    <h2 class="section-h2 reveal">Intelligence built into<br/>every workflow step</h2>
+    <p class="section-sub reveal">Not AI bolted on after the fact. Five Claude models that fire automatically — at booking, check-in, intake, encounter close, and billing.</p>
+
+    <div class="ai-grid">
+
+      <div class="ai-card reveal">
+        <div class="ai-card-num">01</div>
+        <div class="ai-card-icon">🎯</div>
+        <div class="ai-card-title">No-Show Prediction</div>
+        <div class="ai-card-roi">Highest ROI · Fires at booking</div>
+        <div class="ai-card-body">
+          Every appointment scored 1–10 for no-show risk the moment it's booked. Claude analyzes prior no-show history, insurance type, appointment day and time, visit type, and time since last visit. High-risk patients (7+) get staff alerts and automatic extra reminders. Critical (9–10) prompts double-booking recommendation.
+        </div>
+        <div class="ai-card-metric">
+          <div class="ai-card-metric-val">5–15%</div>
+          <div class="ai-card-metric-label">of revenue lost to no-shows — recovered</div>
+        </div>
+      </div>
+
+      <div class="ai-card reveal">
+        <div class="ai-card-num">02</div>
+        <div class="ai-card-icon">⏱</div>
+        <div class="ai-card-title">Wait Time Intelligence</div>
+        <div class="ai-card-roi">Patient Experience · Real-time</div>
+        <div class="ai-card-body">
+          Four timestamps tracked per visit: arrived → called back → seen → departed. Wait time calculated automatically. Dashboard surfaces averages by provider, day of week, and hour. Patients who wait more than 20 minutes receive an automatic apology SMS via Twilio. Providers see weekly performance summaries every Monday morning.
+        </div>
+        <div class="ai-card-metric">
+          <div class="ai-card-metric-val">20 min</div>
+          <div class="ai-card-metric-label">threshold — auto apology SMS fired</div>
+        </div>
+      </div>
+
+      <div class="ai-card reveal">
+        <div class="ai-card-num">03</div>
+        <div class="ai-card-icon">📅</div>
+        <div class="ai-card-title">Smart Scheduling</div>
+        <div class="ai-card-roi">Efficiency · At booking</div>
+        <div class="ai-card-body">
+          Before booking, Claude analyzes the provider's 14-day schedule, the patient's no-show risk, insurance visit interval requirements, and specialty patterns. Returns three ranked optimal slots with reasoning. Automatically flags double-bookings, insurance denials from too-frequent visits, and high-risk time slots (Monday AM for high-risk patients).
+        </div>
+        <div class="ai-card-metric">
+          <div class="ai-card-metric-val">3</div>
+          <div class="ai-card-metric-label">ranked slots suggested with conflict detection</div>
+        </div>
+      </div>
+
+      <div class="ai-card reveal">
+        <div class="ai-card-num">04</div>
+        <div class="ai-card-icon">📋</div>
+        <div class="ai-card-title">AI Intake Assistant</div>
+        <div class="ai-card-roi">Time Savings · 48h before visit</div>
+        <div class="ai-card-body">
+          Patients receive a tokenized 48-hour link before their visit. A Claude-powered chat collects chief complaint, duration, severity (1–10), current medications, and allergies. AI returns a clinical summary pre-filling the encounter, suggested ICD-10 codes, and triage level — emergent, urgent, or routine — with specific red flag alerts.
+        </div>
+        <div class="ai-card-metric">
+          <div class="ai-card-metric-val">5–10 min</div>
+          <div class="ai-card-metric-label">saved per visit on front-desk intake</div>
+        </div>
+      </div>
+
+      <div class="ai-card reveal">
+        <div class="ai-card-num">05</div>
+        <div class="ai-card-icon">💊</div>
+        <div class="ai-card-title">Billing AI</div>
+        <div class="ai-card-roi">Revenue Cycle · On encounter close</div>
+        <div class="ai-card-body">
+          When an encounter closes, Claude reads the chief complaint, provider specialty, appointment type, and patient insurance — then suggests CPT codes with confidence scores, ICD codes, modifiers, and flags denial risk 1–10 with specific reasons. Biller reviews and accepts with one click. "This visit type with this insurance has a 34% denial rate — consider adding modifier 25."
+        </div>
+        <div class="ai-card-metric">
+          <div class="ai-card-metric-val">34%</div>
+          <div class="ai-card-metric-label">denial rate detected and flagged before submission</div>
+        </div>
+      </div>
+
+      <!-- Automation summary card -->
+      <div class="ai-card reveal" style="background:rgba(0,212,255,0.03);border-color:rgba(0,212,255,0.12)">
+        <div class="ai-card-num" style="color:rgba(0,212,255,0.08)">∞</div>
+        <div class="ai-card-icon" style="border-color:rgba(201,169,110,0.3);background:rgba(201,169,110,0.05)">⚡</div>
+        <div class="ai-card-title">Fully Automated Pipeline</div>
+        <div class="ai-card-roi">Zero manual steps · All 5 AI models</div>
+        <div class="ai-card-body">
+          Database triggers fire every model automatically. Book appointment → score + confirm. Check in → stamp arrival. Encounter closes → superbill + billing AI. pg_cron sends intake links 48h out, reminders 24h and 2h before, wait-time reports Monday morning. Every step logged to audit trail.
+        </div>
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(0,212,255,0.08)">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4a6a">▸ 4 database triggers active</div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4a6a">▸ 4 pg_cron jobs scheduled</div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4a6a">▸ 6 Supabase edge functions deployed</div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:#3a4a6a">▸ Resend + Twilio connected</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PLATFORM FEATURES -->
+<section id="platform">
+  <div class="container">
+    <span class="section-label reveal">✦ Full-Stack EMR Platform</span>
+    <h2 class="section-h2 reveal">Everything a modern<br/>practice needs</h2>
+
+    <div class="feat-grid">
+      <div class="feat-item reveal">
+        <div class="feat-icon">👤</div>
+        <div class="feat-title">Patient Registration</div>
+        <div class="feat-body">Full demographics with US and international support. 16 countries, auto-ZIP lookup, phone formatting, SSN/ITIN/NIT/CPF tax IDs, photo upload, interpreter flags.</div>
+        <div class="feat-tag">15 patients · 4 intl</div>
+      </div>
+      <div class="feat-item reveal">
+        <div class="feat-icon">📅</div>
+        <div class="feat-title">Smart Calendar</div>
+        <div class="feat-body">Multi-provider weekly/day view with drag-and-drop rescheduling. No-show risk badges on every appointment. Click any slot to open the AI booking modal.</div>
+        <div class="feat-tag">23 appointment types · CPT coded</div>
+      </div>
+      <div class="feat-item reveal">
+        <div class="feat-icon">✅</div>
+        <div class="feat-title">Check-In Workflow</div>
+        <div class="feat-body">4-step check-in: patient arrival → insurance verification → encounter open → clinical app routing. Auto-stamps arrived_at. Routes to Revela or Mental Health by provider specialty.</div>
+        <div class="feat-tag">encounter_id cross-app key</div>
+      </div>
+      <div class="feat-item reveal">
+        <div class="feat-icon">🛡</div>
+        <div class="feat-title">Insurance Management</div>
+        <div class="feat-body">Primary, secondary, and tertiary coverage with eligibility verification, copay/deductible tracking, prior auth flags, and OOP maximum monitoring.</div>
+        <div class="feat-tag">10 payers · eligibility log</div>
+      </div>
+      <div class="feat-item reveal">
+        <div class="feat-icon">💰</div>
+        <div class="feat-title">Full Revenue Cycle</div>
+        <div class="feat-body">Superbill → 837P EDI submission → ERA/835 payment posting → rejection management with CARC codes → A/R aging buckets (0–30, 31–60, 61–90, 91–120, 120+).</div>
+        <div class="feat-tag">17 CARC codes · full workflow</div>
+      </div>
+      <div class="feat-item reveal">
+        <div class="feat-icon">🔐</div>
+        <div class="feat-title">Admin Portal + RBAC</div>
+        <div class="feat-body">6 roles: super_admin, admin, provider, billing, staff, readonly. Google Authenticator TOTP MFA required for admin and provider roles. Full auth audit log.</div>
+        <div class="feat-tag">HIPAA compliant · audit trail</div>
+      </div>
+      <div class="feat-item reveal">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">Code Reference Tables</div>
+        <div class="feat-body">114 CPT codes with RVU and fee schedules. 95 ICD-10-CM codes. 46 DSM-5 diagnoses with severity levels and specifiers. 26 CPT modifiers. Full-text search functions.</div>
+        <div class="feat-tag">terms.search_cpt() · search_icd10() · search_dsm5()</div>
+      </div>
+      <div class="feat-item reveal">
+        <div class="feat-icon">✉</div>
+        <div class="feat-title">Communications</div>
+        <div class="feat-body">Resend email + Twilio SMS for confirmations, 24h reminders, 2h SMS, intake links, wait apology. All sends logged to communications_log with delivery status.</div>
+        <div class="feat-tag">Resend + Twilio · fully wired</div>
+      </div>
+      <div class="feat-item reveal">
+        <div class="feat-icon">🏥</div>
+        <div class="feat-title">Multi-Specialty Routing</div>
+        <div class="feat-body">Plastic surgery routes to Revela. Psychiatry, psychology, and addiction medicine route to Mental Health. encounter_id and patient_id deep-linked into each app.</div>
+        <div class="feat-tag">Revela · Mental Health · extensible</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- INTEGRATION -->
+<section id="integration">
+  <div class="container">
+    <div class="integration-grid">
+      <div class="integration-visual reveal">
+        <div class="app-flow">
+          <div class="app-node app-node-center">
+            <span style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:#c9a96e">PatientTracForge</span>
+            <span style="font-family:'DM Mono',monospace;font-size:9px;color:#3a4a6a">Scheduling Foundation</span>
+          </div>
+          <div class="app-connector"></div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:#00d4ff;text-align:center;padding:6px 12px;border:1px solid rgba(0,212,255,0.15)">
+            encounter_id · patient_id · provider_id
+          </div>
+          <div class="app-connector"></div>
+          <div class="app-branches">
+            <div class="branch-node">
+              <div class="branch-title">Revela</div>
+              <div class="branch-sub">Plastic Surgery</div>
+            </div>
+            <div class="branch-node" style="border-color:rgba(201,169,110,0.15)">
+              <div class="branch-title" style="color:#c9a96e">Your System</div>
+              <div class="branch-sub">Import here</div>
+            </div>
+            <div class="branch-node">
+              <div class="branch-title">Mental Health</div>
+              <div class="branch-sub">Behavioral</div>
+            </div>
+          </div>
+          <div class="app-connector" style="height:20px"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%">
+            <div style="background:rgba(10,22,40,0.7);border:1px solid rgba(201,169,110,0.1);padding:10px;text-align:center">
+              <div style="font-family:'DM Mono',monospace;font-size:9px;color:#3a4a6a">Same Supabase Project</div>
+              <div style="font-family:'Rajdhani',sans-serif;font-size:12px;color:#8a9bc0;margin-top:2px">mskormozwekezjmtcylv</div>
+            </div>
+            <div style="background:rgba(10,22,40,0.7);border:1px solid rgba(201,169,110,0.1);padding:10px;text-align:center">
+              <div style="font-family:'DM Mono',monospace;font-size:9px;color:#3a4a6a">Shared cr.* + saas.*</div>
+              <div style="font-family:'Rajdhani',sans-serif;font-size:12px;color:#8a9bc0;margin-top:2px">org_id RLS isolation</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="integration-text reveal">
+        <span class="section-label">✦ Seamless Data Migration</span>
+        <h3>Integrate your current data into PatientTracForge</h3>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:28px">
+          Already running a practice management system? We map your existing patients, providers, appointments, and billing history directly into the PatientTracForge schema. No disruption. No data loss.
+        </p>
+        <ul class="integration-points">
+          <li class="integration-point">Patient demographics from any standard export (CSV, HL7, FHIR) mapped to our 55-column patient record</li>
+          <li class="integration-point">Appointment history imported and immediately scored by the no-show AI for baseline risk profiles</li>
+          <li class="integration-point">Insurance records, payer IDs, and eligibility status migrated with coverage priority intact</li>
+          <li class="integration-point">Provider NPI, credentials, and specialty routing configured to match your existing workflow</li>
+          <li class="integration-point">Historical superbills and A/R imported into the aging buckets for immediate revenue visibility</li>
+          <li class="integration-point">All data isolated per org_id with Row Level Security — zero cross-tenant data exposure</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <span class="section-label reveal">✦ Transparent Pricing</span>
+    <h2 class="section-h2 reveal">Built for practices<br/>of every size</h2>
+    <p class="section-sub reveal">No per-click AI fees. All five Claude models included at every tier. Cancel anytime.</p>
+
+    <div class="pricing-grid">
+
+      <!-- Starter -->
+      <div class="pricing-card reveal">
+        <div class="pricing-tier">Starter</div>
+        <div class="pricing-price"><span>$</span>299</div>
+        <div class="pricing-period">/ month · 1 provider · 1 facility</div>
+        <div class="pricing-desc">Solo practitioners and small clinics getting started with AI-powered scheduling.</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li class="pricing-feature"><span class="check">▸</span> Up to 1 provider · 1 facility</li>
+          <li class="pricing-feature"><span class="check">▸</span> 500 appointments/month</li>
+          <li class="pricing-feature"><span class="check">▸</span> No-show prediction AI</li>
+          <li class="pricing-feature"><span class="check">▸</span> Smart scheduling assistant</li>
+          <li class="pricing-feature"><span class="check">▸</span> Email + SMS confirmations</li>
+          <li class="pricing-feature"><span class="check">▸</span> AI intake assistant</li>
+          <li class="pricing-feature"><span class="check">▸</span> Patient registration + insurance</li>
+          <li class="pricing-feature"><span class="check">▸</span> Basic billing + superbills</li>
+          <li class="pricing-feature"><span class="cross">—</span> <span style="opacity:0.4">Billing AI + EDI/ERA</span></li>
+          <li class="pricing-feature"><span class="cross">—</span> <span style="opacity:0.4">Multi-specialty routing</span></li>
+          <li class="pricing-feature"><span class="cross">—</span> <span style="opacity:0.4">Data migration service</span></li>
+        </ul>
+        <a href="#login" class="btn-pricing">Get Started</a>
+      </div>
+
+      <!-- Professional — featured -->
+      <div class="pricing-card featured reveal">
+        <div class="pricing-popular">Most Popular</div>
+        <div class="pricing-tier">Professional</div>
+        <div class="pricing-price"><span>$</span>699</div>
+        <div class="pricing-period">/ month · up to 5 providers · 2 facilities</div>
+        <div class="pricing-desc">Growing practices that need the full AI revenue cycle and multi-provider scheduling.</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li class="pricing-feature"><span class="check-cyan">✦</span> Up to 5 providers · 2 facilities</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> Unlimited appointments</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> All 5 AI models included</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> Billing AI + denial prediction</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> EDI 837P + ERA 835 posting</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> A/R aging dashboard</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> Rejection management workflow</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> Multi-specialty routing</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> Wait time analytics</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> TOTP MFA + full RBAC</li>
+          <li class="pricing-feature"><span class="check-cyan">✦</span> Data migration included</li>
+        </ul>
+        <a href="#login" class="btn-pricing btn-pricing-primary">Start Free Trial</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card reveal">
+        <div class="pricing-tier">Enterprise</div>
+        <div class="pricing-price"><span>$</span>1,499</div>
+        <div class="pricing-period">/ month · unlimited providers + facilities</div>
+        <div class="pricing-desc">Multi-site practices, hospital groups, and specialty networks requiring full platform control.</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li class="pricing-feature"><span class="check">▸</span> Unlimited providers + facilities</li>
+          <li class="pricing-feature"><span class="check">▸</span> Everything in Professional</li>
+          <li class="pricing-feature"><span class="check">▸</span> Custom specialty modules</li>
+          <li class="pricing-feature"><span class="check">▸</span> Revela + Mental Health included</li>
+          <li class="pricing-feature"><span class="check">▸</span> White-label option</li>
+          <li class="pricing-feature"><span class="check">▸</span> Dedicated Supabase project</li>
+          <li class="pricing-feature"><span class="check">▸</span> Custom AI model training</li>
+          <li class="pricing-feature"><span class="check">▸</span> SLA 99.9% uptime guarantee</li>
+          <li class="pricing-feature"><span class="check">▸</span> Priority support + onboarding</li>
+          <li class="pricing-feature"><span class="check">▸</span> BAA + HIPAA documentation</li>
+          <li class="pricing-feature"><span class="check">▸</span> Custom integrations</li>
+        </ul>
+        <a href="mailto:sales@patienttracforge.com" class="btn-pricing">Contact Sales</a>
+      </div>
+    </div>
+
+    <p class="pricing-note">All plans include a 14-day free trial · No credit card required · Cancel anytime · Annual billing saves 20%</p>
+
+    <!-- Add-ons -->
+    <div style="margin-top:60px">
+      <h3 class="reveal" style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:600;margin-bottom:8px">Add-ons available on any plan</h3>
+      <p class="reveal" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--subtle);margin-bottom:0">Extend your platform without upgrading tiers</p>
+    </div>
+    <div class="addons-grid">
+      <div class="addon-item reveal">
+        <div class="addon-name">Data Migration</div>
+        <div class="addon-price">$1,500 one-time</div>
+        <div class="addon-desc">We map and import your existing patients, appointments, billing history, and insurance records. Includes validation and go-live support.</div>
+      </div>
+      <div class="addon-item reveal">
+        <div class="addon-name">Revela Module</div>
+        <div class="addon-price">$299 / month</div>
+        <div class="addon-desc">Full plastic surgery clinical module. Surgical notes, operative records, postop plans, and breast exam routing via shared encounter_id.</div>
+      </div>
+      <div class="addon-item reveal">
+        <div class="addon-name">Mental Health Module</div>
+        <div class="addon-price">$299 / month</div>
+        <div class="addon-desc">Behavioral health module with evaluation management, MSE, care plans, DSM-5 coding, and therapy session tracking.</div>
+      </div>
+      <div class="addon-item reveal">
+        <div class="addon-name">Custom AI Model</div>
+        <div class="addon-price">$2,500 setup + $199/mo</div>
+        <div class="addon-desc">Custom Claude prompts trained on your specialty's coding patterns, denial history, and patient population for higher accuracy predictions.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- LOGIN -->
+<section id="login">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px">
+      <span class="section-label" style="display:block;text-align:center">✦ Secure Access</span>
+      <h2 class="section-h2" style="text-align:center">Sign in to your system</h2>
+      <p style="font-size:14px;color:var(--muted);font-family:'DM Mono',monospace">MFA required for admin and provider roles</p>
+    </div>
+
+    <div class="login-wrap reveal">
+      <div class="login-title">PatientTracForge</div>
+      <div class="login-sub">Enter your credentials to access the platform. Contact your administrator if you need access.</div>
+
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input type="email" id="login-email" class="form-input" placeholder="you@yourpractice.com" autocomplete="email" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="login-password" class="form-input" placeholder="••••••••••••" autocomplete="current-password" required/>
+        </div>
+        <div id="login-error" style="display:none;font-family:'DM Mono',monospace;font-size:11px;color:#ff6b6b;margin-bottom:12px;padding:8px 12px;background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.2)"></div>
+        <button type="submit" class="btn-login" id="login-btn">Access System →</button>
+      </form>
+
+      <div class="login-links">
+        <span>Need access? <a href="mailto:admin@patienttracforge.com">Contact admin</a></span>
+        <a href="#">Forgot password?</a>
+      </div>
+
+      <div class="login-security">
+        <div class="security-badge">🔐 TOTP MFA</div>
+        <div class="security-badge">🛡 HIPAA Compliant</div>
+        <div class="security-badge">🔒 Row Level Security</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">PatientTracForge</div>
+        <div class="footer-copy">© 2026 PatientTrac Corp · HIPAA Compliant · v0.3.0</div>
+      </div>
+      <div class="footer-links">
+        <a href="#ai">AI Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="mailto:sales@patienttracforge.com">Sales</a>
+        <a href="mailto:support@patienttracforge.com">Support</a>
+        <a href="/admin">Admin Portal</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Scroll reveal ──
+const observer = new IntersectionObserver(
+  entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }),
+  { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+);
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── Stagger reveal children ──
+document.querySelectorAll('.ai-grid .ai-card, .feat-grid .feat-item, .pricing-grid .pricing-card, .addons-grid .addon-item').forEach((el, i) => {
+  el.style.transitionDelay = (i % 3) * 0.1 + 's';
+});
+
+// ── Login handler ──
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-error');
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+
+  btn.textContent = 'Authenticating...';
+  btn.disabled = true;
+  err.style.display = 'none';
+
+  try {
+    const SUPABASE_URL = 'https://mskormozwekezjmtcylv.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1za29ybW96d2VrZXpqbXRjeWx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NzMzMzAsImV4cCI6MjA5MjU0OTMzMH0.nO9Q31CZJWRSIieLdLYVMkdu5NDDWjf1z0TgwCjBpp0';
+
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+
+    if (data.error || !data.access_token) {
+      throw new Error(data.error_description || data.msg || 'Invalid credentials');
+    }
+
+    // Store session and redirect to app
+    sessionStorage.setItem('sb-access-token', data.access_token);
+    sessionStorage.setItem('sb-refresh-token', data.refresh_token);
+
+    btn.textContent = 'Redirecting...';
+    window.location.href = '/dashboard';
+
+  } catch (error) {
+    err.textContent = '✕  ' + (error.message || 'Authentication failed');
+    err.style.display = 'block';
+    btn.textContent = 'Access System →';
+    btn.disabled = false;
+  }
+}
+
+// ── Animated counter ──
+function animateCounter(el, target, suffix = '') {
+  let start = 0;
+  const step = target / 40;
+  const timer = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = Math.floor(start) + suffix;
+    if (start >= target) clearInterval(timer);
+  }, 30);
+}
+
+const statsObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const nums = e.target.querySelectorAll('.stat-num');
+      nums.forEach(n => {
+        const text = n.textContent;
+        const num = parseFloat(text.replace(/[^0-9.]/g, ''));
+        const suffix = text.replace(/[0-9.]/g, '');
+        animateCounter(n, num, suffix);
+      });
+      statsObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+const statsEl = document.querySelector('.hero-stats');
+if (statsEl) statsObserver.observe(statsEl);
+</script>
+</body>
+</html>
