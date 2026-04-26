@@ -4,6 +4,12 @@ import './index.css'
 import App from './App.tsx'
 import { initAudit } from './lib/audit'
 import { supabase } from './lib/supabase'
+import { registerAppStore } from '../../packages/ui/src/store'
+import { useAppStore } from './lib/store'
+
+// ── Shared package store registration ────────────────────────
+// Must run before any @patienttrac/ui component is rendered
+registerAppStore(useAppStore)
 
 // ── §170.315(d)(2) Audit Initialization ──────────────────────
 // Called once on app load — sets context for all audit calls

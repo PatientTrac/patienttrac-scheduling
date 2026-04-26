@@ -1,11 +1,13 @@
 /**
  * AuthContext — PatientTracForge Auth + RBAC + MFA
- * 
+ *
  * Flow:
  * 1. User signs in with email + password (Supabase Auth)
  * 2. If mfa_enabled → TOTP challenge (Google Authenticator)
- * 3. On success → load org_member record → inject role into context
- * 4. All UI gated by usePermission() hook
+ * 3. verifyTotp calls totp-setup Edge Function (not a local stub)
+ * 4. On success → load org_member record → inject role into context
+ * 5. All UI gated by usePermission() hook
+ * 6. AppShell blocks access until mfaVerified
  */
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
@@ -17,18 +19,18 @@ export type UserRole = 'super_admin' | 'admin' | 'provider' | 'billing' | 'staff
 export type Resource = 'facilities' | 'users' | 'patients' | 'insurance' | 'appointments' | 'billing' | 'reports' | 'system'
 
 export interface OrgMember {
-  id:             string
-  org_id:         string
-  user_id:        string
-  role:           UserRole
-  email:          string
-  first_name:     string
-  last_name:      string
-  facility_id:    number | null
-  is_active:      boolean
-  mfa_enabled:    boolean
+  id:              string
+  org_id:          string
+  user_id:         string
+  role:            UserRole
+  email:           string
+  first_name:      string
+  last_name:       string
+  facility_id:     number | null
+  is_active:       boolean
+  mfa_enabled:     boolean
   mfa_verified_at: string | null
-  last_login_at:  string | null
+  last_login_at:   string | null
 }
 
 export interface AuthState {
@@ -49,6 +51,9 @@ export interface AuthState {
 }
 
 const DEV_ORG_ID = '00000000-0000-0000-0000-000000000001'
+
+// Roles that REQUIRE MFA before accessing clinical data
+const MFA_REQUIRED_ROLES: UserRole[] = ['super_admin', 'admin', 'provider']
 
 // Permission matrix — mirrors the DB seed
 const PERMISSIONS: Record<UserRole, Record<Resource, Record<string, boolean>>> = {
@@ -136,7 +141,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session)
       setUser(session?.user ?? null)
       if (session?.user) loadMember(session.user.id)
-      else { setMember(null); setLoading(false) }
+      else { setMember(null); setMfaRequired(false); setMfaVerified(false); setLoading(false) }
     })
 
     return () => subscription.unsubscribe()
@@ -153,8 +158,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (data) {
       setMember(data as OrgMember)
-      if (data.mfa_enabled && !data.mfa_verified_at) {
+      const needsMfa = MFA_REQUIRED_ROLES.includes(data.role) && data.mfa_enabled
+      if (needsMfa) {
         setMfaRequired(true)
+        setMfaVerified(false)
+      } else {
+        // Staff/billing/readonly bypass MFA requirement
+        setMfaRequired(false)
+        setMfaVerified(true)
       }
     }
     setLoading(false)
@@ -168,20 +179,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function verifyTotp(token: string): Promise<{ error: string | null }> {
-    // In production: validate TOTP token server-side via Edge Function
-    // For now: mark as verified if 6 digits provided
-    if (!/^\d{6}$/.test(token)) return { error: 'Enter the 6-digit code from your authenticator' }
-    
-    const { error } = await supabase
-      .schema('saas')
-      .from('org_members')
-      .update({ mfa_verified_at: new Date().toISOString() })
-      .eq('user_id', user?.id)
+    if (!/^\d{6}$/.test(token)) return { error: 'Enter the 6-digit code from your authenticator app' }
 
-    if (error) return { error: error.message }
-    setMfaVerified(true)
-    setMfaRequired(false)
-    return { error: null }
+    const { data: { session: currentSession } } = await supabase.auth.getSession()
+    if (!currentSession) return { error: 'Session expired. Please sign in again.' }
+
+    try {
+      // ── Call the totp-setup Edge Function (server-side HMAC verification) ──
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/totp-setup?action=challenge`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${currentSession.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ action: 'challenge', token }),
+        }
+      )
+      const data = await res.json()
+
+      if (!res.ok || data.error) {
+        return { error: data.error || 'Invalid code. Please try again.' }
+      }
+
+      if (data.success) {
+        setMfaVerified(true)
+        setMfaRequired(false)
+        return { error: null }
+      }
+
+      return { error: 'Verification failed. Try again.' }
+    } catch {
+      return { error: 'Network error during verification. Please try again.' }
+    }
   }
 
   async function signOut() {
@@ -196,8 +227,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return PERMISSIONS[member.role]?.[resource]?.[action] ?? false
   }
 
-  const role     = member?.role ?? null
-  const orgId    = member?.org_id ?? DEV_ORG_ID
+  const role  = member?.role ?? null
+  const orgId = member?.org_id ?? DEV_ORG_ID
 
   return (
     <AuthContext.Provider value={{
