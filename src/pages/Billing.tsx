@@ -1,16 +1,22 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { DollarSign, FileText, AlertTriangle, CheckCircle, Clock, Send, XCircle, Search, Loader, TrendingUp, Activity } from 'lucide-react'
+import { DollarSign, FileText, AlertTriangle, CheckCircle, Clock, Send, XCircle,
+         Search, Loader, TrendingUp, Activity, ShieldCheck, FileEdit, GitBranch, Sparkles } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { cn, formatDate, formatCurrency } from '@/lib/utils'
 
 const ORG_ID = '00000000-0000-0000-0000-000000000001'
-type BillingTab = 'superbills'|'ai'|'edi'|'era'|'rejections'|'aging'
+const ANTHROPIC_MODEL = 'claude-sonnet-4-20250514'
+
+type BillingTab = 'superbills'|'ai'|'edi'|'era'|'rejections'|'aging'|'preauth'|'appeals'|'secondary'
 
 const SB_STATUS_COLORS: Record<string,string> = {
-  draft:'bg-slate-500/15 text-slate-400 border-slate-500/25', ready:'bg-blue-500/15 text-blue-400 border-blue-500/25',
-  submitted:'bg-amber-500/15 text-amber-400 border-amber-500/25', paid:'bg-emerald-500/15 text-emerald-400 border-emerald-500/25',
-  denied:'bg-red-500/15 text-red-400 border-red-500/25', partial:'bg-purple-500/15 text-purple-400 border-purple-500/25',
+  draft:'bg-slate-500/15 text-slate-400 border-slate-500/25',
+  ready:'bg-blue-500/15 text-blue-400 border-blue-500/25',
+  submitted:'bg-amber-500/15 text-amber-400 border-amber-500/25',
+  paid:'bg-emerald-500/15 text-emerald-400 border-emerald-500/25',
+  denied:'bg-red-500/15 text-red-400 border-red-500/25',
+  partial:'bg-purple-500/15 text-purple-400 border-purple-500/25',
 }
 const AGING_COLORS: Record<string,string> = {
   '0-30':'text-emerald-400','31-60':'text-gold-400','61-90':'text-amber-400','91-120':'text-orange-400','120+':'text-red-400'
@@ -19,6 +25,22 @@ const REJ_COLORS: Record<string,string> = {
   open:'bg-red-500/15 text-red-400', in_review:'bg-amber-500/15 text-amber-400',
   appealing:'bg-orange-500/15 text-orange-400', resolved:'bg-emerald-500/15 text-emerald-400',
   written_off:'bg-slate-500/15 text-slate-400',
+}
+const AUTH_COLORS: Record<string,string> = {
+  approved:'bg-emerald-500/15 text-emerald-400 border-emerald-500/25',
+  pending:'bg-amber-500/15 text-amber-400 border-amber-500/25',
+  denied:'bg-red-500/15 text-red-400 border-red-500/25',
+  expired:'bg-slate-500/15 text-slate-400 border-slate-500/25',
+  under_review:'bg-blue-500/15 text-blue-400 border-blue-500/25',
+  cancelled:'bg-slate-500/15 text-slate-400 border-slate-500/25',
+}
+const APPEAL_COLORS: Record<string,string> = {
+  draft:'bg-slate-500/15 text-slate-400',
+  submitted:'bg-amber-500/15 text-amber-400',
+  under_review:'bg-blue-500/15 text-blue-400',
+  upheld:'bg-red-500/15 text-red-400',
+  overturned:'bg-emerald-500/15 text-emerald-400',
+  withdrawn:'bg-slate-500/15 text-slate-400',
 }
 
 export function Billing() {
@@ -29,7 +51,10 @@ export function Billing() {
   const [selectedSb, setSelectedSb] = useState<any>(null)
   const [showEdiModal, setShowEdiModal] = useState(false)
   const [showPayModal, setShowPayModal] = useState<any>(null)
+  const [showNewAuthModal, setShowNewAuthModal] = useState(false)
+  const [generatingAppeal, setGeneratingAppeal] = useState<string|null>(null)
 
+  // ── Queries ──────────────────────────────────────────────────────────────
   const { data: superbills = [], isLoading: sbLoading } = useQuery({
     queryKey: ['superbills', ORG_ID],
     queryFn: async () => {
@@ -86,6 +111,37 @@ export function Billing() {
     },
   })
 
+  const { data: priorAuths = [], isLoading: authLoading } = useQuery({
+    queryKey: ['prior-auths', ORG_ID],
+    queryFn: async () => {
+      const { data } = await supabase.schema('cr').from('prior_authorizations')
+        .select('*, patient:patient_id(first_name,last_name), provider:provider_id(first_name,last_name)')
+        .eq('org_id', ORG_ID).order('insert_date', { ascending: false })
+      return data ?? []
+    },
+  })
+
+  const { data: appeals = [], isLoading: appealsLoading } = useQuery({
+    queryKey: ['claim-appeals', ORG_ID],
+    queryFn: async () => {
+      const { data } = await supabase.schema('cr').from('claim_appeals')
+        .select('*, patient:patient_id(first_name,last_name)')
+        .eq('org_id', ORG_ID).order('insert_date', { ascending: false })
+      return data ?? []
+    },
+  })
+
+  const { data: secondaryClaims = [], isLoading: secondaryLoading } = useQuery({
+    queryKey: ['secondary-claims', ORG_ID],
+    queryFn: async () => {
+      const { data } = await supabase.schema('cr').from('secondary_claims')
+        .select('*, patient:patient_id(first_name,last_name)')
+        .eq('org_id', ORG_ID).order('insert_date', { ascending: false })
+      return data ?? []
+    },
+  })
+
+  // ── Mutations ─────────────────────────────────────────────────────────────
   const updateSbStatus = useMutation({
     mutationFn: async ({ id, status }: { id: number; status: string }) => {
       await supabase.schema('cr').from('superbill').update({ billing_status: status, update_date: new Date().toISOString() }).eq('superbill_id', id)
@@ -117,10 +173,24 @@ export function Billing() {
       })
       await supabase.schema('cr').from('edi_submissions').update({ status: 'paid' }).eq('submission_id', submissionId)
       await supabase.schema('cr').from('superbill').update({ billing_status: 'paid', insurance_paid: amount }).eq('superbill_id', superbillId)
+      // Auto-check for secondary insurance
+      const { data: secIns } = await supabase.schema('cr').from('patient_insurance')
+        .select('insurance_id, insurance_company').eq('patient_id', patientId).eq('is_secondary', true).eq('is_active', true).maybeSingle()
+      if (secIns) {
+        await supabase.schema('cr').from('secondary_claims').insert({
+          org_id: ORG_ID, primary_sub_id: submissionId, superbill_id: superbillId,
+          patient_id: patientId, claim_level: 'secondary',
+          insurance_id: secIns.insurance_id, payer_name: secIns.insurance_company,
+          primary_paid: amount, status: 'pending',
+        })
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['edi-submissions'] }); queryClient.invalidateQueries({ queryKey: ['era-payments'] })
-      queryClient.invalidateQueries({ queryKey: ['superbills'] }); setShowPayModal(null)
+      queryClient.invalidateQueries({ queryKey: ['edi-submissions'] })
+      queryClient.invalidateQueries({ queryKey: ['era-payments'] })
+      queryClient.invalidateQueries({ queryKey: ['superbills'] })
+      queryClient.invalidateQueries({ queryKey: ['secondary-claims'] })
+      setShowPayModal(null)
     },
   })
 
@@ -141,18 +211,140 @@ export function Billing() {
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['billing-ai'] }); queryClient.invalidateQueries({ queryKey: ['superbills'] }) },
   })
 
-  const totalBilled = superbills.reduce((s: number, sb: any) => s + parseFloat(sb.total_amount ?? 0), 0)
-  const totalAr = arAging.reduce((s: number, i: any) => s + parseFloat(i.amount_due ?? 0), 0)
-  const totalPending = ediSubs.filter((e: any) => e.status === 'submitted').length
-  const openRej = rejections.filter((r: any) => r.status === 'open').length
+  const updateAuthStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: number; status: string }) => {
+      await supabase.schema('cr').from('prior_authorizations')
+        .update({ status, update_date: new Date().toISOString(), ...(status==='approved'?{approval_date:new Date().toISOString()}:{}) }).eq('auth_id', id)
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['prior-auths'] }),
+  })
+
+  const updateAppealStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: number; status: string }) => {
+      await supabase.schema('cr').from('claim_appeals')
+        .update({ status, update_date: new Date().toISOString(), ...(status==='submitted'?{submitted_date:new Date().toISOString().split('T')[0]}:{}) }).eq('appeal_id', id)
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['claim-appeals'] }),
+  })
+
+  const submitSecondary = useMutation({
+    mutationFn: async ({ id }: { id: number }) => {
+      await supabase.schema('cr').from('secondary_claims')
+        .update({ status: 'submitted', submission_date: new Date().toISOString(), update_date: new Date().toISOString() }).eq('secondary_id', id)
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['secondary-claims'] }),
+  })
+
+  // ── AI Appeal Letter Generator ─────────────────────────────────────────
+  const generateAppealLetter = async (rejection: any) => {
+    setGeneratingAppeal(rejection.rejection_id)
+    try {
+      const p = rejection.patient as any
+      const prompt = `You are a medical billing specialist generating a professional insurance appeal letter.
+
+Patient: ${p?.first_name} ${p?.last_name}
+Denial Reason: ${rejection.rejection_reason}
+CARC Code: ${rejection.carc_code ?? 'Not specified'}
+Denied Amount: $${rejection.denied_amount ?? '0'}
+Rejection Type: ${rejection.rejection_type ?? 'administrative'}
+
+Write a professional, concise insurance appeal letter that:
+1. States the purpose clearly in the opening
+2. Addresses the specific denial reason with clinical justification
+3. References relevant medical necessity criteria
+4. Requests reconsideration with supporting rationale
+5. Closes professionally
+
+Format as a complete letter. Be specific and persuasive.`
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: ANTHROPIC_MODEL,
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }],
+        }),
+      })
+      const data = await response.json()
+      const letter = data.content?.[0]?.text ?? ''
+
+      // Save appeal with AI letter
+      await supabase.schema('cr').from('claim_appeals').insert({
+        org_id: ORG_ID,
+        rejection_id: rejection.rejection_id,
+        patient_id: rejection.patient_id,
+        denial_code: rejection.carc_code,
+        denial_reason: rejection.rejection_reason,
+        appeal_letter: letter,
+        ai_generated: true,
+        ai_model: ANTHROPIC_MODEL,
+        status: 'draft',
+        denied_amount: rejection.denied_amount,
+        deadline_date: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      })
+      queryClient.invalidateQueries({ queryKey: ['claim-appeals'] })
+      setTab('appeals')
+    } catch (err) {
+      console.error('Appeal generation failed:', err)
+    } finally {
+      setGeneratingAppeal(null)
+    }
+  }
+
+  // ── AI Prior Auth Predictor ───────────────────────────────────────────
+  const predictAuthApproval = async (auth: any) => {
+    try {
+      const p = auth.patient as any
+      const codes = (auth.procedure_codes ?? []).map((c: any) => c.cpt).join(', ')
+      const prompt = `As a prior authorization specialist, analyze this request and respond ONLY with JSON:
+{"approval_probability": <0-100>, "recommendation": "<2-3 sentences>", "risk_factors": ["<factor1>", "<factor2>"]}`
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: ANTHROPIC_MODEL,
+          max_tokens: 300,
+          messages: [{ role: 'user', content: `Patient: ${p?.first_name} ${p?.last_name}\nPayer: ${auth.payer_name}\nCPT codes: ${codes}\nDiagnosis: ${(auth.diagnosis_codes ?? []).join(', ')}\nUrgency: ${auth.urgency}\n\n${prompt}` }],
+        }),
+      })
+      const data = await response.json()
+      const text = data.content?.[0]?.text ?? '{}'
+      const parsed = JSON.parse(text.replace(/```json|```/g, '').trim())
+      await supabase.schema('cr').from('prior_authorizations').update({
+        ai_approval_prob: parsed.approval_probability,
+        ai_recommendation: parsed.recommendation,
+        ai_risk_factors: parsed.risk_factors ?? [],
+        update_date: new Date().toISOString(),
+      }).eq('auth_id', auth.auth_id)
+      queryClient.invalidateQueries({ queryKey: ['prior-auths'] })
+    } catch (err) { console.error('Auth prediction failed:', err) }
+  }
+
+  // ── KPIs ─────────────────────────────────────────────────────────────────
+  const totalBilled   = superbills.reduce((s: number, sb: any) => s + parseFloat(sb.total_amount ?? 0), 0)
+  const totalAr       = arAging.reduce((s: number, i: any) => s + parseFloat(i.amount_due ?? 0), 0)
+  const totalPending  = ediSubs.filter((e: any) => e.status === 'submitted').length
+  const openRej       = rejections.filter((r: any) => r.status === 'open').length
+  const expiringAuths = priorAuths.filter((a: any) => {
+    if (!a.expiration_date || a.status !== 'approved') return false
+    const days = Math.ceil((new Date(a.expiration_date).getTime() - Date.now()) / 86400000)
+    return days <= 14 && days >= 0
+  }).length
+  const pendingAuths  = priorAuths.filter((a: any) => a.status === 'pending').length
+  const pendingSecondary = secondaryClaims.filter((s: any) => s.status === 'pending').length
 
   const TABS = [
-    { id: 'superbills' as BillingTab, label: 'Superbills',  icon: FileText,    badge: superbills.filter((s:any) => s.billing_status === 'draft').length },
-    { id: 'ai'         as BillingTab, label: 'AI Review',   icon: Activity,    badge: aiSuggestions.length },
-    { id: 'edi'        as BillingTab, label: 'EDI Claims',  icon: Send,        badge: totalPending },
-    { id: 'era'        as BillingTab, label: 'ERA / EOB',   icon: DollarSign   },
-    { id: 'rejections' as BillingTab, label: 'Rejections',  icon: XCircle,     badge: openRej },
-    { id: 'aging'      as BillingTab, label: 'A/R Aging',   icon: TrendingUp   },
+    { id:'superbills' as BillingTab, label:'Superbills',   icon:FileText,    badge:superbills.filter((s:any)=>s.billing_status==='draft').length },
+    { id:'ai'         as BillingTab, label:'AI Review',    icon:Activity,    badge:aiSuggestions.length },
+    { id:'edi'        as BillingTab, label:'EDI Claims',   icon:Send,        badge:totalPending },
+    { id:'era'        as BillingTab, label:'ERA / EOB',    icon:DollarSign },
+    { id:'rejections' as BillingTab, label:'Rejections',   icon:XCircle,     badge:openRej },
+    { id:'aging'      as BillingTab, label:'A/R Aging',    icon:TrendingUp },
+    { id:'preauth'    as BillingTab, label:'Pre-Auth',     icon:ShieldCheck, badge:(expiringAuths + pendingAuths) || undefined },
+    { id:'appeals'    as BillingTab, label:'Appeals',      icon:FileEdit,    badge:appeals.filter((a:any)=>a.status==='draft').length || undefined },
+    { id:'secondary'  as BillingTab, label:'Secondary',   icon:GitBranch,   badge:pendingSecondary || undefined },
   ]
 
   return (
@@ -167,11 +359,11 @@ export function Billing() {
       {/* KPIs */}
       <div className="grid grid-cols-5 gap-3">
         {[
-          { label:'Total Billed',     value:formatCurrency(totalBilled), icon:DollarSign,    color:'text-gold-400' },
-          { label:'Claims Pending',   value:totalPending,                icon:Clock,         color:'text-amber-400' },
-          { label:'Open Rejections',  value:openRej,                     icon:AlertTriangle, color:'text-red-400' },
-          { label:'AI Review Needed', value:aiSuggestions.length,        icon:Activity,      color:'text-purple-400' },
-          { label:'Total A/R',        value:formatCurrency(totalAr),     icon:TrendingUp,    color:'text-blue-400' },
+          { label:'Total Billed',      value:formatCurrency(totalBilled), icon:DollarSign,    color:'text-gold-400' },
+          { label:'Claims Pending',    value:totalPending,                icon:Clock,         color:'text-amber-400' },
+          { label:'Open Rejections',   value:openRej,                     icon:AlertTriangle, color:'text-red-400' },
+          { label:'AI Review Needed',  value:aiSuggestions.length,        icon:Activity,      color:'text-purple-400' },
+          { label:'Total A/R',         value:formatCurrency(totalAr),     icon:TrendingUp,    color:'text-blue-400' },
         ].map(({ label, value, icon: Icon, color }) => (
           <div key={label} className="hud-panel hud-bracket px-3 py-2.5">
             <div className="flex items-center justify-between mb-1"><div className="data-label text-[10px]">{label}</div><Icon size={12} className={color} /></div>
@@ -179,6 +371,22 @@ export function Billing() {
           </div>
         ))}
       </div>
+
+      {/* Expiring Auth Alert */}
+      {expiringAuths > 0 && (
+        <div className="hud-panel px-4 py-2.5 border-amber-500/30 bg-amber-500/5 flex items-center gap-3 cursor-pointer" onClick={() => setTab('preauth')}>
+          <AlertTriangle size={14} className="text-amber-400 flex-shrink-0" />
+          <span className="text-xs text-amber-300 font-mono">{expiringAuths} prior authorization{expiringAuths>1?'s':''} expiring within 14 days — action required</span>
+        </div>
+      )}
+
+      {/* Secondary Claims Alert */}
+      {pendingSecondary > 0 && (
+        <div className="hud-panel px-4 py-2.5 border-blue-500/30 bg-blue-500/5 flex items-center gap-3 cursor-pointer" onClick={() => setTab('secondary')}>
+          <GitBranch size={14} className="text-blue-400 flex-shrink-0" />
+          <span className="text-xs text-blue-300 font-mono">{pendingSecondary} secondary claim{pendingSecondary>1?'s':''} ready for submission</span>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="hud-panel px-1 py-1 flex gap-0.5 overflow-x-auto">
@@ -188,7 +396,12 @@ export function Billing() {
               tab === id ? 'bg-gold-500/15 text-gold-300' : 'text-slate-500 hover:text-gold-400')}>
             <Icon size={12} />{label}
             {badge != null && badge > 0 && <span className={cn('ml-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold',
-              id==='rejections'?'bg-red-500/20 text-red-400':id==='ai'?'bg-purple-500/20 text-purple-400':'bg-gold-500/20 text-gold-400')}>{badge}</span>}
+              id==='rejections'?'bg-red-500/20 text-red-400':
+              id==='ai'?'bg-purple-500/20 text-purple-400':
+              id==='preauth'?'bg-amber-500/20 text-amber-400':
+              id==='appeals'?'bg-orange-500/20 text-orange-400':
+              id==='secondary'?'bg-blue-500/20 text-blue-400':
+              'bg-gold-500/20 text-gold-400')}>{badge}</span>}
           </button>
         ))}
       </div>
@@ -313,7 +526,7 @@ export function Billing() {
       {tab==='edi' && (
         <div className="hud-panel overflow-hidden">
           <div className="px-4 py-2.5 border-b border-gold-500/10"><div className="font-mono text-xs text-slate-500">837P submissions to clearinghouse</div></div>
-          {ediSubs.length===0 ? <div className="px-4 py-12 text-center text-slate-600 font-mono text-xs">No EDI submissions yet. Mark a superbill as Ready and submit.</div> : (
+          {ediSubs.length===0 ? <div className="px-4 py-12 text-center text-slate-600 font-mono text-xs">No EDI submissions yet.</div> : (
             <table className="w-full text-xs">
               <thead><tr className="border-b border-gold-500/8">{['Ref #','Patient','Payer','Charges','Status','Submitted',''].map(h=><th key={h} className="text-left px-4 py-2 data-label">{h}</th>)}</tr></thead>
               <tbody className="divide-y divide-gold-500/5">
@@ -373,6 +586,7 @@ export function Billing() {
         <div className="space-y-3">
           {rejections.length===0 ? <div className="hud-panel px-4 py-12 text-center"><CheckCircle size={24} className="text-emerald-400 mx-auto mb-2"/><div className="font-mono text-xs text-slate-500">No claim rejections.</div></div> : rejections.map((rej: any) => {
             const p = rej.patient as any; const sc = REJ_COLORS[rej.status]??'bg-slate-500/15 text-slate-400'
+            const isGenerating = generatingAppeal === rej.rejection_id
             return (
               <div key={rej.rejection_id} className="hud-panel p-4 space-y-2">
                 <div className="flex items-start justify-between gap-4">
@@ -388,12 +602,20 @@ export function Billing() {
                       {rej.denied_amount && <span className="font-mono text-[10px] text-red-400">Denied: {formatCurrency(parseFloat(rej.denied_amount))}</span>}
                     </div>
                   </div>
-                  <div className="flex gap-2 flex-shrink-0">
+                  <div className="flex gap-2 flex-shrink-0 flex-wrap justify-end">
                     {rej.status==='open' && <>
+                      <button onClick={()=>generateAppealLetter(rej)} disabled={isGenerating} className="btn-secondary text-xs py-1 flex items-center gap-1">
+                        {isGenerating?<><Loader size={10} className="animate-spin"/>Generating...</>:<><Sparkles size={10}/>AI Appeal</>}
+                      </button>
                       <button onClick={()=>updateRejection.mutate({id:rej.rejection_id,status:'appealing'})} className="btn-secondary text-xs py-1">Appeal</button>
                       <button onClick={()=>updateRejection.mutate({id:rej.rejection_id,status:'resolved'})} className="btn-primary text-xs py-1">Resubmit</button>
                     </>}
-                    {rej.status==='appealing' && <button onClick={()=>updateRejection.mutate({id:rej.rejection_id,status:'resolved'})} className="btn-primary text-xs py-1">Mark Resolved</button>}
+                    {rej.status==='appealing' && <>
+                      <button onClick={()=>generateAppealLetter(rej)} disabled={isGenerating} className="btn-secondary text-xs py-1 flex items-center gap-1">
+                        {isGenerating?<><Loader size={10} className="animate-spin"/>Generating...</>:<><Sparkles size={10}/>AI Letter</>}
+                      </button>
+                      <button onClick={()=>updateRejection.mutate({id:rej.rejection_id,status:'resolved'})} className="btn-primary text-xs py-1">Mark Resolved</button>
+                    </>}
                   </div>
                 </div>
                 {rej.ai_recommendation && <div className="px-3 py-2 bg-purple-500/5 border border-purple-500/15 rounded-sm"><div className="data-label mb-0.5 text-purple-400">AI recommendation</div><div className="text-xs text-slate-400">{rej.ai_recommendation}</div></div>}
@@ -442,6 +664,193 @@ export function Billing() {
         </div>
       )}
 
+      {/* ── PRE-AUTH ── */}
+      {tab==='preauth' && (
+        <div className="space-y-3">
+          <div className="flex justify-end">
+            <button onClick={()=>setShowNewAuthModal(true)} className="btn-primary text-xs"><ShieldCheck size={12}/> New Prior Auth</button>
+          </div>
+          {authLoading ? <div className="flex justify-center py-12"><Loader size={16} className="animate-spin text-gold-500"/></div> :
+          priorAuths.length===0 ? <div className="hud-panel px-4 py-12 text-center"><ShieldCheck size={24} className="text-slate-600 mx-auto mb-2"/><div className="font-mono text-xs text-slate-500">No prior authorizations.</div></div> :
+          priorAuths.map((auth: any) => {
+            const p = auth.patient as any
+            const sc = AUTH_COLORS[auth.status] ?? AUTH_COLORS.pending
+            const daysLeft = auth.expiration_date ? Math.ceil((new Date(auth.expiration_date).getTime() - Date.now()) / 86400000) : null
+            const expiring = daysLeft !== null && daysLeft <= 14 && daysLeft >= 0 && auth.status === 'approved'
+            const unitsUsedPct = auth.units_approved ? Math.round((auth.units_used / auth.units_approved) * 100) : 0
+            return (
+              <div key={auth.auth_id} className={cn('hud-panel p-4 space-y-3', expiring && 'border-amber-500/30')}>
+                {expiring && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/8 border border-amber-500/20 rounded-sm">
+                    <AlertTriangle size={11} className="text-amber-400"/><span className="font-mono text-[10px] text-amber-300">Expires in {daysLeft} day{daysLeft!==1?'s':''} — renewal required</span>
+                  </div>
+                )}
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <span className={cn('badge text-[9px] border', sc)}>{auth.status}</span>
+                      {auth.urgency !== 'routine' && <span className="badge text-[9px] bg-red-500/15 text-red-400 border-red-500/25">{auth.urgency}</span>}
+                      <span className="text-sm font-medium text-slate-200">{p?.last_name}, {p?.first_name}</span>
+                      {auth.auth_number && <span className="font-mono text-[10px] text-slate-600">{auth.auth_number}</span>}
+                    </div>
+                    <div className="text-xs text-slate-500">{auth.payer_name}</div>
+                    <div className="flex flex-wrap gap-x-4 gap-y-0.5 mt-1">
+                      {(auth.procedure_codes??[]).map((c:any,i:number) => (
+                        <span key={i} className="font-mono text-[10px] text-gold-400">{c.cpt} — {c.description}</span>
+                      ))}
+                    </div>
+                    {auth.effective_date && <div className="font-mono text-[10px] text-slate-600 mt-1">
+                      {formatDate(auth.effective_date)} → {auth.expiration_date ? formatDate(auth.expiration_date) : '—'}
+                    </div>}
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    {auth.units_approved && (
+                      <div className="mb-2">
+                        <div className="data-label mb-1">Units</div>
+                        <div className="font-mono text-xs text-slate-300">{auth.units_used ?? 0} / {auth.units_approved} used</div>
+                        <div className="w-24 h-1.5 bg-navy-700/60 rounded-full mt-1 overflow-hidden ml-auto">
+                          <div className={cn('h-full rounded-full', unitsUsedPct>=90?'bg-red-500':unitsUsedPct>=70?'bg-amber-500':'bg-emerald-500')} style={{width:`${Math.min(unitsUsedPct,100)}%`}}/>
+                        </div>
+                      </div>
+                    )}
+                    <div className="flex gap-2 justify-end flex-wrap">
+                      {auth.status==='pending' && <>
+                        <button onClick={()=>predictAuthApproval(auth)} className="btn-secondary text-[10px] py-1 px-2 flex items-center gap-1"><Sparkles size={10}/>AI Predict</button>
+                        <button onClick={()=>updateAuthStatus.mutate({id:auth.auth_id,status:'approved'})} className="btn-primary text-[10px] py-1 px-2">Approve</button>
+                        <button onClick={()=>updateAuthStatus.mutate({id:auth.auth_id,status:'denied'})} className="btn-secondary text-[10px] py-1 px-2 text-red-400">Deny</button>
+                      </>}
+                      {auth.status==='approved' && expiring && <button onClick={()=>updateAuthStatus.mutate({id:auth.auth_id,status:'pending'})} className="btn-primary text-[10px] py-1 px-2">Request Renewal</button>}
+                    </div>
+                  </div>
+                </div>
+                {auth.ai_recommendation && (
+                  <div className="px-3 py-2 bg-purple-500/5 border border-purple-500/15 rounded-sm">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Sparkles size={10} className="text-purple-400"/>
+                      <div className="data-label text-purple-400">AI Prediction</div>
+                      {auth.ai_approval_prob != null && (
+                        <span className={cn('font-mono text-[10px] font-bold ml-auto', auth.ai_approval_prob>=70?'text-emerald-400':auth.ai_approval_prob>=50?'text-amber-400':'text-red-400')}>
+                          {auth.ai_approval_prob}% approval probability
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-slate-400">{auth.ai_recommendation}</div>
+                    {(auth.ai_risk_factors??[]).length>0 && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {auth.ai_risk_factors.map((f:string,i:number) => <span key={i} className="font-mono text-[9px] bg-red-500/8 text-red-400 px-2 py-0.5 rounded-sm">⚠ {f}</span>)}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* ── APPEALS ── */}
+      {tab==='appeals' && (
+        <div className="space-y-3">
+          {appealsLoading ? <div className="flex justify-center py-12"><Loader size={16} className="animate-spin text-gold-500"/></div> :
+          appeals.length===0 ? (
+            <div className="hud-panel px-4 py-12 text-center">
+              <FileEdit size={24} className="text-slate-600 mx-auto mb-2"/>
+              <div className="font-mono text-xs text-slate-500 mb-3">No appeal letters yet.</div>
+              <div className="text-xs text-slate-600">Go to Rejections tab and click "AI Appeal" to generate a letter with Claude AI.</div>
+            </div>
+          ) : appeals.map((appeal: any) => {
+            const p = appeal.patient as any
+            const sc = APPEAL_COLORS[appeal.status] ?? APPEAL_COLORS.draft
+            const daysLeft = appeal.deadline_date ? Math.ceil((new Date(appeal.deadline_date).getTime() - Date.now()) / 86400000) : null
+            return (
+              <div key={appeal.appeal_id} className="hud-panel p-4 space-y-3">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <span className={cn('badge text-[9px]', sc)}>{appeal.status}</span>
+                      {appeal.ai_generated && <span className="badge text-[9px] bg-purple-500/15 text-purple-400"><Sparkles size={8} className="inline mr-0.5"/>AI Generated</span>}
+                      <span className="text-sm font-medium text-slate-200">{p?.last_name}, {p?.first_name}</span>
+                      <span className="font-mono text-[10px] text-gold-400">{appeal.appeal_type.replace('_',' ')}</span>
+                    </div>
+                    <div className="text-xs text-slate-400">{appeal.denial_reason}</div>
+                    <div className="flex gap-4 mt-1">
+                      {appeal.denial_code && <span className="font-mono text-[10px] text-slate-600">CARC: {appeal.denial_code}</span>}
+                      {appeal.denied_amount && <span className="font-mono text-[10px] text-red-400">Denied: {formatCurrency(parseFloat(appeal.denied_amount))}</span>}
+                      {daysLeft !== null && <span className={cn('font-mono text-[10px]', daysLeft<=7?'text-red-400':'text-amber-400')}>Deadline: {daysLeft}d</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2 flex-shrink-0">
+                    {appeal.status==='draft' && <button onClick={()=>updateAppealStatus.mutate({id:appeal.appeal_id,status:'submitted'})} className="btn-primary text-xs py-1"><Send size={10}/> Submit</button>}
+                    {appeal.status==='submitted' && <button onClick={()=>updateAppealStatus.mutate({id:appeal.appeal_id,status:'under_review'})} className="btn-secondary text-xs py-1">Under Review</button>}
+                    {appeal.status==='under_review' && <>
+                      <button onClick={()=>updateAppealStatus.mutate({id:appeal.appeal_id,status:'overturned'})} className="btn-primary text-xs py-1 text-emerald-400">Overturned ✓</button>
+                      <button onClick={()=>updateAppealStatus.mutate({id:appeal.appeal_id,status:'upheld'})} className="btn-secondary text-xs py-1 text-red-400">Upheld ✗</button>
+                    </>}
+                  </div>
+                </div>
+                {appeal.appeal_letter && (
+                  <details className="group">
+                    <summary className="cursor-pointer text-[10px] font-mono text-slate-500 hover:text-gold-400 transition-colors">View appeal letter ▸</summary>
+                    <div className="mt-2 px-3 py-3 bg-navy-700/30 rounded-sm border border-gold-500/10">
+                      <pre className="text-[11px] text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">{appeal.appeal_letter}</pre>
+                    </div>
+                  </details>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* ── SECONDARY ── */}
+      {tab==='secondary' && (
+        <div className="space-y-3">
+          <div className="hud-panel px-4 py-2.5 border-b border-gold-500/10 flex items-center gap-2">
+            <GitBranch size={12} className="text-blue-400"/>
+            <div className="font-mono text-xs text-slate-500">Secondary & tertiary claims — auto-created when primary ERA is posted</div>
+          </div>
+          {secondaryLoading ? <div className="flex justify-center py-12"><Loader size={16} className="animate-spin text-gold-500"/></div> :
+          secondaryClaims.length===0 ? (
+            <div className="hud-panel px-4 py-12 text-center">
+              <GitBranch size={24} className="text-slate-600 mx-auto mb-2"/>
+              <div className="font-mono text-xs text-slate-500">No secondary claims yet.</div>
+              <div className="text-xs text-slate-600 mt-1">Secondary claims are auto-created when you post ERA payments for patients with secondary insurance.</div>
+            </div>
+          ) : (
+            <div className="hud-panel overflow-hidden">
+              <table className="w-full text-xs">
+                <thead><tr className="border-b border-gold-500/8">{['Patient','Level','Secondary Payer','Primary Paid','Billed','Status',''].map(h=><th key={h} className="text-left px-4 py-2 data-label">{h}</th>)}</tr></thead>
+                <tbody className="divide-y divide-gold-500/5">
+                  {secondaryClaims.map((sc2: any) => {
+                    const p = sc2.patient as any
+                    const statusColors: Record<string,string> = {pending:'text-amber-400',submitted:'text-blue-400',paid:'text-emerald-400',denied:'text-red-400',adjusted:'text-purple-400'}
+                    return (
+                      <tr key={sc2.secondary_id} className="hover:bg-gold-500/3">
+                        <td className="px-4 py-2.5 text-slate-200">{p?.last_name}, {p?.first_name}</td>
+                        <td className="px-4 py-2.5">
+                          <span className={cn('font-mono text-[9px] uppercase font-bold px-2 py-0.5 rounded-sm', sc2.claim_level==='secondary'?'bg-blue-500/15 text-blue-400':'bg-purple-500/15 text-purple-400')}>
+                            {sc2.claim_level}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5 text-slate-400">{sc2.payer_name ?? '—'}</td>
+                        <td className="px-4 py-2.5 font-mono text-emerald-400">{formatCurrency(parseFloat(sc2.primary_paid??0))}</td>
+                        <td className="px-4 py-2.5 font-mono text-gold-400">{sc2.billed_amount?formatCurrency(parseFloat(sc2.billed_amount)):'—'}</td>
+                        <td className="px-4 py-2.5"><span className={cn('font-mono text-[10px] uppercase', statusColors[sc2.status]??'text-slate-500')}>{sc2.status}</span></td>
+                        <td className="px-4 py-2.5">
+                          {sc2.status==='pending' && <button onClick={()=>submitSecondary.mutate({id:sc2.secondary_id})} disabled={submitSecondary.isPending} className="btn-primary text-[10px] py-1 px-2"><Send size={10}/> Submit</button>}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── MODALS ── */}
+
       {/* EDI Modal */}
       {showEdiModal && selectedSb && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80">
@@ -452,11 +861,16 @@ export function Billing() {
             </div>
             <div className="p-5 space-y-3">
               <div className="hud-panel px-4 py-3 space-y-2">
-                {[{label:'Patient',value:`${(selectedSb.patient as any)?.last_name}, ${(selectedSb.patient as any)?.first_name}`},{label:'CPT',value:Array.isArray(selectedSb.cpt_codes)?selectedSb.cpt_codes.join(', '):selectedSb.cpt_codes},{label:'Charges',value:formatCurrency(parseFloat(selectedSb.total_amount??0))},{label:'Clearinghouse',value:'Change Healthcare (837P)'}].map(({label,value})=>(
-                  <div key={label} className="flex gap-3"><span className="data-label w-24 flex-shrink-0">{label}</span><span className="text-xs text-slate-300 font-mono">{value}</span></div>
+                {[
+                  {label:'Patient', value:`${(selectedSb.patient as any)?.last_name}, ${(selectedSb.patient as any)?.first_name}`},
+                  {label:'CPT', value:Array.isArray(selectedSb.cpt_codes)?selectedSb.cpt_codes.join(', '):selectedSb.cpt_codes},
+                  {label:'Charges', value:formatCurrency(parseFloat(selectedSb.total_amount??0))},
+                  {label:'Clearinghouse', value:'Change Healthcare (837P X12 5010)'},
+                ].map(({label,value})=>(
+                  <div key={label} className="flex gap-3"><span className="data-label w-28 flex-shrink-0">{label}</span><span className="text-xs text-slate-300 font-mono">{value}</span></div>
                 ))}
               </div>
-              <div className="px-3 py-2 bg-amber-500/5 border border-amber-500/15 rounded-sm text-xs text-amber-300">In production, this submits a real 837P EDI transaction. Connect your clearinghouse credentials in Settings.</div>
+              <div className="px-3 py-2 bg-amber-500/5 border border-amber-500/15 rounded-sm text-xs text-amber-300">Connect clearinghouse credentials in Settings to enable live 837P submission.</div>
             </div>
             <div className="px-5 py-4 border-t border-gold-500/10 flex justify-end gap-3">
               <button onClick={()=>setShowEdiModal(false)} className="btn-secondary text-xs">Cancel</button>
@@ -473,6 +887,11 @@ export function Billing() {
         <EraModal submission={showPayModal}
           onPost={(amt:number)=>postEra.mutate({submissionId:showPayModal.submission_id,superbillId:showPayModal.superbill_id,patientId:showPayModal.patient_id,amount:amt,payer:showPayModal.payer_name})}
           onClose={()=>setShowPayModal(null)} posting={postEra.isPending}/>
+      )}
+
+      {/* New Prior Auth Modal */}
+      {showNewAuthModal && (
+        <NewAuthModal onClose={()=>setShowNewAuthModal(false)} onSuccess={()=>{queryClient.invalidateQueries({queryKey:['prior-auths']});setShowNewAuthModal(false)}}/>
       )}
     </div>
   )
@@ -496,6 +915,9 @@ function EraModal({ submission, onPost, onClose, posting }: any) {
               <input type="number" value={amount} onChange={e=>setAmount(e.target.value)} className="hud-input pl-6 font-mono" step={0.01}/>
             </div>
           </div>
+          <div className="px-3 py-2 bg-blue-500/5 border border-blue-500/15 rounded-sm text-xs text-blue-300">
+            If patient has secondary insurance, a secondary claim will be auto-created.
+          </div>
         </div>
         <div className="px-5 py-4 border-t border-gold-500/10 flex justify-end gap-3">
           <button onClick={onClose} className="btn-secondary text-xs">Cancel</button>
@@ -507,3 +929,71 @@ function EraModal({ submission, onPost, onClose, posting }: any) {
     </div>
   )
 }
+
+function NewAuthModal({ onClose, onSuccess }: any) {
+  const [form, setForm] = useState({ patient_id:'', payer_name:'', cpt_code:'', cpt_desc:'', units:'', urgency:'routine', notes:'' })
+  const [saving, setSaving] = useState(false)
+  const set = (k: string, v: string) => setForm(f=>({...f,[k]:v}))
+
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      await supabase.schema('cr').from('prior_authorizations').insert({
+        org_id: ORG_ID,
+        patient_id: parseInt(form.patient_id),
+        payer_name: form.payer_name,
+        procedure_codes: form.cpt_code ? [{ cpt: form.cpt_code, description: form.cpt_desc, units: parseInt(form.units||'1') }] : [],
+        urgency: form.urgency,
+        clinical_notes: form.notes,
+        status: 'pending',
+        request_date: new Date().toISOString(),
+      })
+      onSuccess()
+    } finally { setSaving(false) }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80">
+      <div className="hud-panel w-full max-w-md">
+        <div className="px-5 py-4 border-b border-gold-500/10 flex items-center justify-between">
+          <div className="section-heading">New Prior Authorization</div>
+          <button onClick={onClose} className="btn-ghost text-xs">✕</button>
+        </div>
+        <div className="p-5 space-y-3">
+          {[
+            { label:'Patient ID', key:'patient_id', type:'number', placeholder:'Patient ID' },
+            { label:'Payer / Insurance', key:'payer_name', placeholder:'e.g. Aetna PPO' },
+            { label:'CPT Code', key:'cpt_code', placeholder:'e.g. 90837' },
+            { label:'Procedure Description', key:'cpt_desc', placeholder:'e.g. Psychotherapy 60 min' },
+            { label:'Units Requested', key:'units', type:'number', placeholder:'e.g. 12' },
+          ].map(({ label, key, type, placeholder }) => (
+            <div key={key}>
+              <label className="data-label block mb-1.5">{label}</label>
+              <input type={type??'text'} value={(form as any)[key]} onChange={e=>set(key,e.target.value)} className="hud-input text-xs" placeholder={placeholder}/>
+            </div>
+          ))}
+          <div>
+            <label className="data-label block mb-1.5">Urgency</label>
+            <div className="flex border border-gold-500/20 rounded-sm overflow-hidden">
+              {['routine','urgent','emergent'].map(u=>(
+                <button key={u} onClick={()=>set('urgency',u)} className={cn('flex-1 px-3 py-1.5 text-[10px] font-mono uppercase transition-colors', form.urgency===u?'bg-gold-500/15 text-gold-300':'text-slate-600 hover:text-gold-400')}>{u}</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="data-label block mb-1.5">Clinical Notes</label>
+            <textarea rows={3} value={form.notes} onChange={e=>set('notes',e.target.value)} className="hud-input text-xs resize-none" placeholder="Medical necessity documentation..."/>
+          </div>
+        </div>
+        <div className="px-5 py-4 border-t border-gold-500/10 flex justify-end gap-3">
+          <button onClick={onClose} className="btn-secondary text-xs">Cancel</button>
+          <button onClick={handleSave} disabled={saving||!form.patient_id||!form.payer_name} className="btn-primary text-xs">
+            {saving?<><Loader size={12} className="animate-spin"/>Saving...</>:'Submit Auth Request'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default Billing
