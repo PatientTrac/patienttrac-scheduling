@@ -29,7 +29,7 @@ export default function AdminLogin() {
       if (!token) throw new Error('No session token')
       setSessionToken(token)
       const { data: member, error: memberErr } = await supabase
-        .schema('saas').from('org_members').select('role, mfa_enabled, mfa_secret, mfa_verified_at, is_active')
+        .from('org_members').select('role, mfa_enabled, mfa_secret, mfa_verified_at, is_active')
         .eq('user_id', authData.user.id).single()
       if (memberErr || !member) throw new Error('Account not found. Contact your administrator.')
       if (!member.is_active) throw new Error('Your account is not yet active. Check your email for an invitation.')
