@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../../lib/supabaseClient'
+import { supabase } from '../../lib/supabase'
 
 const MFA_REQUIRED_ROLES = ['super_admin', 'admin', 'provider']
 type Step = 'credentials' | 'mfa_challenge' | 'mfa_setup'

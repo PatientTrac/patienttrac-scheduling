@@ -3,27 +3,22 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { supabase } from './lib/supabase'
 import { auditLogin } from './lib/audit'
-
-// ── Layouts ───────────────────────────────────────────────────
 import { AppShell } from './components/layout/AppShell'
 import { AdminShell } from './components/layout/AdminShell'
-
-// ── Main App Pages ────────────────────────────────────────────
-import Dashboard from './pages/Dashboard'
-import Patients from './pages/Patients'
-import NewPatient from './pages/NewPatient'
-import PatientDetail from './pages/PatientDetail'
-import Schedule from './pages/Schedule'
-import CheckIn from './pages/CheckIn'
-import Encounters from './pages/Encounters'
-import Billing from './pages/Billing'
-import Insurance from './pages/Insurance'
-import Settings from './pages/Settings'
-import NewProvider from './pages/NewProvider'
-import NewFacility from './pages/NewFacility'
-import Intake from './pages/Intake'
-
-// ── Admin Pages ───────────────────────────────────────────────
+import { Dashboard } from './pages/Dashboard'
+import { Patients } from './pages/Patients'
+import { NewPatient } from './pages/NewPatient'
+import { PatientDetail } from './pages/PatientDetail'
+import { Schedule } from './pages/Schedule'
+import { CheckIn } from './pages/CheckIn'
+import { Encounters } from './pages/Encounters'
+import { Billing } from './pages/Billing'
+import { Insurance } from './pages/Insurance'
+import { Settings } from './pages/Settings'
+import { NewProvider } from './pages/NewProvider'
+import { NewFacility } from './pages/NewFacility'
+import { Intake } from './pages/Intake'
+import EHIExport from './pages/EHIExport'
 import AdminLogin from './pages/admin/AdminLogin'
 import MfaSetup from './pages/admin/MfaSetup'
 import AdminOverview from './pages/admin/AdminOverview'
@@ -32,13 +27,7 @@ import AdminFacilities from './pages/admin/AdminFacilities'
 import AppointmentTypes from './pages/admin/AppointmentTypes'
 import AdminRoles from './pages/admin/AdminRoles'
 import AdminSettings from './pages/admin/AdminSettings'
-
-// ── §170.315(d)(3) Audit Report ───────────────────────────────
 import AuditReport from './components/admin/AuditReport'
-
-// ── §170.315(b)(10) EHI Export page ──────────────────────────
-import EHIExport from './pages/EHIExport'
-
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5, retry: 1 } },
 })
