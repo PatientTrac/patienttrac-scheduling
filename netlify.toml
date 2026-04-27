@@ -14,63 +14,63 @@
 # All app routes go to React SPA
 [[redirects]]
   from = "/dashboard"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/patients/*"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/schedule/*"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/billing"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/insurance"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/encounters"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/providers/*"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/facilities/*"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/settings"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/intake"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/admin/*"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 # Catch-all for React SPA
 [[redirects]]
   from = "/*"
-  to = "/app.html"
+  to = "/index.html"
   status = 200
 
 [[redirects]]

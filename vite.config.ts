@@ -15,7 +15,7 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       input: {
-        app: path.resolve(__dirname, 'app.html'),
+        index: path.resolve(__dirname, 'index.html'),
       },
     },
   },
