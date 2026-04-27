@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { initAudit } from './lib/audit'
 import { supabase } from './lib/supabase'
-import { registerAppStore } from '../../packages/ui/src/store'
+import { registerAppStore } from '../packages/ui/src/store'
 import { useAppStore } from './lib/store'
 
 // ── Shared package store registration ────────────────────────
