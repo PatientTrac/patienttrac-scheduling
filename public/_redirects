@@ -1,0 +1,17 @@
+/                /landing.html      200
+/privacy         /privacy.html      200
+/terms           /terms.html        200
+/hipaa           /hipaa.html        200
+/dashboard       /index.html        200
+/patients/*      /index.html        200
+/schedule/*      /index.html        200
+/billing         /index.html        200
+/insurance       /index.html        200
+/encounters      /index.html        200
+/providers/*     /index.html        200
+/facilities/*    /index.html        200
+/settings        /index.html        200
+/intake          /index.html        200
+/ehi-export      /index.html        200
+/admin/*         /index.html        200
+/*               /index.html        200
