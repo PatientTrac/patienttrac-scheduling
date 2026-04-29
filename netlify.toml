@@ -1,3 +1,13 @@
+# ─────────────────────────────────────────────────────────────
+# PatientTracForge — Netlify Configuration
+# ─────────────────────────────────────────────────────────────
+# Routing strategy:
+#   /                      → public marketing landing page
+#   /privacy, /terms, /hipaa → static legal pages
+#   /admin/*, /dashboard, /patients, etc. → React SPA (index.html)
+#   Everything else        → React SPA fallback
+# ─────────────────────────────────────────────────────────────
+
 [build]
   command = "vite build"
   publish = "dist"
@@ -5,13 +15,34 @@
 [build.environment]
   NPM_FLAGS = "--legacy-peer-deps"
 
-# Serve landing page at root
+# ─────────────────────────────────────────────────────────────
+# Public marketing & legal pages (must come BEFORE catch-all)
+# ─────────────────────────────────────────────────────────────
+
 [[redirects]]
   from = "/"
   to = "/landing.html"
   status = 200
 
-# All app routes go to React SPA
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy.html"
+  status = 200
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms.html"
+  status = 200
+
+[[redirects]]
+  from = "/hipaa"
+  to = "/hipaa.html"
+  status = 200
+
+# ─────────────────────────────────────────────────────────────
+# React SPA routes (authenticated app)
+# ─────────────────────────────────────────────────────────────
+
 [[redirects]]
   from = "/dashboard"
   to = "/index.html"
@@ -63,27 +94,20 @@
   status = 200
 
 [[redirects]]
+  from = "/ehi-export"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
   from = "/admin/*"
   to = "/index.html"
   status = 200
 
-# Catch-all for React SPA
+# ─────────────────────────────────────────────────────────────
+# Catch-all SPA fallback (must come LAST)
+# ─────────────────────────────────────────────────────────────
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/privacy"
-  to = "/privacy.html"
-  status = 200
-
-[[redirects]]
-  from = "/terms"
-  to = "/terms.html"
-  status = 200
-
-[[redirects]]
-  from = "/hipaa"
-  to = "/hipaa.html"
   status = 200
