@@ -4,8 +4,8 @@ import { DollarSign, FileText, AlertTriangle, CheckCircle, Clock, Send, XCircle,
          Search, Loader, TrendingUp, Activity, ShieldCheck, FileEdit, GitBranch, Sparkles } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { cn, formatDate, formatCurrency } from '@/lib/utils'
+import { useAuth } from '../lib/auth'
 
-const ORG_ID = '00000000-0000-0000-0000-000000000001'
 const ANTHROPIC_MODEL = 'claude-sonnet-4-20250514'
 
 type BillingTab = 'superbills'|'ai'|'edi'|'era'|'rejections'|'aging'|'preauth'|'appeals'|'secondary'
@@ -44,6 +44,7 @@ const APPEAL_COLORS: Record<string,string> = {
 }
 
 export function Billing() {
+  const { orgId: ORG_ID } = useAuth()
   const queryClient = useQueryClient()
   const [tab, setTab] = useState<BillingTab>('superbills')
   const [search, setSearch] = useState('')

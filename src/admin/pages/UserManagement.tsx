@@ -25,7 +25,7 @@ export function UserManagement() {
     queryKey: ['org-members', orgId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .schema('saas').from('org_members').select('*').eq('org_id', orgId!).order('created_at')
+        .from('org_members').select('*').eq('org_id', orgId!).order('created_at')
       if (error) throw error
       return data
     },
@@ -36,7 +36,7 @@ export function UserManagement() {
       // In production: Supabase Edge Function sends invite email
       // For now: create org_member record with invite_token
       const token = Math.random().toString(36).slice(2) + Date.now().toString(36)
-      const { error } = await supabase.schema('saas').from('org_members').insert({
+      const { error } = await supabase.from('org_members').insert({
         org_id:          orgId,
         user_id:         crypto.randomUUID(), // placeholder until they accept invite
         email:           form.email,
@@ -59,7 +59,7 @@ export function UserManagement() {
 
   const toggleMfa = useMutation({
     mutationFn: async ({ id, enabled }: { id: string; enabled: boolean }) => {
-      const { error } = await supabase.schema('saas').from('org_members')
+      const { error } = await supabase.from('org_members')
         .update({ mfa_enabled: enabled }).eq('id', id)
       if (error) throw error
     },

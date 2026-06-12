@@ -9,8 +9,8 @@ import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 import { SmartAddressBlock, TaxIdField } from '@/components/forms/SmartAddressBlock'
 import { PhotoUpload } from '@/components/forms/PhotoUpload'
+import { useAuth } from '../lib/auth'
 
-const ORG_ID = '00000000-0000-0000-0000-000000000001'
 
 const SPECIALTIES = [
   'Plastic Surgery','Cosmetic Surgery','Dermatology','Psychiatry','Psychology',
@@ -62,6 +62,7 @@ const SECTIONS = [
 ]
 
 export function NewProvider() {
+  const { orgId: ORG_ID } = useAuth()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [activeSection, setActiveSection] = useState('info')

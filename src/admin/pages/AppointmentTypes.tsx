@@ -45,7 +45,6 @@ export function AppointmentTypes() {
     queryKey: ['appt-types', orgId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .schema('saas')
         .from('appointment_types')
         .select('*')
         .eq('org_id', orgId!)
@@ -58,12 +57,12 @@ export function AppointmentTypes() {
   const saveMutation = useMutation({
     mutationFn: async (form: Partial<ApptType>) => {
       if (form.appt_type_id) {
-        const { error } = await supabase.schema('saas').from('appointment_types')
+        const { error } = await supabase.from('appointment_types')
           .update({ ...form, updated_at: new Date().toISOString() })
           .eq('appt_type_id', form.appt_type_id)
         if (error) throw error
       } else {
-        const { error } = await supabase.schema('saas').from('appointment_types')
+        const { error } = await supabase.from('appointment_types')
           .insert({ ...form, org_id: orgId })
         if (error) throw error
       }

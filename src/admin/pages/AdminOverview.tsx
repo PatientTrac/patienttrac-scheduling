@@ -11,9 +11,9 @@ export function AdminOverview() {
     queryKey: ['admin-stats'],
     queryFn: async () => {
       const [usersRes, facilitiesRes, apptTypesRes] = await Promise.all([
-        supabase.schema('saas').from('org_members').select('id, role, is_active', { count: 'exact' }),
+        supabase.from('org_members').select('id, role, is_active', { count: 'exact' }),
         supabase.schema('cr').from('facilities').select('facility_id', { count: 'exact' }),
-        supabase.schema('saas').from('appointment_types').select('appt_type_id', { count: 'exact' }),
+        supabase.from('appointment_types').select('appt_type_id', { count: 'exact' }),
       ])
       return {
         totalUsers:     usersRes.count ?? 0,

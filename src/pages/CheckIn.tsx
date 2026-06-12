@@ -16,8 +16,8 @@ import {
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { cn, formatDate, calculateAge, formatCurrency } from '@/lib/utils'
+import { useAuth } from '../lib/auth'
 
-const ORG_ID = '00000000-0000-0000-0000-000000000001'
 
 type CheckinStep = 'arrival' | 'insurance' | 'encounter' | 'routed'
 
@@ -34,6 +34,7 @@ const APP_COLORS: Record<string, string> = {
 }
 
 export function CheckIn() {
+  const { orgId: ORG_ID } = useAuth()
   const { appointmentId } = useParams<{ appointmentId: string }>()
   const navigate = useNavigate()
   const queryClient = useQueryClient()

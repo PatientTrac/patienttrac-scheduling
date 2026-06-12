@@ -4,8 +4,8 @@ import { format, addDays, addWeeks, subWeeks, startOfWeek, isSameDay, parseISO }
 import { ChevronLeft, ChevronRight, Plus, Loader } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
+import { useAuth } from '../lib/auth'
 
-const ORG_ID = '00000000-0000-0000-0000-000000000001'
 const HOURS = Array.from({ length: 13 }, (_, i) => i + 7) // 7am–7pm
 const SLOT_HEIGHT = 64 // px per hour
 
@@ -26,6 +26,7 @@ const STATUS_COLORS: Record<string, string> = {
 }
 
 export function Schedule() {
+  const { orgId: ORG_ID } = useAuth()
   const queryClient = useQueryClient()
   const [currentDate, setCurrentDate]     = useState(new Date())
   const [view, setView]                   = useState<'week'|'day'>('week')
@@ -56,7 +57,7 @@ export function Schedule() {
   const { data: apptTypes = [] } = useQuery({
     queryKey: ['appt-types-cal', ORG_ID],
     queryFn: async () => {
-      const { data } = await supabase.schema('saas').from('appointment_types')
+      const { data } = await supabase.from('appointment_types')
         .select('appt_type_id, name, code, duration_mins, color, primary_cpt_code')
         .eq('org_id', ORG_ID).eq('is_active', true).order('name')
       return data ?? []

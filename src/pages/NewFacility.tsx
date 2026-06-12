@@ -8,8 +8,8 @@ import { ArrowLeft, Save, CheckCircle, Building2, MapPin, FileText } from 'lucid
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 import { SmartAddressBlock, TaxIdField } from '@/components/forms/SmartAddressBlock'
+import { useAuth } from '../lib/auth'
 
-const ORG_ID = '00000000-0000-0000-0000-000000000001'
 
 const FACILITY_TYPES = [
   'Medical Office','Clinic','Hospital','Outpatient Surgery Center',
@@ -50,6 +50,7 @@ const SECTIONS = [
 ]
 
 export function NewFacility() {
+  const { orgId: ORG_ID } = useAuth()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [activeSection, setActiveSection] = useState('info')

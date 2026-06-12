@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { Shield, Plus, Search, CheckCircle, AlertCircle, Clock, Edit, Loader } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { cn, formatDate } from '@/lib/utils'
+import { useAuth } from '../lib/auth'
 
-const ORG_ID = '00000000-0000-0000-0000-000000000001'
 const RELATIONSHIP_OPTIONS = ['self','spouse','child','parent','other']
 const PRIORITY_LABELS: Record<string, { label: string; color: string }> = {
   primary:   { label: 'Primary',   color: 'bg-gold-500/15 text-gold-400 border-gold-500/30' },
@@ -14,6 +14,7 @@ const PRIORITY_LABELS: Record<string, { label: string; color: string }> = {
 }
 
 export function Insurance() {
+  const { orgId: ORG_ID } = useAuth()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [search, setSearch] = useState('')

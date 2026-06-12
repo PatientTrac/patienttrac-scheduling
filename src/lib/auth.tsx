@@ -149,8 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function loadMember(userId: string) {
     const { data } = await supabase
-      .schema('saas')
-      .from('org_members')
+      .from('org_members')  // public view -> saas.org_members (saas schema is not API-exposed)
       .select('*')
       .eq('user_id', userId)
       .eq('is_active', true)

@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Search, Bell, UserPlus } from 'lucide-react'
+import { AppLauncher } from './AppLauncher'
 
 const breadcrumbs: Record<string, string> = {
   '/dashboard':  'Dashboard',
@@ -43,6 +44,7 @@ export function Topbar() {
 
       {/* Actions */}
       <div className="flex items-center gap-2">
+        <AppLauncher />
         <button
           onClick={() => navigate('/patients/new')}
           className="btn-primary py-1.5 text-xs"

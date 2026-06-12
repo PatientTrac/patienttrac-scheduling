@@ -3,14 +3,16 @@ import { Users, CalendarDays, DollarSign, Activity, AlertCircle, TrendingUp,
          FileText, Clock, CheckCircle, Brain, ShieldCheck } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { cn, formatCurrency, formatDate } from '@/lib/utils'
+import { useAuth } from '../lib/auth'
 
-const ORG_ID = '00000000-0000-0000-0000-000000000001'
 
 function useDashboardStats() {
+  const { orgId: ORG_ID } = useAuth()
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!ORG_ID) return
     async function load() {
       try {
         const today = new Date().toISOString().split('T')[0]
@@ -50,7 +52,7 @@ function useDashboardStats() {
       }
     }
     load()
-  }, [])
+  }, [ORG_ID])
 
   return { stats, loading }
 }

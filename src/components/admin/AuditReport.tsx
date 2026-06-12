@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 export default function AuditReport() {
   const { data = [] } = useQuery({ queryKey: ['audit'], queryFn: async () => {
-    const { data } = await supabase.schema('saas').from('auth_audit_log').select('*').order('created_at', { ascending: false }).limit(100)
+    const { data } = await supabase.from('auth_audit_log').select('*').order('created_at', { ascending: false }).limit(100)
     return data ?? []
   }})
   return (
