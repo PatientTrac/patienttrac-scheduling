@@ -29,6 +29,10 @@ import AppointmentTypes from './pages/admin/AppointmentTypes'
 import AdminRoles from './pages/admin/AdminRoles'
 import AdminSettings from './pages/admin/AdminSettings'
 import AuditReport from './components/admin/AuditReport'
+import {
+  AdminConsentTemplates, AdminSendConsent, AdminProviders,
+  AdminProposals, AdminFacilityBranding,
+} from './pages/admin/ClinicalAdmin'
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5, retry: 1 } },
@@ -87,6 +91,12 @@ export default function App() {
               <Route path="roles" element={<AdminRoles />} />
               {/* §170.315(d)(3) Audit Report — replaces stub */}
               <Route path="audit" element={<AuditReport />} />
+              {/* Clinical admin — platform parity (Revela/Surgery/OR) */}
+              <Route path="consents" element={<AdminConsentTemplates />} />
+              <Route path="send-consent" element={<AdminSendConsent />} />
+              <Route path="providers" element={<AdminProviders />} />
+              <Route path="proposals" element={<AdminProposals />} />
+              <Route path="branding" element={<AdminFacilityBranding />} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>
 

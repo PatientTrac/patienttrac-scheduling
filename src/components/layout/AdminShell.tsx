@@ -10,6 +10,11 @@ export function AdminShell() {
     { to: '/admin/appt-types', label: 'Appt Types' },
     { to: '/admin/roles', label: 'Roles' },
     { to: '/admin/audit', label: 'Audit Log' },
+    { to: '/admin/consents', label: 'Consent Templates' },
+    { to: '/admin/send-consent', label: 'Send Consent' },
+    { to: '/admin/providers', label: 'Providers' },
+    { to: '/admin/proposals', label: 'Proposals' },
+    { to: '/admin/branding', label: 'Facility Branding' },
     { to: '/admin/settings', label: 'Settings' },
   ]
   const signOut = async () => { await supabase.auth.signOut(); navigate('/admin/login') }
