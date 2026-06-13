@@ -1,6 +1,8 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, Phone, Mail, MapPin, Calendar, Activity, Shield, CreditCard, Edit } from 'lucide-react'
+import { launchApp } from '../lib/crossAppLaunch'
+import { useAuth } from '../lib/auth'
 import { supabase, type PatientRow } from '@/lib/supabase'
 import { formatDate, calculateAge, cn } from '@/lib/utils'
 
@@ -13,6 +15,7 @@ const tabs = [
 
 export function PatientDetail() {
   const { patientId } = useParams<{ patientId: string }>()
+  const { orgId } = useAuth()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('overview')
 
@@ -81,10 +84,21 @@ export function PatientDetail() {
                 </span>
               </div>
             </div>
-            <button className="ml-auto btn-secondary">
-              <Edit size={13} />
-              Edit
-            </button>
+            <div className="ml-auto flex items-center gap-2">
+              {/* Cross-app deep links — single-use token carries patient context */}
+              <button className="btn-secondary text-xs"
+                onClick={() => launchApp('surgery', { orgId, patientId: Number(patientId) })}>
+                Open in Surgery
+              </button>
+              <button className="btn-secondary text-xs"
+                onClick={() => launchApp('or', { orgId, patientId: Number(patientId) })}>
+                Open in OR
+              </button>
+              <button className="btn-secondary">
+                <Edit size={13} />
+                Edit
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -141,7 +141,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session)
       setUser(session?.user ?? null)
       if (session?.user) loadMember(session.user.id)
-      else { setMember(null); setMfaRequired(false); setMfaVerified(false); setLoading(false) }
+      else { localStorage.removeItem('pt-forge:mfa-verified'); setMember(null); setMfaRequired(false); setMfaVerified(false); setLoading(false) }
     })
 
     return () => subscription.unsubscribe()
@@ -150,17 +150,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function loadMember(userId: string) {
     const { data } = await supabase
       .from('org_members')  // public view -> saas.org_members (saas schema is not API-exposed)
-      .select('*')
+      .select('id, org_id, user_id, role, facility_id, email, first_name, last_name, phone, is_active, mfa_enabled, mfa_verified_at, last_login_at, login_count, invite_sent_at, invite_accepted_at, created_at, updated_at')
       .eq('user_id', userId)
       .eq('is_active', true)
       .single()
 
     if (data) {
       setMember(data as OrgMember)
-      const needsMfa = MFA_REQUIRED_ROLES.includes(data.role) && data.mfa_enabled
+      // MFA is required by ROLE — enrollment status must not bypass it.
+      // Un-enrolled members hit AppShell's redirect to /admin/mfa-setup.
+      const needsMfa = MFA_REQUIRED_ROLES.includes(data.role)
       if (needsMfa) {
         setMfaRequired(true)
-        setMfaVerified(false)
+        // Survive refresh/new tab on this device once verified this session
+        const persisted = localStorage.getItem('pt-forge:mfa-verified') === 'true'
+        setMfaVerified(persisted && data.mfa_enabled)
       } else {
         // Staff/billing/readonly bypass MFA requirement
         setMfaRequired(false)
@@ -203,6 +207,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       if (data.success) {
+        localStorage.setItem('pt-forge:mfa-verified', 'true')
         setMfaVerified(true)
         setMfaRequired(false)
         return { error: null }
@@ -215,6 +220,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function signOut() {
+    localStorage.removeItem('pt-forge:mfa-verified')
     await supabase.auth.signOut()
     setMember(null)
     setMfaRequired(false)

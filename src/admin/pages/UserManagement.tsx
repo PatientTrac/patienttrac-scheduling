@@ -25,7 +25,7 @@ export function UserManagement() {
     queryKey: ['org-members', orgId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('org_members').select('*').eq('org_id', orgId!).order('created_at')
+        .from('org_members').select('id, org_id, user_id, role, facility_id, email, first_name, last_name, phone, is_active, mfa_enabled, mfa_verified_at, last_login_at, login_count, invite_sent_at, invite_accepted_at, created_at, updated_at').eq('org_id', orgId!).order('created_at')
       if (error) throw error
       return data
     },
