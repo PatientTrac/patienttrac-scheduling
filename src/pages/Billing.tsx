@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { DollarSign, FileText, AlertTriangle, CheckCircle, Clock, Send, XCircle,
-         Search, Loader, TrendingUp, Activity, ShieldCheck, FileEdit, GitBranch, Sparkles } from 'lucide-react'
+         Search, Loader, TrendingUp, Activity, ShieldCheck, FileEdit, GitBranch, Sparkles, Upload } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { cn, formatDate, formatCurrency } from '@/lib/utils'
 import { useAuth } from '../lib/auth'
@@ -44,7 +44,7 @@ const APPEAL_COLORS: Record<string,string> = {
 }
 
 export function Billing() {
-  const { orgId: ORG_ID } = useAuth()
+  const { orgId: ORG_ID, can } = useAuth()
   const queryClient = useQueryClient()
   const [tab, setTab] = useState<BillingTab>('superbills')
   const [search, setSearch] = useState('')
@@ -152,19 +152,44 @@ export function Billing() {
 
   const submitEdi = useMutation({
     mutationFn: async (sb: any) => {
-      const { data: ins } = await supabase.schema('cr').from('patient_insurance')
-        .select('insurance_id, insurance_company').eq('patient_id', sb.patient_id).eq('is_primary', true).eq('is_active', true).single()
-      await supabase.schema('cr').from('edi_submissions').insert({
-        superbill_id: sb.superbill_id, patient_id: sb.patient_id, org_id: ORG_ID,
-        insurance_id: ins?.insurance_id, payer_name: ins?.insurance_company ?? 'Unknown',
-        status: 'submitted', submitted_at: new Date().toISOString(),
-        total_charges: sb.total_amount, internal_ref: `PTF-${Date.now()}`,
+      // Server-side: generates the X12 837P and transmits via the org's
+      // billing gateway (Optum/CHC) when credentials are configured;
+      // otherwise stores the generated claim awaiting credentials.
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/.netlify/functions/submit-claim-837', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token ?? ''}` },
+        body: JSON.stringify({ superbill_id: sb.superbill_id }),
       })
-      await supabase.schema('cr').from('superbill')
-        .update({ billing_status: 'submitted', submitted: true, submit_date: new Date().toISOString() }).eq('superbill_id', sb.superbill_id)
+      const out = await res.json()
+      if (!res.ok) throw new Error(out.error ?? `Submission failed (${res.status})`)
+      return out
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['superbills'] }); queryClient.invalidateQueries({ queryKey: ['edi-submissions'] }); setShowEdiModal(false) },
   })
+
+  const [era835Msg, setEra835Msg] = useState('')
+  const importEra = useMutation({
+    mutationFn: async (x12: string) => {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/.netlify/functions/post-era-835', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token ?? ''}` },
+        body: JSON.stringify({ x12 }),
+      })
+      const out = await res.json()
+      if (!res.ok) throw new Error(out.error ?? `Import failed (${res.status})`)
+      return out
+    },
+    onSuccess: (out) => {
+      setEra835Msg(`Posted ${out.posted}/${out.claims_in_file} claim payment(s) — ${out.payer} check ${out.check_number || 'n/a'}`)
+      queryClient.invalidateQueries({ queryKey: ['era-payments'] })
+      queryClient.invalidateQueries({ queryKey: ['superbills'] })
+      queryClient.invalidateQueries({ queryKey: ['edi-submissions'] })
+    },
+    onError: (e: any) => setEra835Msg(`Import failed: ${e.message}`),
+  })
+  const importing835 = importEra.isPending
 
   const postEra = useMutation({
     mutationFn: async ({ submissionId, superbillId, patientId, amount, payer }: any) => {
@@ -558,7 +583,21 @@ Format as a complete letter. Be specific and persuasive.`
       {/* ── ERA ── */}
       {tab==='era' && (
         <div className="hud-panel overflow-hidden">
-          <div className="px-4 py-2.5 border-b border-gold-500/10"><div className="font-mono text-xs text-slate-500">835 ERA — posted payments</div></div>
+          <div className="px-4 py-2.5 border-b border-gold-500/10 flex items-center justify-between">
+            <div className="font-mono text-xs text-slate-500">835 ERA — posted payments</div>
+            {can('system','edit') && (
+              <label className="btn-secondary text-xs cursor-pointer flex items-center gap-1.5">
+                {importing835 ? <Loader size={12} className="animate-spin"/> : <Upload size={12}/>}
+                Import 835
+                <input type="file" accept=".835,.txt,.edi,.x12,.era" className="hidden" disabled={importing835}
+                  onChange={async e => {
+                    const f = e.target.files?.[0]; e.target.value = ''
+                    if (f) importEra.mutate(await f.text())
+                  }} />
+              </label>
+            )}
+          </div>
+          {era835Msg && <div className="px-4 py-2 text-xs font-mono border-b border-gold-500/10 text-gold-300">{era835Msg}</div>}
           {eraPayments.length===0 ? <div className="px-4 py-12 text-center text-slate-600 font-mono text-xs">No ERA payments posted yet.</div> : (
             <table className="w-full text-xs">
               <thead><tr className="border-b border-gold-500/8">{['Patient','Payer','Check #','Date','Payment','Method'].map(h=><th key={h} className="text-left px-4 py-2 data-label">{h}</th>)}</tr></thead>
@@ -871,7 +910,7 @@ Format as a complete letter. Be specific and persuasive.`
                   <div key={label} className="flex gap-3"><span className="data-label w-28 flex-shrink-0">{label}</span><span className="text-xs text-slate-300 font-mono">{value}</span></div>
                 ))}
               </div>
-              <div className="px-3 py-2 bg-amber-500/5 border border-amber-500/15 rounded-sm text-xs text-amber-300">Connect clearinghouse credentials in Settings to enable live 837P submission.</div>
+              <div className="px-3 py-2 bg-amber-500/5 border border-amber-500/15 rounded-sm text-xs text-amber-300">The X12 837P claim is generated and stored now; live transmission to Optum/Change Healthcare activates automatically once clearinghouse credentials are configured (super admin).</div>
             </div>
             <div className="px-5 py-4 border-t border-gold-500/10 flex justify-end gap-3">
               <button onClick={()=>setShowEdiModal(false)} className="btn-secondary text-xs">Cancel</button>
