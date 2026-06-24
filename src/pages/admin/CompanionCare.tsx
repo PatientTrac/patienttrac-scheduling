@@ -3,8 +3,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Activity, AlertTriangle, HeartPulse, Pill, Utensils, Dumbbell,
   ClipboardList, UserPlus, RefreshCw, X, Copy, CheckCircle2, ChevronRight,
-  FileText, Pencil, Save, Plus, MessageSquare, Send,
+  FileText, Pencil, Save, Plus, MessageSquare, Send, TrendingUp, TrendingDown, Minus,
 } from 'lucide-react'
+import {
+  ResponsiveContainer, LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend,
+} from 'recharts'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 
@@ -199,6 +202,9 @@ function PatientDrawer({ patientId, onClose, onChanged }: { patientId: number; o
               <Stat icon={Activity} color="text-blue-400" label="AI questions asked" value={o.education_count} />
             </div>
 
+            {/* Recovery trends over the last 30 days */}
+            <TrendsPanel patientId={patientId} />
+
             {/* Care plan — author-controlled; the only text the Companion AI may explain */}
             <CarePlanEditor patientId={patientId} onChanged={onChanged} />
 
@@ -281,6 +287,119 @@ function PatientDrawer({ patientId, onClose, onChanged }: { patientId: number; o
         )}
       </div>
     </div>
+  )
+}
+
+// ── Recovery trends (recharts) ──────────────────────────────
+interface Trends {
+  window_days: number
+  active_meds: number
+  adherence: { d: string; n: number }[]
+  journal: { d: string; mood: number | null; pain: number | null; energy: number | null }[]
+  vitals: Record<string, { d: string; v: number }[]>
+  summary: { avg_mood: number | null; avg_pain: number | null; adherence_rate: number | null; pain_trend: string }
+}
+const md = (s: string) => { const [, m, d] = s.split('-'); return `${Number(m)}/${Number(d)}` }
+const VITAL_LABELS: Record<string, string> = {
+  weight_kg: 'Weight (kg)', bp_systolic: 'BP systolic', bp_diastolic: 'BP diastolic',
+  heart_rate: 'Heart rate', spo2: 'SpO₂', glucose: 'Glucose', temp_c: 'Temp (°C)',
+}
+const tooltipStyle = { background: '#0b1220', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, fontSize: 11, color: '#e2e8f0' }
+const axis = { fontSize: 10, fill: '#64748b' }
+
+function TrendChip({ label, value, tone, trend }: { label: string; value: string; tone?: string; trend?: string }) {
+  const TrendIcon = trend === 'improving' ? TrendingDown : trend === 'worsening' ? TrendingUp : trend ? Minus : null
+  const trendColor = trend === 'improving' ? 'text-emerald-400' : trend === 'worsening' ? 'text-red-400' : 'text-slate-400'
+  return (
+    <div className="hud-panel p-3 flex-1">
+      <div className="data-label mb-1">{label}</div>
+      <div className="flex items-center gap-1.5">
+        <span className={cn('font-display font-bold text-lg', tone || 'text-slate-100')}>{value}</span>
+        {TrendIcon && <TrendIcon size={14} className={trendColor} />}
+      </div>
+    </div>
+  )
+}
+
+function TrendsPanel({ patientId }: { patientId: number }) {
+  const q = useQuery({
+    queryKey: ['companion-trends', patientId],
+    queryFn: async () => {
+      const { data, error } = await supabase.schema('cr').rpc('companion_patient_trends', { p_patient_id: patientId, p_days: 30 })
+      if (error) throw error
+      return data as Trends
+    },
+  })
+  const t = q.data
+  const hasJournal = !!t?.journal?.length
+  const hasAdherence = !!t?.adherence?.length
+  const vitalKeys = t ? Object.keys(t.vitals || {}) : []
+
+  return (
+    <Section icon={TrendingUp} title="Recovery trends · 30d">
+      {q.isLoading && <div className="text-xs text-slate-500">Loading…</div>}
+      {q.error && <div className="text-xs text-red-400">{(q.error as Error).message}</div>}
+      {t && (
+        <div className="space-y-3">
+          <div className="flex gap-2">
+            <TrendChip label="Adherence" value={t.summary.adherence_rate != null ? `${t.summary.adherence_rate}%` : '—'} tone="text-emerald-400" />
+            <TrendChip label="Avg pain" value={t.summary.avg_pain != null ? `${t.summary.avg_pain}/10` : '—'} trend={t.summary.pain_trend} />
+            <TrendChip label="Avg mood" value={t.summary.avg_mood != null ? `${t.summary.avg_mood}/5` : '—'} tone="text-gold-300" />
+          </div>
+
+          {hasJournal && (
+            <div>
+              <div className="text-[11px] text-slate-500 mb-1">Pain &amp; mood</div>
+              <ResponsiveContainer width="100%" height={130}>
+                <LineChart data={t.journal} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
+                  <CartesianGrid stroke="rgba(255,255,255,0.06)" />
+                  <XAxis dataKey="d" tickFormatter={md} tick={axis} />
+                  <YAxis domain={[0, 10]} tick={axis} width={28} />
+                  <Tooltip contentStyle={tooltipStyle} labelFormatter={md} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Line type="monotone" dataKey="pain" stroke="#f87171" strokeWidth={2} dot={false} name="Pain" />
+                  <Line type="monotone" dataKey="mood" stroke="#c9a96e" strokeWidth={2} dot={false} name="Mood" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
+          {hasAdherence && (
+            <div>
+              <div className="text-[11px] text-slate-500 mb-1">Doses logged per day</div>
+              <ResponsiveContainer width="100%" height={110}>
+                <BarChart data={t.adherence} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
+                  <CartesianGrid stroke="rgba(255,255,255,0.06)" />
+                  <XAxis dataKey="d" tickFormatter={md} tick={axis} />
+                  <YAxis allowDecimals={false} tick={axis} width={28} />
+                  <Tooltip contentStyle={tooltipStyle} labelFormatter={md} />
+                  <Bar dataKey="n" fill="#34d399" radius={[2, 2, 0, 0]} name="Doses" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
+          {vitalKeys.map(k => (
+            <div key={k}>
+              <div className="text-[11px] text-slate-500 mb-1">{VITAL_LABELS[k] || k}</div>
+              <ResponsiveContainer width="100%" height={100}>
+                <LineChart data={t.vitals[k]} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
+                  <CartesianGrid stroke="rgba(255,255,255,0.06)" />
+                  <XAxis dataKey="d" tickFormatter={md} tick={axis} />
+                  <YAxis domain={['auto', 'auto']} tick={axis} width={28} />
+                  <Tooltip contentStyle={tooltipStyle} labelFormatter={md} />
+                  <Line type="monotone" dataKey="v" stroke="#00d4ff" strokeWidth={2} dot={false} name={VITAL_LABELS[k] || k} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          ))}
+
+          {!hasJournal && !hasAdherence && vitalKeys.length === 0 && (
+            <div className="text-xs text-slate-600">Not enough logged data yet to chart trends.</div>
+          )}
+        </div>
+      )}
+    </Section>
   )
 }
 
