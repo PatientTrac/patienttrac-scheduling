@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Activity, AlertTriangle, HeartPulse, Pill, Utensils, Dumbbell,
   ClipboardList, UserPlus, RefreshCw, X, Copy, CheckCircle2, ChevronRight,
-  FileText, Pencil, Save, Plus,
+  FileText, Pencil, Save, Plus, MessageSquare, Send,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
@@ -17,6 +17,7 @@ interface RosterRow {
   open_alerts: number
   urgent_alerts: number
   last_vital_at: string | null
+  unread_from_patient: number
 }
 interface Overview {
   patient_id: number
@@ -91,7 +92,11 @@ export default function CompanionCare() {
               <tbody>
                 {roster.data.map(r => (
                   <tr key={r.patient_id} className="border-b border-white/5 hover:bg-gold-500/5 cursor-pointer" onClick={() => setSelected(r.patient_id)}>
-                    <td className="py-2.5 px-3 text-slate-200">{r.name}</td>
+                    <td className="py-2.5 px-3 text-slate-200">
+                      <span className="inline-flex items-center gap-2">{r.name}
+                        {r.unread_from_patient > 0 && <span className="badge badge-pending inline-flex items-center gap-1"><MessageSquare size={11} />{r.unread_from_patient}</span>}
+                      </span>
+                    </td>
                     <td className="py-2.5 px-3 text-slate-300">{r.doses_logged_7d}</td>
                     <td className="py-2.5 px-3 text-slate-400">{fmtDate(r.last_checkin)}</td>
                     <td className="py-2.5 px-3 text-slate-400">{fmtDate(r.last_vital_at)}</td>
@@ -197,6 +202,9 @@ function PatientDrawer({ patientId, onClose, onChanged }: { patientId: number; o
             {/* Care plan — author-controlled; the only text the Companion AI may explain */}
             <CarePlanEditor patientId={patientId} onChanged={onChanged} />
 
+            {/* Patient ↔ care-team messages */}
+            <MessagesPanel patientId={patientId} onChanged={onChanged} />
+
             {/* Alerts */}
             {o.alerts.filter(a => !a.resolved).length > 0 && (
               <Section icon={AlertTriangle} title="Open alerts" tone="amber">
@@ -273,6 +281,73 @@ function PatientDrawer({ patientId, onClose, onChanged }: { patientId: number; o
         )}
       </div>
     </div>
+  )
+}
+
+// ── Patient ↔ care-team messaging (staff side) ──────────────
+interface MsgRow { id: number; sender_role: 'patient' | 'staff'; body: string; created_at: string }
+function MessagesPanel({ patientId, onChanged }: { patientId: number; onChanged: () => void }) {
+  const qc = useQueryClient()
+  const [text, setText] = useState('')
+
+  const thread = useQuery({
+    queryKey: ['companion-messages', patientId],
+    queryFn: async () => {
+      const { data, error } = await supabase.schema('cr').from('companion_message')
+        .select('id,sender_role,body,created_at').eq('patient_id', patientId).order('created_at', { ascending: true })
+      if (error) throw error
+      return (data ?? []) as MsgRow[]
+    },
+  })
+
+  // Acknowledge unread patient messages when the drawer opens, then refresh roster badge.
+  useEffect(() => {
+    supabase.schema('cr').from('companion_message')
+      .update({ read_by_staff: true }).eq('patient_id', patientId).eq('sender_role', 'patient').eq('read_by_staff', false)
+      .then(() => onChanged())
+  }, [patientId])
+
+  const send = useMutation({
+    mutationFn: async () => {
+      const body = text.trim(); if (!body) throw new Error('Message is empty.')
+      const { error } = await supabase.schema('cr').rpc('companion_staff_send_message', { p_patient_id: patientId, p_body: body })
+      if (error) throw error
+    },
+    onSuccess: () => { setText(''); qc.invalidateQueries({ queryKey: ['companion-messages', patientId] }) },
+  })
+
+  return (
+    <Section icon={MessageSquare} title="Messages">
+      <div className="bg-white/5 rounded px-3 py-3 space-y-2">
+        {thread.isLoading && <div className="text-xs text-slate-500">Loading…</div>}
+        {thread.data && thread.data.length === 0 && <div className="text-xs text-slate-600">No messages yet.</div>}
+        <div className="space-y-2 max-h-56 overflow-y-auto">
+          {thread.data?.map(m => {
+            const staff = m.sender_role === 'staff'
+            return (
+              <div key={m.id} className={cn('flex flex-col', staff ? 'items-end' : 'items-start')}>
+                <div className={cn('max-w-[85%] rounded px-3 py-2 text-xs leading-relaxed border',
+                  staff ? 'bg-gold-500/10 border-gold-500/25 text-slate-200' : 'bg-navy-900 border-white/10 text-slate-300')}>
+                  {m.body}
+                </div>
+                <span className="text-[11px] text-slate-600 mt-1">{staff ? 'Care team' : 'Patient'} · {fmtDateTime(m.created_at)}</span>
+              </div>
+            )
+          })}
+        </div>
+        <div className="flex items-center gap-2 pt-1">
+          <input value={text} onChange={e => setText(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') send.mutate() }}
+            placeholder="Reply to the patient…"
+            className="flex-1 bg-navy-900 border border-white/10 rounded px-3 py-2 text-sm text-slate-200 focus:border-gold-500 outline-none" />
+          <button onClick={() => send.mutate()} disabled={send.isPending}
+            className="bg-gold-500 text-navy-950 rounded px-3 py-2 text-xs font-medium hover:bg-gold-400 disabled:opacity-50 flex items-center gap-1">
+            <Send size={12} /> {send.isPending ? 'Sending…' : 'Send'}
+          </button>
+        </div>
+        {send.error && <div className="text-xs text-red-400">{(send.error as Error).message}</div>}
+      </div>
+    </Section>
   )
 }
 
