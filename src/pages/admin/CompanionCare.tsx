@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Activity, AlertTriangle, HeartPulse, Pill, Utensils, Dumbbell,
   ClipboardList, UserPlus, RefreshCw, X, Copy, CheckCircle2, ChevronRight,
+  FileText, Pencil, Save, Plus,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
@@ -193,6 +194,9 @@ function PatientDrawer({ patientId, onClose, onChanged }: { patientId: number; o
               <Stat icon={Activity} color="text-blue-400" label="AI questions asked" value={o.education_count} />
             </div>
 
+            {/* Care plan — author-controlled; the only text the Companion AI may explain */}
+            <CarePlanEditor patientId={patientId} onChanged={onChanged} />
+
             {/* Alerts */}
             {o.alerts.filter(a => !a.resolved).length > 0 && (
               <Section icon={AlertTriangle} title="Open alerts" tone="amber">
@@ -269,6 +273,131 @@ function PatientDrawer({ patientId, onClose, onChanged }: { patientId: number; o
         )}
       </div>
     </div>
+  )
+}
+
+// ── Care-plan editor (staff authoring → Companion Treatment page) ───────────
+interface CarePlanRow {
+  id: number
+  patient_id: number
+  title: string
+  condition: string | null
+  plain_language: string | null
+  status: string
+  updated_at: string
+}
+function CarePlanEditor({ patientId, onChanged }: { patientId: number; onChanged: () => void }) {
+  const qc = useQueryClient()
+  const [editing, setEditing] = useState(false)
+  const [form, setForm] = useState({ title: '', condition: '', plain_language: '', status: 'active' })
+  const [planId, setPlanId] = useState<number | null>(null)
+
+  const plan = useQuery({
+    queryKey: ['companion-careplan', patientId],
+    queryFn: async () => {
+      const { data, error } = await supabase.schema('cr').from('care_plan')
+        .select('id,patient_id,title,condition,plain_language,status,updated_at')
+        .eq('patient_id', patientId).eq('status', 'active')
+        .order('updated_at', { ascending: false }).limit(1).maybeSingle()
+      if (error) throw error
+      return (data ?? null) as CarePlanRow | null
+    },
+  })
+
+  const save = useMutation({
+    mutationFn: async () => {
+      if (!form.title.trim()) throw new Error('Title is required.')
+      const { error } = await supabase.schema('cr').rpc('upsert_care_plan', {
+        p_patient_id: patientId,
+        p_title: form.title.trim(),
+        p_condition: form.condition.trim() || null,
+        p_plain_language: form.plain_language.trim() || null,
+        p_status: form.status,
+        p_care_plan_id: planId,
+      })
+      if (error) throw error
+    },
+    onSuccess: () => {
+      setEditing(false)
+      qc.invalidateQueries({ queryKey: ['companion-careplan', patientId] })
+      onChanged()
+    },
+  })
+
+  const startEdit = (existing: CarePlanRow | null) => {
+    setPlanId(existing?.id ?? null)
+    setForm({
+      title: existing?.title ?? '',
+      condition: existing?.condition ?? '',
+      plain_language: existing?.plain_language ?? '',
+      status: existing?.status ?? 'active',
+    })
+    setEditing(true)
+  }
+
+  const p = plan.data
+  const field = 'w-full bg-navy-900 border border-white/10 rounded px-3 py-2 text-sm text-slate-200 focus:border-gold-500 outline-none'
+
+  return (
+    <Section icon={FileText} title="Care plan">
+      {plan.isLoading && <div className="text-xs text-slate-500">Loading…</div>}
+
+      {!editing && (
+        <div className="bg-white/5 rounded px-3 py-3 space-y-1.5">
+          {p ? (
+            <>
+              <div className="flex items-start justify-between gap-3">
+                <span className="text-sm font-medium text-slate-200">{p.title}</span>
+                <button onClick={() => startEdit(p)} className="text-xs text-slate-400 hover:text-gold-400 flex items-center gap-1 whitespace-nowrap">
+                  <Pencil size={12} /> Edit
+                </button>
+              </div>
+              {p.condition && <div className="text-xs text-slate-400">{p.condition}</div>}
+              <p className="text-xs text-slate-400 leading-relaxed whitespace-pre-line">
+                {p.plain_language || <span className="text-slate-600">No plain-language summary yet — the Companion assistant needs this to explain the plan.</span>}
+              </p>
+              <div className="text-[11px] text-slate-600 pt-1">Updated {fmtDate(p.updated_at)}</div>
+            </>
+          ) : (
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-slate-500">No active care plan.</span>
+              <button onClick={() => startEdit(null)} className="text-xs text-gold-400 hover:text-gold-300 flex items-center gap-1">
+                <Plus size={12} /> Create
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {editing && (
+        <div className="bg-navy-900 border border-gold-500/20 rounded px-3 py-3 space-y-2">
+          <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })}
+            placeholder="Title (e.g. Post-op TKA — week 1–6)" className={field} />
+          <input value={form.condition} onChange={e => setForm({ ...form, condition: e.target.value })}
+            placeholder="Condition (optional)" className={field} />
+          <textarea value={form.plain_language} onChange={e => setForm({ ...form, plain_language: e.target.value })}
+            placeholder="Plain-language summary the patient (and the Companion assistant) will see…"
+            rows={5} className={field + ' resize-y'} />
+          <div className="flex items-center justify-between gap-3 pt-1">
+            <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}
+              className="bg-navy-900 border border-white/10 rounded px-2 py-1.5 text-xs text-slate-300 outline-none focus:border-gold-500">
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="completed">Completed</option>
+            </select>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setEditing(false)} className="text-xs text-slate-500 hover:text-slate-300">Cancel</button>
+              <button onClick={() => save.mutate()} disabled={save.isPending}
+                className="bg-gold-500 text-navy-950 rounded px-3 py-1.5 text-xs font-medium hover:bg-gold-400 disabled:opacity-50 flex items-center gap-1">
+                <Save size={12} /> {save.isPending ? 'Saving…' : 'Save'}
+              </button>
+            </div>
+          </div>
+          {save.error && <div className="text-xs text-red-400">{(save.error as Error).message}</div>}
+          <p className="text-[11px] text-slate-600">Saving an active plan archives any prior active plan. The patient sees this on their Treatment page immediately.</p>
+        </div>
+      )}
+    </Section>
   )
 }
 

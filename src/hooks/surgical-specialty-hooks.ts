@@ -544,7 +544,7 @@ export function useIOLCalculations(preOpId: number) {
 /**
  * Hook to calculate refractive surprise
  */
-export function useRefractiv eSurprise(procedureId: number) {
+export function useRefractiveSurprise(procedureId: number) {
   return useQuery({
     queryKey: ['refractive-surprise', procedureId],
     queryFn: async () => {
