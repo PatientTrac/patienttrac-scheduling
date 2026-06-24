@@ -33,6 +33,7 @@ import {
   AdminConsentTemplates, AdminSendConsent, AdminProviders,
   AdminProposals, AdminFacilityBranding,
 } from './pages/admin/ClinicalAdmin'
+import CompanionCare from './pages/admin/CompanionCare'
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5, retry: 1 } },
@@ -91,6 +92,8 @@ export default function App() {
               <Route path="roles" element={<AdminRoles />} />
               {/* §170.315(d)(3) Audit Report — replaces stub */}
               <Route path="audit" element={<AuditReport />} />
+              {/* Patient Companion — care-team monitoring */}
+              <Route path="companion" element={<CompanionCare />} />
               {/* Clinical admin — platform parity (Revela/Surgery/OR) */}
               <Route path="consents" element={<AdminConsentTemplates />} />
               <Route path="send-consent" element={<AdminSendConsent />} />
