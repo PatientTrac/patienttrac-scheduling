@@ -34,6 +34,7 @@ import {
   AdminProposals, AdminFacilityBranding,
 } from './pages/admin/ClinicalAdmin'
 import CompanionCare from './pages/admin/CompanionCare'
+import CompanionRPM from './pages/admin/CompanionRPM'
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5, retry: 1 } },
@@ -94,6 +95,7 @@ export default function App() {
               <Route path="audit" element={<AuditReport />} />
               {/* Patient Companion — care-team monitoring */}
               <Route path="companion" element={<CompanionCare />} />
+              <Route path="companion-rpm" element={<CompanionRPM />} />
               {/* Clinical admin — platform parity (Revela/Surgery/OR) */}
               <Route path="consents" element={<AdminConsentTemplates />} />
               <Route path="send-consent" element={<AdminSendConsent />} />

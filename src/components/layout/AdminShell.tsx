@@ -11,6 +11,7 @@ export function AdminShell() {
     { to: '/admin/roles', label: 'Roles' },
     { to: '/admin/audit', label: 'Audit Log' },
     { to: '/admin/companion', label: 'Companion' },
+    { to: '/admin/companion-rpm', label: 'RPM Tracking' },
     { to: '/admin/consents', label: 'Consent Templates' },
     { to: '/admin/send-consent', label: 'Send Consent' },
     { to: '/admin/providers', label: 'Providers' },
