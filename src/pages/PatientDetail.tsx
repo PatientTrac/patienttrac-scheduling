@@ -1,16 +1,19 @@
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, Phone, Mail, MapPin, Calendar, Activity, Shield, CreditCard, Edit } from 'lucide-react'
+import { ArrowLeft, Phone, Mail, MapPin, Calendar, Activity, Shield, CreditCard, Edit, ClipboardList } from 'lucide-react'
 import { launchApp } from '../lib/crossAppLaunch'
 import { useAuth } from '../lib/auth'
 import { supabase, type PatientRow } from '@/lib/supabase'
 import { formatDate, calculateAge, cn } from '@/lib/utils'
+import { ClinicalChart } from './ClinicalChart'
 
 const tabs = [
   { id: 'overview',    label: 'Overview',    icon: Activity },
   { id: 'insurance',   label: 'Insurance',   icon: Shield },
   { id: 'encounters',  label: 'Encounters',  icon: Calendar },
   { id: 'billing',     label: 'Billing',     icon: CreditCard },
+  { id: 'chart',       label: 'Clinical Chart', icon: ClipboardList },
 ]
 
 export function PatientDetail() {
@@ -180,9 +183,12 @@ export function PatientDetail() {
             </div>
           </div>
         )}
+
+        {activeTab === 'chart' && (
+          <ClinicalChart patientId={Number(patientId)} />
+        )}
       </div>
     </div>
   )
 }
 
-import { useState } from 'react'

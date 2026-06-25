@@ -1,0 +1,69 @@
+/*
+ * @patienttrac/clinical-viewer — component styles
+ *
+ * Import once in each consuming app, e.g.:
+ *   import '@patienttrac/clinical-viewer/styles.css'
+ *
+ * Requires Tailwind CSS with the @patienttrac/clinical-viewer tailwind.preset applied
+ * and the package source added to the content array.
+ *
+ * Fonts (Rajdhani, DM Sans, DM Mono) must be loaded by the host app.
+ * All PatientTrac apps already load these via Google Fonts / local — no change needed.
+ */
+
+@layer base {
+  :root {
+    --cv-navy-950: #030810;
+    --cv-navy-900: #060e1c;
+    --cv-navy-800: #0a1628;
+    --cv-navy-700: #0f2040;
+    --cv-gold-500: #c9a96e;
+    --cv-gold-400: #d9b87c;
+    --cv-gold-300: #e8cc9a;
+    --cv-cyan:     #00d4ff;
+  }
+}
+
+@layer components {
+  /* Panel */
+  .cv-panel {
+    @apply bg-navy-800 border border-gold-500/15 rounded-sm relative overflow-hidden;
+    box-shadow: inset 0 1px 0 rgba(201,169,110,0.08), 0 4px 24px rgba(0,0,0,0.4);
+  }
+  .cv-panel::before {
+    content: '';
+    @apply absolute top-0 left-0 right-0 h-px;
+    background: linear-gradient(90deg, transparent, rgba(201,169,110,0.4), transparent);
+  }
+
+  /* Table */
+  .cv-table {
+    @apply w-full text-sm;
+  }
+  .cv-table thead th {
+    @apply py-2 px-3 text-left font-mono text-xs text-slate-500 uppercase tracking-widest font-normal;
+  }
+  .cv-table tbody tr {
+    @apply border-b border-white/5 hover:bg-gold-500/5 transition-colors duration-100;
+  }
+  .cv-table tbody td {
+    @apply py-3 px-3 text-slate-300;
+  }
+
+  /* Typography */
+  .cv-section-heading {
+    @apply font-display font-semibold text-gold-400 uppercase tracking-widest text-xs;
+  }
+  .cv-data-label {
+    @apply text-xs font-mono text-slate-500 uppercase tracking-widest;
+  }
+
+  /* Badges */
+  .cv-badge {
+    @apply inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-mono font-medium;
+  }
+  .cv-badge-active   { @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/20; }
+  .cv-badge-inactive { @apply bg-slate-500/10  text-slate-400  border border-slate-500/20;  }
+  .cv-badge-pending  { @apply bg-gold-500/10   text-gold-400   border border-gold-500/20;   }
+  .cv-badge-urgent   { @apply bg-red-500/10    text-red-400    border border-red-500/20;    }
+}
