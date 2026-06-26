@@ -1,7 +1,12 @@
 import { createContext, useContext, type ReactNode } from 'react'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const ClientContext = createContext<SupabaseClient | null>(null)
+
+const internalQueryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: 30_000, retry: 1 } },
+})
 
 interface Props {
   /** The host app's already-authenticated Supabase client.
@@ -14,9 +19,11 @@ interface Props {
  *  inherit the session and RLS scope from this client. */
 export function ClinicalViewerProvider({ client, children }: Props) {
   return (
-    <ClientContext.Provider value={client}>
-      {children}
-    </ClientContext.Provider>
+    <QueryClientProvider client={internalQueryClient}>
+      <ClientContext.Provider value={client}>
+        {children}
+      </ClientContext.Provider>
+    </QueryClientProvider>
   )
 }
 

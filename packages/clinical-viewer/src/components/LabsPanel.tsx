@@ -136,10 +136,10 @@ export function LabsPanel({ patientId }: Props) {
                         <Tooltip
                           contentStyle={tooltipStyle}
                           labelFormatter={(v) => new Date(String(v)).toLocaleDateString()}
-                          formatter={(val: number, _name: string, entry: any) => [ // eslint-disable-line @typescript-eslint/no-explicit-any
-                            `${val}${pts[0]?.unit ? ' ' + pts[0].unit : ''}${entry.payload.abnormal ? ' ⚑' : ''}`,
+                          formatter={(val, _name, entry: any) => [ // eslint-disable-line @typescript-eslint/no-explicit-any
+                            `${val ?? ''}${pts[0]?.unit ? ' ' + pts[0].unit : ''}${entry.payload.abnormal ? ' ⚑' : ''}`,
                             name,
-                          ]}
+                          ] as [string, string]}
                         />
                         <Line
                           type="monotone"
