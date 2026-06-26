@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/ui"
   ],
   "scripts": {
     "dev": "vite",
