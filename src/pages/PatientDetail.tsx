@@ -6,7 +6,7 @@ import { launchApp } from '../lib/crossAppLaunch'
 import { useAuth } from '../lib/auth'
 import { supabase, type PatientRow } from '@/lib/supabase'
 import { formatDate, calculateAge, cn } from '@/lib/utils'
-import { ClinicalChart } from './ClinicalChart'
+import { ClinicalChart, ClinicalViewerProvider } from '@patienttrac/clinical-viewer'
 
 const tabs = [
   { id: 'overview',    label: 'Overview',    icon: Activity },
@@ -185,7 +185,9 @@ export function PatientDetail() {
         )}
 
         {activeTab === 'chart' && (
-          <ClinicalChart patientId={Number(patientId)} />
+          <ClinicalViewerProvider client={supabase}>
+            <ClinicalChart patientId={Number(patientId)} />
+          </ClinicalViewerProvider>
         )}
       </div>
     </div>
