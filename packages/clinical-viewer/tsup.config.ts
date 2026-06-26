@@ -3,7 +3,7 @@ import { defineConfig } from 'tsup'
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['esm'],
-  dts: true,
+  dts: false,
   splitting: false,
   sourcemap: true,
   clean: true,
@@ -13,6 +13,7 @@ export default defineConfig({
     '@supabase/supabase-js',
     '@tanstack/react-query',
     'recharts',
+    'lucide-react',
   ],
   esbuildOptions(options) {
     options.jsx = 'automatic'
