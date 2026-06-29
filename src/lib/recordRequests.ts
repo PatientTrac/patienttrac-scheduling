@@ -110,3 +110,16 @@ export function roiSatisfied(r: RecordRequest): boolean {
   if (r.roi_expiry_date && new Date(r.roi_expiry_date) < new Date()) return false;
   return true;
 }
+
+// Writes a records_disclosed event to the hash-chained phi_audit_log via the
+// public.log_phi_disclosure SECURITY DEFINER wrapper (saas schema is not
+// API-exposed; same pattern as verify_totp / get_my_org_member).
+// Throws on error — a disclosure must be logged before release proceeds.
+export async function logPhiDisclosure(r: RecordRequest): Promise<void> {
+  const { error } = await supabase.rpc('log_phi_disclosure', {
+    p_request_id: r.request_id,
+    p_patient_id: r.patient_id ?? null,
+    p_org_id: r.org_id,
+  });
+  if (error) throw error;
+}

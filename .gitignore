@@ -32,3 +32,7 @@ pnpm-debug.log*
 
 # TypeScript
 *.tsbuildinfo
+
+# Source drops (MCP session handoffs — not repo artifacts)
+forge-*.zip
+HANDOFF*.md

@@ -7,6 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   getRecordRequest, getStatusHistory, transitionRequest, updateRecordRequest, roiSatisfied,
+  logPhiDisclosure,
 } from '../lib/recordRequests';
 import { estimateFee, fmtMoney } from '../lib/recordRequestFees';
 import type { RecordRequest } from '../types/recordRequest';
@@ -176,11 +177,13 @@ export default function RecordRequestDetail() {
           <button
             disabled={busy || !roiOk}
             title={!roiOk ? 'Authorization required' : undefined}
-            onClick={() => act(() => transitionRequest({
-              request: req as RecordRequest, toStatus: 'released', action: 'released', changedBy: userId,
-              patch: { released_by: userId, released_at: new Date().toISOString(), delivered_at: new Date().toISOString() },
-              // CLAUDE CODE: also call the PHI disclosure audit RPC here (HANDOFF §5).
-            }))}
+            onClick={() => act(async () => {
+              await logPhiDisclosure(req as RecordRequest);
+              await transitionRequest({
+                request: req as RecordRequest, toStatus: 'released', action: 'released', changedBy: userId,
+                patch: { released_by: userId, released_at: new Date().toISOString(), delivered_at: new Date().toISOString() },
+              });
+            })}
             className={`${btn} bg-emerald-600 text-white disabled:opacity-40`}
           >Release Records</button>
         </div>
