@@ -9,6 +9,7 @@ import {
   Settings,
   Activity,
   ChevronRight,
+  FolderOpen,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -16,7 +17,8 @@ const navItems = [
   { to: '/dashboard',  icon: LayoutDashboard, label: 'Dashboard',   group: 'main' },
   { to: '/patients',   icon: Users,            label: 'Patients',    group: 'main' },
   { to: '/schedule',   icon: CalendarDays,     label: 'Schedule',    group: 'main' },
-  { to: '/encounters', icon: Activity,         label: 'Encounters',  group: 'clinical' },
+  { to: '/encounters',      icon: Activity,    label: 'Encounters',       group: 'clinical' },
+  { to: '/record-requests', icon: FolderOpen,  label: 'Record Requests',  group: 'clinical' },
   { to: '/billing',    icon: CreditCard,       label: 'Billing',     group: 'financial' },
   { to: '/insurance',  icon: Shield,           label: 'Insurance',   group: 'financial' },
   { to: '/settings',   icon: Settings,         label: 'Settings',    group: 'system' },

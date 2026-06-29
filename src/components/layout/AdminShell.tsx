@@ -18,6 +18,7 @@ export function AdminShell() {
     { to: '/admin/proposals', label: 'Proposals' },
     { to: '/admin/branding', label: 'Facility Branding' },
     { to: '/admin/settings', label: 'Settings' },
+    { to: '/admin/record-request-fees', label: 'Record Request Fees' },
   ]
   const signOut = async () => { await supabase.auth.signOut(); navigate('/admin/login') }
   return (

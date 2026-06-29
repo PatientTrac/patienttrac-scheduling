@@ -35,6 +35,10 @@ import {
 } from './pages/admin/ClinicalAdmin'
 import CompanionCare from './pages/admin/CompanionCare'
 import CompanionRPM from './pages/admin/CompanionRPM'
+import RecordRequests from './pages/RecordRequests'
+import NewRecordRequest from './pages/NewRecordRequest'
+import RecordRequestDetail from './pages/RecordRequestDetail'
+import RecordRequestFeeSchedules from './pages/admin/RecordRequestFeeSchedules'
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5, retry: 1 } },
@@ -80,6 +84,10 @@ export default function App() {
               <Route path="facilities/new" element={<NewFacility />} />
               {/* §170.315(b)(10) EHI Export */}
               <Route path="ehi-export" element={<EHIExport />} />
+              {/* Record Requests */}
+              <Route path="record-requests" element={<RecordRequests />} />
+              <Route path="record-requests/new" element={<NewRecordRequest />} />
+              <Route path="record-requests/:id" element={<RecordRequestDetail />} />
             </Route>
 
             {/* ── Admin portal ── */}
@@ -103,6 +111,7 @@ export default function App() {
               <Route path="proposals" element={<AdminProposals />} />
               <Route path="branding" element={<AdminFacilityBranding />} />
               <Route path="settings" element={<AdminSettings />} />
+              <Route path="record-request-fees" element={<RecordRequestFeeSchedules />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/dashboard" replace />} />

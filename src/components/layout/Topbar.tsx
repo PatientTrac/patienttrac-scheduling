@@ -10,7 +10,9 @@ const breadcrumbs: Record<string, string> = {
   '/encounters': 'Encounters',
   '/billing':    'Billing',
   '/insurance':  'Insurance',
-  '/settings':   'Settings',
+  '/settings':          'Settings',
+  '/record-requests':   'Record Requests',
+  '/record-requests/new': 'New Record Request',
 }
 
 export function Topbar() {
