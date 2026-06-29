@@ -150,6 +150,7 @@ export interface FeeEstimate {
   rule_id: string | null;
   capped: boolean;
   cap_reason?: string | null;
+  right_of_access?: boolean;
   is_patient_directed?: boolean;
   no_schedule?: boolean;
   no_rule?: boolean;

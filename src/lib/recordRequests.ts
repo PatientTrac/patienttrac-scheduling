@@ -117,9 +117,19 @@ export function roiSatisfied(r: RecordRequest): boolean {
 // Throws on error — a disclosure must be logged before release proceeds.
 export async function logPhiDisclosure(r: RecordRequest): Promise<void> {
   const { error } = await supabase.rpc('log_phi_disclosure', {
-    p_request_id: r.request_id,
-    p_patient_id: r.patient_id ?? null,
-    p_org_id: r.org_id,
+    p_org_id:          r.org_id,
+    p_request_id:      r.request_id,
+    p_patient_id:      r.patient_id ?? null,
+    p_requestor_type:  r.requestor_type ?? null,
+    p_requestor_name:  r.requestor_name ?? null,
+    p_delivery_method: r.delivery_method ?? null,
+    p_record_format:   r.record_format ?? null,
+    p_page_count:      r.page_count ?? null,
+    p_final_fee:       r.final_fee ?? null,
+    p_currency:        r.currency ?? 'USD',
+    p_recipient:       r.delivered_to ?? r.requestor_name ?? null,
+    p_outcome:         'success',
+    p_detail:          { request_type: r.request_type, date_range_start: r.date_range_start, date_range_end: r.date_range_end },
   });
   if (error) throw error;
 }

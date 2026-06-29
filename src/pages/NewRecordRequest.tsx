@@ -52,7 +52,7 @@ export default function NewRecordRequest() {
   const [pages, setPages] = useState('');
   const [hasRoi, setHasRoi] = useState(false);
   const [roiExpiry, setRoiExpiry] = useState('');
-  const [patientDirected, setPatientDirected] = useState(true);
+  const [patientDirected, setPatientDirected] = useState(false);
   const [certification, setCertification] = useState(false);
   const [affidavit, setAffidavit] = useState(false);
   const [rush, setRush] = useState(false);
@@ -60,7 +60,6 @@ export default function NewRecordRequest() {
   const [busy, setBusy] = useState(false);
 
   const requestorType = useMemo(() => CATEGORY_TO_TYPE[category], [category]);
-  const isPatientLike = category === 'patient_client';
 
   async function runEstimate() {
     const e = await estimateFee({
@@ -69,7 +68,7 @@ export default function NewRecordRequest() {
       deliveryMethod: delivery,
       recordFormat: format,
       pageCount: pages ? parseInt(pages, 10) : 0,
-      isPatientDirected: isPatientLike ? true : patientDirected,
+      isPatientDirected: patientDirected,
       certification,
       affidavit,
       rush,
@@ -98,7 +97,7 @@ export default function NewRecordRequest() {
         page_count: pages ? parseInt(pages, 10) : null,
         has_signed_roi: hasRoi,
         roi_expiry_date: roiExpiry || null,
-        is_patient_directed: isPatientLike ? true : patientDirected,
+        is_patient_directed: patientDirected,
         certification_requested: certification,
         affidavit_requested: affidavit,
         rush_requested: rush,
@@ -169,12 +168,10 @@ export default function NewRecordRequest() {
         <div><label className={label}>Estimated Pages</label><input className={input} value={pages} onChange={(e) => setPages(e.target.value)} /></div>
 
         <div className="col-span-2 flex flex-wrap gap-4 mt-2 text-sm">
-          {!isPatientLike && (
-            <label className="flex items-center gap-2">
-              <input type="checkbox" checked={patientDirected} onChange={(e) => setPatientDirected(e.target.checked)} />
-              Patient-directed (fee limits apply)
-            </label>
-          )}
+          <label className="flex items-center gap-2">
+            <input type="checkbox" checked={patientDirected} onChange={(e) => setPatientDirected(e.target.checked)} />
+            Records directed to a third party — standard fees apply (not the patient right-of-access rate)
+          </label>
           <label className="flex items-center gap-2"><input type="checkbox" checked={hasRoi} onChange={(e) => setHasRoi(e.target.checked)} /> Signed authorization on file</label>
           <label className="flex items-center gap-2"><input type="checkbox" checked={certification} onChange={(e) => setCertification(e.target.checked)} /> Certification</label>
           <label className="flex items-center gap-2"><input type="checkbox" checked={affidavit} onChange={(e) => setAffidavit(e.target.checked)} /> Affidavit</label>
@@ -196,7 +193,8 @@ export default function NewRecordRequest() {
             ) : (
               <span className="text-emerald-300">
                 Estimated: <strong>{fmtMoney(estimate.fee, estimate.currency)}</strong>
-                {estimate.capped && <span className="ml-2 text-amber-300">(capped to allowed limit)</span>}
+                {estimate.right_of_access && <span className="ml-2 text-blue-300">(Right-of-access rate — capped)</span>}
+                {estimate.capped && !estimate.right_of_access && <span className="ml-2 text-amber-300">(capped to allowed limit)</span>}
               </span>
             )}
           </div>
